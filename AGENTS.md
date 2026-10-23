@@ -1,4 +1,4 @@
-# Project: Agricultural price forecasting for Benin (maize, yam, tomato)
+# Project: Bénin AgroMarket — agricultural price forecasting for Benin (maize, yam, tomato)
 
 ## Goal
 Portfolio-grade data science project: analyze and forecast staple food prices in Benin,
