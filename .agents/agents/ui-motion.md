@@ -3,6 +3,14 @@ name: ui-motion
 description: Designs and builds the web app front-end with a distinctive, award-level design and purposeful motion (Phase 3). Use for UI, animations, transitions and visual QA.
 subagent: true
 mainAgent: true
+tools:
+  - view_file
+  - list_dir
+  - grep_search
+  - write_to_file
+  - replace_file_content
+  - run_command
+  - read_url_content
 model: inherit
 commandExecutionPolicy: auto
 ---

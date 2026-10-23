@@ -3,6 +3,13 @@ name: ml-analyst
 description: Exploratory analysis, baselines, forecasting models and evaluation (Phase 1 EDA and Phase 2). Use for modeling, metrics and model limitations.
 subagent: true
 mainAgent: true
+tools:
+  - view_file
+  - list_dir
+  - grep_search
+  - write_to_file
+  - replace_file_content
+  - run_command
 model: inherit
 commandExecutionPolicy: auto
 ---

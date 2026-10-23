@@ -3,6 +3,15 @@ name: data-engineer
 description: Finds, audits, cleans and documents datasets (Phase 0 and Phase 1). Use for data sources, coverage audits, cleaning scripts and docs/DATA.md.
 subagent: true
 mainAgent: true
+tools:
+  - view_file
+  - list_dir
+  - grep_search
+  - write_to_file
+  - replace_file_content
+  - run_command
+  - read_url_content
+  - search_web
 model: inherit
 commandExecutionPolicy: auto
 ---
