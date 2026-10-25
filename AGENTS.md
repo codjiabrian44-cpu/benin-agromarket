@@ -61,3 +61,8 @@ until the owner replies.
 - Download data with Python scripts in src/ingest/ (standard library or requests), never with curl or wget.
 - Only download from the exact URLs recorded in docs/DATA.md (official sources such as data.humdata.org).
 - After each download, verify file size and record the SHA-256 checksum in docs/DATA.md.
+
+## Numbers in documents
+- Never type statistics by hand. Every number in docs/*.md must come from a script in src/ whose output is saved in docs/tables/.
+- Cite the script path next to each table. Regenerate tables whenever the data or the code changes.
+- If a number cannot be produced by a script, do not write it.
