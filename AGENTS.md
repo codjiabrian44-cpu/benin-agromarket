@@ -74,3 +74,11 @@ until the owner replies.
 ## No leakage from full-sample diagnostics
 - Never use robust_z, is_outlier_level, is_outlier_jump or any other full-sample diagnostic column as a model input.
 - Any outlier treatment inside a model must be computed strictly within the causal training window of each backtest origin.
+
+## Protocol integrity
+- Before running any evaluation, commit the written protocol in its own commit and record the commit hash in the results document.
+- Cached artifacts (predictions, models) must store a hash of the code and data that produced them. The pipeline must refuse to reuse a cache if the hash differs, instead of relying on file timestamps.
+- Never change a model-selection rule after looking at holdout results. If a rule must change, say so explicitly, treat the old holdout as used, and describe the change in docs/MODEL_CARD.md.
+
+## Export contract
+- Every file exported for the web app must be checked by a validation script (src/evaluate/validate_export.py) that fails loudly on missing, zero or inconsistent fields. Run it as part of the pipeline.
