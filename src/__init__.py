@@ -1,0 +1,1 @@
+"""Bénin AgroMarket core package."""
