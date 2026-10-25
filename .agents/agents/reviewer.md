@@ -7,6 +7,8 @@ tools:
   - run_command
 subagent: true
 mainAgent: false
+skills:
+  - skills/frontend-design
 model: inherit
 commandExecutionPolicy: sandbox
 ---
