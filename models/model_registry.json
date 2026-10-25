@@ -1,0 +1,50 @@
+{
+  "as_of_date": "2026-09-15",
+  "random_seed": 42,
+  "validation_window": "2022-01-15..2025-09-15",
+  "holdout_test_window": "2025-10-15..2026-09-15",
+  "champions": {
+    "Maize (white)": {
+      "h1": {
+        "model_id": "Naive_LastValue",
+        "artifact_file": "models/champion_maize_white_h1.joblib"
+      },
+      "h2": {
+        "model_id": "HGBR_NoWeather",
+        "artifact_file": "models/champion_maize_white_h2.joblib"
+      },
+      "h3": {
+        "model_id": "Seasonal_Ratio_Naive",
+        "artifact_file": "models/champion_maize_white_h3.joblib"
+      }
+    },
+    "Tomatoes": {
+      "h1": {
+        "model_id": "Ridge_ARX",
+        "artifact_file": "models/champion_tomatoes_h1.joblib"
+      },
+      "h2": {
+        "model_id": "Ridge_ARX",
+        "artifact_file": "models/champion_tomatoes_h2.joblib"
+      },
+      "h3": {
+        "model_id": "Ridge_ARX",
+        "artifact_file": "models/champion_tomatoes_h3.joblib"
+      }
+    },
+    "Yam (white)": {
+      "h1": {
+        "model_id": "HGBR_NoWeather",
+        "artifact_file": "models/champion_yam_white_h1.joblib"
+      },
+      "h2": {
+        "model_id": "HGBR_NoWeather",
+        "artifact_file": "models/champion_yam_white_h2.joblib"
+      },
+      "h3": {
+        "model_id": "Seasonal_Ratio_Naive",
+        "artifact_file": "models/champion_yam_white_h3.joblib"
+      }
+    }
+  }
+}

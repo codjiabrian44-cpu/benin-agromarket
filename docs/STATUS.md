@@ -1,68 +1,109 @@
 # Project Status — Bénin AgroMarket (`docs/STATUS.md`)
 
 **Date:** 2026-10-25  
-**Current Phase:** **Phase 1 Complete** (Step 0 Corrections + Phase 1(a) Cleaning & NASA POWER Pipeline + Phase 1(b) Exploratory Data Analysis & Vector Figures)  
-**Status:** **STOPPED at End of Phase 1** — awaiting owner review and confirmation before starting Phase 2 (Modeling).
+**Current Phase:** **Phase 2 Complete** (Phase 1 Review Items Closed + Phase 2 Rolling-Origin Modeling, Evaluation, Model Card & App Forecast Export)  
+**Status:** **STOPPED at End of Phase 2** — awaiting owner review and confirmation before starting Phase 3 (Web Application).
 
-Every statistic and table in this report is produced deterministically by [`src/analysis/coverage.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/coverage.py), [`src/clean/clean_prices.py`](file:///home/brian/projets-ds/benin-agromarket/src/clean/clean_prices.py), and [`src/analysis/eda.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/eda.py) and saved in [`docs/tables/`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/). All 5 publication-grade vector `.svg` figures are saved in [`docs/figures/`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/).
-
----
-
-## 1. Executive Summary of Completed Work (Phase 1)
-
-1. **Step 0 — Script-Backed Numbers & Coverage Audit ([`src/analysis/coverage.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/coverage.py)):**
-   - Replaced all hand-typed coverage statistics with deterministic script outputs in [`docs/tables/raw_dataset_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/raw_dataset_summary.md), [`docs/tables/coverage_by_commodity.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/coverage_by_commodity.md), [`docs/tables/yearly_observation_density.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/yearly_observation_density.md), [`docs/tables/coverage_by_market.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/coverage_by_market.md), and [`docs/tables/tier1_markets_by_product.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/tier1_markets_by_product.md).
-   - Explicitly separated full-history coverage (`2007–2026`, which spans the `2017–2018` reporting hiatus) from the `2019-01..2026-09` (`93`-month) primary modeling window.
-2. **Phase 1(a) — Central Config, NASA POWER Ingestion & Cleaning Pipeline ([`src/config.py`](file:///home/brian/projets-ds/benin-agromarket/src/config.py), [`src/ingest/download_nasa_power.py`](file:///home/brian/projets-ds/benin-agromarket/src/ingest/download_nasa_power.py), [`src/clean/clean_prices.py`](file:///home/brian/projets-ds/benin-agromarket/src/clean/clean_prices.py)):**
-   - Downloaded monthly NASA POWER MERRA-2 agroclimatology (`PRECTOTCORR`, `T2M`, `T2M_MAX`, `T2M_MIN`, `RH2M`) across all **`23` unique `0.5° × 0.625°` grid cells** covering Benin's `51` active markets (`2006-01..2026-09`, `5,727` grid-month rows, `474,338` bytes, `0` missing `-999` values, SHA-256 `1a20724807476b3ca20948e6a595a4503bf80d0ede17943f96634785548714f3`; [`docs/tables/nasa_power_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/nasa_power_summary.md)).
-   - Verified `0` duplicate `(commodity, market_id, pricetype, unit, date)` keys and `0` non-positive prices across all `146,501` raw rows; stripped the `18` inactive metadata markets (`data/processed/markets_active.csv`, `51` active markets).
-   - Flagged extreme levels (`|robust_z| > 3.5`) and consecutive month-over-month jumps (`|Δ log(price)| > ln(2)`) without deleting a single observation (`data/processed/prices_cleaned_all.csv`, `14,551` rows; [`docs/tables/cleaning_audit_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/cleaning_audit_summary.md)).
-   - Built the regular `93`-month Tier-1 modeling panel (`data/processed/modeling_panel_2019_2026.csv`, `10,323` rows) with strictly lagged NASA POWER features (using a strictly pre-2019 `2006–2018` climatology for `precip_anom_z_lag1m`) and zero silent imputation (`is_observed=0, price=""` on unobserved months).
-3. **Phase 1(b) — Exploratory Data Analysis & Vector Figures ([`src/analysis/eda.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/eda.py)):**
-   - Generated 6 EDA tables (`CSV` + `Markdown`) in [`docs/tables/`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/):
-     - [`docs/tables/eda_summary_by_product.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/eda_summary_by_product.md)
-     - [`docs/tables/eda_seasonality_profile.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/eda_seasonality_profile.md)
-     - [`docs/tables/eda_market_differences.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/eda_market_differences.md)
-     - [`docs/tables/eda_yam_variety_comparison.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/eda_yam_variety_comparison.md)
-     - [`docs/tables/eda_abrupt_changes.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/eda_abrupt_changes.md)
-     - [`docs/tables/eda_weather_lag_correlations.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/eda_weather_lag_correlations.md)
-   - Rendered 5 vector `.svg` figures in [`docs/figures/`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/):
-     - [`docs/figures/fig1_regimes_and_trends_2007_2026.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig1_regimes_and_trends_2007_2026.svg)
-     - [`docs/figures/fig2_seasonality_by_zone.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig2_seasonality_by_zone.svg)
-     - [`docs/figures/fig3_market_differences_tier1.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig3_market_differences_tier1.svg)
-     - [`docs/figures/fig4_abrupt_changes_and_outliers.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig4_abrupt_changes_and_outliers.svg)
-     - [`docs/figures/fig5_weather_lag_relationships.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig5_weather_lag_relationships.svg)
+Every statistic and table in this report is produced deterministically by [`src/analysis/coverage.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/coverage.py), [`src/clean/clean_prices.py`](file:///home/brian/projets-ds/benin-agromarket/src/clean/clean_prices.py), [`src/analysis/eda.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/eda.py), and [`src/evaluate/backtest.py`](file:///home/brian/projets-ds/benin-agromarket/src/evaluate/backtest.py) and saved in [`docs/tables/`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/).
 
 ---
 
-## 2. Phase 0 Audit & Phase 1(a) Cleaning Summary Tables
+## 1. Executive Summary of Completed Work (Phase 1 Fixes + Phase 2 Modeling)
 
-### 2.1 Global Coverage by Commodity (`wfp_food_prices_ben.csv`)
-*Source script: [`src/analysis/coverage.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/coverage.py) → [`docs/tables/coverage_by_commodity.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/coverage_by_commodity.md)*
-
-| Target / Group | Commodity | Pricetype & Unit | Total Obs (All) | Active Markets (All) | Date Range (All) | Unique / Expected Months (All) | Obs (2019-01..2026-09) | Markets >=60m (2019-26) | Tier-1 Markets >=80/93m (2019-26) |
-| :--- | :--- | :--- | ---: | ---: | :--- | ---: | ---: | ---: | :--- |
-| **Maize (Primary)** | **`Maize (white)`** | `Retail, KG` | 4868 | 51 | `2007-01-15..2026-09-15` | `208 / 237` | 4239 | `50 / 50` | **`49 / 50`** |
-| **Tomato (Primary)** | **`Tomatoes`** | `Retail, KG` | 4136 | 50 | `2019-01-15..2026-09-15` | `90 / 93` | 4136 | `49 / 50` | **`43 / 50`** |
-| **Yam (Primary — White/Kokoro)** | **`Yam (white)`** | `Retail, KG` | 2727 | 47 | `2019-01-15..2026-09-15` | `89 / 93` | 2727 | `31 / 47` | **`19 / 47`** |
-| Yam (Exploration — Early/Laboko) | `Yam` | `Retail, KG` | 2820 | 49 | `2013-01-15..2026-09-15` | `128 / 165` | 2721 | `28 / 49` | `17 / 49` |
-
-### 2.2 Cleaning & Feature Pipeline Audit Summary
-*Source script: [`src/clean/clean_prices.py`](file:///home/brian/projets-ds/benin-agromarket/src/clean/clean_prices.py) → [`docs/tables/cleaning_audit_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/cleaning_audit_summary.md)*
-
-| Product | Role | Obs (All 2007-2026) | Obs Pre-2019 (Exploration) | Obs 2019-2026 (Modern) | Outliers Flagged (Level \|z\|>3.5) | Outliers Flagged (MoM Jump >=2x) | Total Outliers Flagged (0 Deleted) | Tier-1 Markets (>=80m) | Tier-1 Grid Rows (93m) | Tier-1 Observed Rows | Tier-1 Unobserved Rows (price='') | Isolated 1m Gaps (price_interp_1m_max) |
-| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| `Maize (white)` | `forecast_primary` | 4868 | 629 | 4239 | 32 | 14 | 43 | 49 | 4557 | 4162 | 395 | 75 |
-| `Tomatoes` | `forecast_primary` | 4136 | 0 | 4136 | 44 | 288 | 320 | 43 | 3999 | 3664 | 335 | 76 |
-| `Yam (white)` | `forecast_primary` | 2727 | 0 | 2727 | 113 | 43 | 150 | 19 | 1767 | 1603 | 164 | 50 |
-| `Yam` | `exploration_only` | 2820 | 99 | 2721 | 45 | 67 | 108 | 17 | - | - | - | - |
+1. **Step 1 — Phase 1 Review Items Closed (`fix: phase 1 review items`):**
+   - Updated [`src/analysis/eda.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/eda.py) and regenerated `docs/tables/eda_*.{csv,md}` and `docs/figures/fig1..fig5.svg` so that 100% of numbers inside figure titles, labels, and captions are computed dynamically at runtime from the exact plotted data (`L1`: `Pre-2019 Exploration Only (2007-01..2016-11, 20 mkts)`; `L2`: runtime-computed Tier-1 `2019–2026` outlier counts `11/31`, `237/40`, `17/68` in `fig4_abrupt_changes_and_outliers.svg`; `L3`: dynamic `0..3000 XOF/kg` x-axis and dedicated right gutter for `Tomatoes` in `fig3_market_differences_tier1.svg`).
+   - Recorded **Safeguard 1** (banning full-sample diagnostic columns `robust_z` and `is_outlier_*` from model inputs) and **Safeguard 2** (evaluating strictly on `is_observed == 1` ground-truth targets, testing `price_interp_1m_max` solely as a lag-input sensitivity variant on validation) in [`docs/DECISIONS.md`](file:///home/brian/projets-ds/benin-agromarket/docs/DECISIONS.md).
+2. **Step 2 — Pre-Registered Protocol & Phase 2 Modeling Pipeline ([`src/models/`](file:///home/brian/projets-ds/benin-agromarket/src/models/), [`src/evaluate/`](file:///home/brian/projets-ds/benin-agromarket/src/evaluate/)):**
+   - Pre-registered **Decision 7** in [`docs/DECISIONS.md`](file:///home/brian/projets-ds/benin-agromarket/docs/DECISIONS.md) before running any models: expanding window with `36` initial training months (`2019-01..2021-12`, first forecast origin `2021-12-15`), **Validation Split (`2022-01..2025-09`)** for model selection and ablations, and **Final Holdout Test Split (`2025-10..2026-09`, `12` target months per horizon)** evaluated once after freezing champion selection.
+   - Implemented [`src/models/features.py`](file:///home/brian/projets-ds/benin-agromarket/src/models/features.py), [`src/models/forecasters.py`](file:///home/brian/projets-ds/benin-agromarket/src/models/forecasters.py), [`src/evaluate/backtest.py`](file:///home/brian/projets-ds/benin-agromarket/src/evaluate/backtest.py), and [`src/evaluate/figures.py`](file:///home/brian/projets-ds/benin-agromarket/src/evaluate/figures.py).
+   - Trained and evaluated **8 main candidate models** (`Naive_LastValue`, `Seasonal_Naive_12m`, `Seasonal_Ratio_Naive`, `ETS_HoltWinters`, `SARIMAX_101_011_12`, `Ridge_ARX`, `HGBR_NoWeather`, `HGBR_WithWeather`) plus **2 lag-imputation sensitivity variants** (`Ridge_ARX_Interp1mLags`, `HGBR_NoWeather_Interp1mLags`) across all `111` Tier-1 product-market series (`49` `Maize (white)`, `43` `Tomatoes`, `19` `Yam (white)`) and horizons $h \in \{1, 2, 3\}$ months ahead.
+   - Generated all **9 Phase 2 CSV + Markdown tables** in [`docs/tables/`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/):
+     1. [`docs/tables/phase2_backtest_by_product_horizon.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/phase2_backtest_by_product_horizon.md)
+     2. [`docs/tables/phase2_champion_selection.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/phase2_champion_selection.md)
+     3. [`docs/tables/phase2_weather_ablation.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/phase2_weather_ablation.md)
+     4. [`docs/tables/phase2_imputation_sensitivity.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/phase2_imputation_sensitivity.md)
+     5. [`docs/tables/phase2_outlier_sensitivity.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/phase2_outlier_sensitivity.md)
+     6. [`docs/tables/phase2_interval_calibration.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/phase2_interval_calibration.md)
+     7. [`docs/tables/phase2_metrics_by_market.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/phase2_metrics_by_market.md)
+     8. [`docs/tables/phase2_metrics_by_zone_season.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/phase2_metrics_by_zone_season.md)
+     9. [`docs/tables/phase2_forecast_2026Q4_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/phase2_forecast_2026Q4_summary.md)
+   - Rendered **4 Phase 2 vector `.svg` figures** in [`docs/figures/`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/) via [`src/evaluate/figures.py`](file:///home/brian/projets-ds/benin-agromarket/src/evaluate/figures.py):
+     1. [`docs/figures/fig6_model_comparison_by_horizon.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig6_model_comparison_by_horizon.svg): *Plain-language caption:* Compares forecast error (`MAE` in XOF/kg and `MAPE` %) across all 8 candidate models at 1-, 2-, and 3-month horizons on both the Validation split (`2022-01..2025-09`) and the Final Holdout Test split (`2025-10..2026-09`), highlighting the selected champion for each product and horizon.
+     2. [`docs/figures/fig7_rolling_backtest_trajectories.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig7_rolling_backtest_trajectories.svg): *Plain-language caption:* Shows actual observed prices alongside 1-month and 3-month rolling-origin forecasts, `80%`/`90%` prediction intervals, and the `2026-10..2026-12` outlook across six major benchmark markets (`Dantokpa`, `Glazoué`, `Parakou`, `Djougou`, `Nikki`, `Savalou`), with the `2025-09` validation/test split boundary marked explicitly.
+     3. [`docs/figures/fig8_market_error_distribution.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig8_market_error_distribution.svg): *Plain-language caption:* Displays Holdout Test accuracy (`MAE` and `MAPE`) and skill vs. `Seasonal_Naive_12m` across individual Tier-1 markets per product, showing where forecasts are tightest (e.g., grain and northern producer hubs) vs. widest (high-volatility southern tomato markets).
+     4. [`docs/figures/fig9_interval_calibration_and_ablation.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig9_interval_calibration_and_ablation.svg): *Plain-language caption:* Summarizes empirical `80%` and `90%` prediction interval coverage against nominal targets (Panel 9A), the NASA POWER weather feature ablation impact on `MAE` (Panel 9B), and Holdout Test `MAPE` disaggregated by agro-ecological zone and seasonal regime (Panel 9C).
+   - Saved final production models trained through `as_of_date = 2026-09-15` in [`models/champion_*.joblib`](file:///home/brian/projets-ds/benin-agromarket/models/) and [`models/model_registry.json`](file:///home/brian/projets-ds/benin-agromarket/models/model_registry.json), wrote [`docs/MODEL_CARD.md`](file:///home/brian/projets-ds/benin-agromarket/docs/MODEL_CARD.md), and exported [`web/public/data/forecasts.json`](file:///home/brian/projets-ds/benin-agromarket/web/public/data/forecasts.json) (`UTF-8`, `111` Tier-1 forecasted series + coverage status for all `51` active markets).
 
 ---
 
-## 3. Phase 1(b) Exploratory Data Analysis Findings (`src/analysis/eda.py`)
+## 2. Phase 2 Modeling & Evaluation Results (`src/evaluate/backtest.py`)
+
+### 2.1 Champion Model Selection (Validation Split) & Frozen Holdout Test Performance
+*Source script: [`src/evaluate/backtest.py`](file:///home/brian/projets-ds/benin-agromarket/src/evaluate/backtest.py) → [`docs/tables/phase2_champion_selection.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/phase2_champion_selection.md)*
+
+| Product | Horizon | Best Baseline (Val) | Baseline Val MAE | Baseline Val MAPE | Best Statistical/ML (Val) | Stat/ML Val MAE | Stat/ML Val MAPE | Selected Champion | Val Skill vs SNaive12m | Test MAE (XOF/kg) | Test RMSE (XOF/kg) | Test MAPE % | Test Skill vs SNaive12m | Test Skill vs Naive1m | Test 80% PI Cov | Test 90% PI Cov | Selection Rationale (Honesty Clause) |
+| :--- | :--- | :--- | ---: | ---: | :--- | ---: | ---: | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :--- |
+| **`Maize (white)`** | `h=1m` | `Naive_LastValue` | 19.8 | 9.1% | `HGBR_NoWeather` | 20.5 | 9.5% | **`Naive_LastValue`** | `+61.2%` | **9.6** | **15.2** | **6.8%** | `+85.0%` | `+0.0%` | 84.4% | 92.8% | Baseline `Naive_LastValue` retained (Honesty Clause: `HGBR_NoWeather` Val MAE 20.5 vs 19.8 [`-3.9% < +0.5%` threshold]) |
+| **`Maize (white)`** | `h=2m` | `Seasonal_Ratio_Naive` | 30.2 | 13.9% | `HGBR_NoWeather` | 30.0 | 14.1% | **`HGBR_NoWeather`** | `+41.5%` | **21.3** | **26.6** | **16.2%** | `+66.6%` | `-42.9%` | 78.2% | 88.7% | `HGBR_NoWeather` beats best baseline (`Seasonal_Ratio_Naive`) on Val MAE (30.0 vs 30.2 XOF/kg, `+0.8%` skill) |
+| **`Maize (white)`** | `h=3m` | `Seasonal_Ratio_Naive` | 35.1 | 16.2% | `Ridge_ARX` | 35.3 | 16.7% | **`Seasonal_Ratio_Naive`** | `+32.0%` | **24.6** | **31.0** | **17.5%** | `+61.5%` | `-25.9%` | 78.9% | 88.7% | Baseline `Seasonal_Ratio_Naive` retained (Honesty Clause: `Ridge_ARX` Val MAE 35.3 vs 35.1 [`-0.6% < +0.5%` threshold]) |
+| **`Tomatoes`** | `h=1m` | `Seasonal_Ratio_Naive` | 119.7 | 24.3% | `Ridge_ARX` | 111.4 | 21.6% | **`Ridge_ARX`** | `+39.4%` | **109.9** | **241.7** | **18.8%** | `+37.1%` | `+10.1%` | 85.0% | 91.8% | `Ridge_ARX` beats best baseline (`Seasonal_Ratio_Naive`) on Val MAE (111.4 vs 119.7 XOF/kg, `+6.9%` skill) |
+| **`Tomatoes`** | `h=2m` | `Seasonal_Ratio_Naive` | 150.1 | 31.0% | `Ridge_ARX` | 143.4 | 28.8% | **`Ridge_ARX`** | `+22.4%` | **146.0** | **300.4** | **26.0%** | `+16.5%` | `+17.7%` | 84.6% | 93.2% | `Ridge_ARX` beats best baseline (`Seasonal_Ratio_Naive`) on Val MAE (143.4 vs 150.1 XOF/kg, `+4.5%` skill) |
+| **`Tomatoes`** | `h=3m` | `Seasonal_Ratio_Naive` | 163.7 | 33.8% | `Ridge_ARX` | 150.7 | 30.7% | **`Ridge_ARX`** | `+18.5%` | **161.1** | **339.7** | **29.1%** | `+7.9%` | `+28.7%` | 85.4% | 92.6% | `Ridge_ARX` beats best baseline (`Seasonal_Ratio_Naive`) on Val MAE (150.7 vs 163.7 XOF/kg, `+8.0%` skill) |
+| **`Yam (white)`** | `h=1m` | `Naive_LastValue` | 45.6 | 10.5% | `HGBR_NoWeather` | 43.9 | 9.8% | **`HGBR_NoWeather`** | `+51.3%` | **39.9** | **68.2** | **9.2%** | `+58.1%` | `+13.1%` | 79.6% | 90.7% | `HGBR_NoWeather` beats best baseline (`Naive_LastValue`) on Val MAE (43.9 vs 45.6 XOF/kg, `+3.8%` skill) |
+| **`Yam (white)`** | `h=2m` | `Seasonal_Ratio_Naive` | 64.7 | 13.8% | `HGBR_NoWeather` | 60.8 | 13.3% | **`HGBR_NoWeather`** | `+31.8%` | **57.0** | **85.9** | **14.2%** | `+40.2%` | `+27.0%` | 78.3% | 86.7% | `HGBR_NoWeather` beats best baseline (`Seasonal_Ratio_Naive`) on Val MAE (60.8 vs 64.7 XOF/kg, `+6.0%` skill) |
+| **`Yam (white)`** | `h=3m` | `Seasonal_Ratio_Naive` | 73.2 | 15.6% | `Ridge_ARX` | 73.5 | 16.8% | **`Seasonal_Ratio_Naive`** | `+16.8%` | **74.1** | **104.9** | **19.5%** | `+22.3%` | `+23.9%` | 71.2% | 81.4% | Baseline `Seasonal_Ratio_Naive` retained (Honesty Clause: `Ridge_ARX` Val MAE 73.5 vs 73.2 [`-0.3% < +0.5%` threshold]) |
+
+---
+
+### 2.2 NASA POWER Agroclimatic Feature Ablation (`HGBR_WithWeather` vs `HGBR_NoWeather`)
+*Source script: [`src/evaluate/backtest.py`](file:///home/brian/projets-ds/benin-agromarket/src/evaluate/backtest.py) → [`docs/tables/phase2_weather_ablation.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/phase2_weather_ablation.md)*
+
+| Product | Split | Horizon | Eval Pairs | `HGBR_NoWeather` MAE | `HGBR_NoWeather` MAPE | `HGBR_WithWeather` MAE | `HGBR_WithWeather` MAPE | Delta MAE (`With - No`) | Weather Skill Gain % | Reference `Ridge_ARX` MAE | Ablation Verdict |
+| :--- | :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :--- |
+| `Maize (white)` | Validation (`2022-01..2025-09`) | All (`h=1..3`) | 6300 | 28.70 | 13.51% | 28.77 | 13.56% | `+0.07` | `-0.25%` | 28.62 | Negligible difference (`-0.25%` MAE — parsimony favors `NoWeather`/`Ridge`) |
+| `Maize (white)` | Holdout Test (`2025-10..2026-09`) | All (`h=1..3`) | 1749 | 21.63 | 16.50% | 21.89 | 16.64% | `+0.26` | `-1.20%` | 22.88 | Degrades accuracy (`-1.20%` MAE — calendar seasonality sufficient) |
+| `Tomatoes` | Validation (`2022-01..2025-09`) | All (`h=1..3`) | 5502 | 137.13 | 28.25% | 137.09 | 28.20% | `-0.05` | `+0.03%` | 134.86 | Negligible difference (`+0.03%` MAE — parsimony favors `NoWeather`/`Ridge`) |
+| `Tomatoes` | Holdout Test (`2025-10..2026-09`) | All (`h=1..3`) | 1539 | 134.71 | 24.81% | 135.62 | 24.77% | `+0.91` | `-0.68%` | 139.01 | Degrades accuracy (`-0.68%` MAE — calendar seasonality sufficient) |
+| `Yam (white)` | Validation (`2022-01..2025-09`) | All (`h=1..3`) | 2400 | 59.21 | 13.13% | 59.33 | 13.27% | `+0.12` | `-0.20%` | 60.43 | Negligible difference (`-0.20%` MAE — parsimony favors `NoWeather`/`Ridge`) |
+| `Yam (white)` | Holdout Test (`2025-10..2026-09`) | All (`h=1..3`) | 678 | 55.08 | 13.70% | 56.04 | 14.08% | `+0.95` | `-1.73%` | 54.75 | Degrades accuracy (`-1.73%` MAE — calendar seasonality sufficient) |
+
+---
+
+### 2.2b Outlier Evaluation Sensitivity (`All Observed Targets` vs. `Excluding Flagged Outlier Target Months`)
+*Source script: [`src/evaluate/backtest.py`](file:///home/brian/projets-ds/benin-agromarket/src/evaluate/backtest.py) → [`docs/tables/phase2_outlier_sensitivity.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/phase2_outlier_sensitivity.md)*
+
+| Product | Evaluation Split | Horizon | Model | All Obs Targets (`N`) | Flagged Outlier Targets | Non-Outlier Targets (`N`) | Primary MAE (All Obs) | Primary RMSE | Primary MAPE % | Primary Skill vs SNaive12m | Primary 80% PI Cov | Excl-Outliers MAE | Excl-Outliers RMSE | Excl-Outliers MAPE % | Excl-Outliers Skill vs SNaive12m | Excl-Outliers 80% PI Cov | Delta MAE (`Excl - All`) | Delta MAPE (`Excl - All`) |
+| :--- | :--- | :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `Maize (white)` | Validation (`2022-01..2025-09`) | All (`h=1..3`) | Selected Champions (`h=1..3`) | 6300 | 48 | 6252 | 28.16 | 39.47 | 13.08% | `+45.1%` | 75.8% | 27.78 | 38.38 | 12.93% | `+45.0%` | 76.1% | `-0.38` | `-0.14 pp` |
+| **`Maize (white)`** | **Holdout Test (`2025-10..2026-09`)** | **All (`h=1..3`)** | **Selected Champions (`h=1..3`)** | **1749** | **6** | **1743** | **18.48** | **25.17** | **13.48%** | **`+71.1%`** | **80.5%** | **18.33** | **24.90** | **13.29%** | **`+71.2%`** | **80.8%** | **`-0.15`** | **`-0.19 pp`** |
+| `Tomatoes` | Validation (`2022-01..2025-09`) | All (`h=1..3`) | Selected Champions (`h=1..3`) | 5502 | 329 | 5173 | 134.86 | 237.67 | 26.96% | `+26.9%` | 82.5% | 125.80 | 217.93 | 25.30% | `+29.0%` | 84.5% | `-9.06` | `-1.66 pp` |
+| **`Tomatoes`** | **Holdout Test (`2025-10..2026-09`)** | **All (`h=1..3`)** | **Selected Champions (`h=1..3`)** | **1539** | **51** | **1488** | **139.01** | **296.69** | **24.65%** | **`+20.5%`** | **85.0%** | **136.93** | **296.22** | **24.35%** | **`+21.0%`** | **85.6%** | **`-2.08`** | **`-0.29 pp`** |
+| `Yam (white)` | Validation (`2022-01..2025-09`) | All (`h=1..3`) | Selected Champions (`h=1..3`) | 2400 | 30 | 2370 | 59.06 | 98.80 | 12.86% | `+33.7%` | 80.9% | 56.60 | 91.30 | 12.32% | `+33.7%` | 81.6% | `-2.46` | `-0.54 pp` |
+| **`Yam (white)`** | **Holdout Test (`2025-10..2026-09`)** | **All (`h=1..3`)** | **Selected Champions (`h=1..3`)** | **678** | **42** | **636** | **56.99** | **87.62** | **14.28%** | **`+40.2%`** | **76.4%** | **52.50** | **78.13** | **13.08%** | **`+35.5%`** | **79.6%** | **`-4.50`** | **`-1.20 pp`** |
+
+---
+
+### 2.3 Production 3-Month Ahead Forecasts (`2026-10` to `2026-12`, Origin `as_of_date = 2026-09-15`)
+*Source script: [`src/evaluate/backtest.py`](file:///home/brian/projets-ds/benin-agromarket/src/evaluate/backtest.py) → [`docs/tables/phase2_forecast_2026Q4_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/phase2_forecast_2026Q4_summary.md)*
+
+| Product | Aggregation / Market | Horizon (Target Date) | Model Used | Last Obs Price (`2026-09`, XOF/kg) | Point Forecast (XOF/kg) | Expected Change % | 80% Prediction Interval | 90% Prediction Interval |
+| :--- | :--- | :--- | :--- | ---: | :--- | ---: | :--- | :--- |
+| **`Maize (white)`** | **All 49 Tier-1 Markets (Mean)** | `h=1m` (`2026-10-15`) | `Naive_LastValue` | 133.9 | 133.9 (med 133.0) | `+0.0%` | `[116.9, 153.6]` | `[110.7, 162.3]` |
+| `Maize (white)` | All 49 Tier-1 Markets (Mean) | `h=2m` (`2026-11-15`) | `HGBR_NoWeather` | 133.9 | 131.7 (med 131.0) | `-1.6%` | `[107.1, 162.4]` | `[100.7, 173.1]` |
+| `Maize (white)` | All 49 Tier-1 Markets (Mean) | `h=3m` (`2026-12-15`) | `Seasonal_Ratio_Naive` | 133.9 | 134.3 (med 130.4) | `+0.3%` | `[105.9, 170.8]` | `[98.6, 183.9]` |
+| **`Tomatoes`** | **All 43 Tier-1 Markets (Mean)** | `h=1m` (`2026-10-15`) | `Ridge_ARX` | 446.3 | 413.9 (med 386.4) | `-7.3%` | `[299.7, 578.5]` | `[274.1, 636.1]` |
+| `Tomatoes` | All 43 Tier-1 Markets (Mean) | `h=2m` (`2026-11-15`) | `Ridge_ARX` | 446.3 | 403.1 (med 389.0) | `-9.7%` | `[263.7, 629.8]` | `[234.1, 725.9]` |
+| `Tomatoes` | All 43 Tier-1 Markets (Mean) | `h=3m` (`2026-12-15`) | `Ridge_ARX` | 446.3 | 434.0 (med 415.7) | `-2.8%` | `[276.9, 699.8]` | `[242.2, 839.0]` |
+| **`Yam (white)`** | **All 19 Tier-1 Markets (Mean)** | `h=1m` (`2026-10-15`) | `HGBR_NoWeather` | 401.1 | 380.2 (med 366.1) | `-5.2%` | `[331.5, 436.9]` | `[313.1, 463.6]` |
+| `Yam (white)` | All 19 Tier-1 Markets (Mean) | `h=2m` (`2026-11-15`) | `HGBR_NoWeather` | 401.1 | 384.6 (med 394.8) | `-4.1%` | `[315.4, 470.6]` | `[294.7, 504.9]` |
+| `Yam (white)` | All 19 Tier-1 Markets (Mean) | `h=3m` (`2026-12-15`) | `Seasonal_Ratio_Naive` | 401.1 | 400.1 (med 388.2) | `-0.2%` | `[313.0, 514.0]` | `[288.9, 560.5]` |
+
+---
+
+## 3. Retaining Phase 1 EDA Reference Summary (`src/analysis/eda.py`)
 
 ### 3.1 Distributional Summary & Multi-Year Price Trends (`2007–2026`)
-*Source script: [`src/analysis/eda.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/eda.py) → [`docs/tables/eda_summary_by_product.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/eda_summary_by_product.md) | Visualized in [`docs/figures/fig1_regimes_and_trends_2007_2026.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig1_regimes_and_trends_2007_2026.svg)*
+*Source script: [`src/analysis/eda.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/eda.py) → [`docs/tables/eda_summary_by_product.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/eda_summary_by_product.md)*
 
 | Product | Regime / Scope | Obs | Markets | Mean (XOF/kg) | SD | CV % | Median | P25 | P75 | IQR | Min | Max | 2019 Mean | Last-12m Mean (2025-10..2026-09) | 2019 Median | Last-12m Median | Ratio (Last-12m / 2019) | CAGR % (6.75 yr) |
 | :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :--- | :--- |
@@ -77,123 +118,17 @@ Every statistic and table in this report is produced deterministically by [`src/
 | `Yam` | Exploration-Only All Markets (`2019-01..2026-09`, `49` mkts) | 2721 | 49 | 348.7 | 229.0 | 65.7% | 305.0 | 207.2 | 412.5 | 205.2 | 55.0 | 2766.7 | 250.9 | 378.2 | 212.1 | 310.0 | `1.51x` (med `1.46x`) | `+6.3%` (med `+5.8%`) |
 | `Yam` | Exploration-Only Pre-2019 (`2013-01..2018-12`, `4` mkts) | 99 | 4 | 323.6 | 126.8 | 39.2% | 300.0 | 249.5 | 350.0 | 100.5 | 112.0 | 777.2 | - | - | - | - | - | - |
 
-**Key Insights ([`docs/figures/fig1_regimes_and_trends_2007_2026.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig1_regimes_and_trends_2007_2026.svg)):**
-- **Distinct Volatility Regimes Across Products:** Across `2019–2026` Tier-1 markets, `Maize (white)` is the most stable staple (`Mean = 201.8 XOF/kg`, `Median = 197.0 XOF/kg`, `IQR = 76.4 XOF/kg`, `CV = 29.7%`), followed by `Yam (white)` (`Mean = 405.3 XOF/kg`, `Median = 400.0 XOF/kg`, `IQR = 322.5 XOF/kg`, `CV = 52.7%`), whereas perishable `Tomatoes` exhibits extreme dispersion (`Mean = 491.5 XOF/kg`, `Median = 432.6 XOF/kg`, `IQR = 295.2 XOF/kg`, `CV = 70.0%`).
-- **Divergent Secular Trajectories (`2019` vs `2025-10..2026-09`):** While `Tomatoes` (`1.89x` mean, `+9.9%` CAGR) and `Yam (white)` (`1.46x` mean, `1.53x` median, `+5.8%` CAGR) experienced persistent nominal price appreciation between `2019` and the final 12 months (`2025-10..2026-09`), `Maize (white)` experienced a pronounced multi-year surge in `2021–2024` followed by a strong downward correction in `2025–2026` back toward `149.1 XOF/kg` (`1.05x` vs `2019` mean of `141.6 XOF/kg`).
-- **Benefit of Tier-1 Filtering for `Yam (white)`:** Restricting `Yam (white)` from all `47` markets (`CV = 69.8%`, max `2,958.2 XOF/kg`) to the `19` Tier-1 markets (`CV = 52.7%`, max `1,500.0 XOF/kg`) removes erratic thin-market spikes where white yam is only sporadically sold.
-
 ---
 
-### 3.2 Seasonality by Product & Agro-Ecological Latitude Zone
-*Source script: [`src/analysis/eda.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/eda.py) → [`docs/tables/eda_seasonality_profile.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/eda_seasonality_profile.md) | Visualized in [`docs/figures/fig2_seasonality_by_zone.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig2_seasonality_by_zone.svg)*
+## 4. Proposed Plan for Phase 3 (Web Application)
 
-| Product | Agro-Ecological Zone | Tier-1 Markets | Obs | Trough Month (Index) | Peak Month (Index) | Peak-to-Trough Spread (Index pts / %) | Jan | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov |
-| :--- | :--- | ---: | ---: | :--- | :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **`Maize (white)`** | **All Tier-1 (National)** | 49 | 4162 | **Nov (`87.1`)** | **May (`108.1`)** | **`21.0 pts (+24.1%)`** | 98.4 | 107.5 | 108.1 | 107.0 | 108.0 | 103.0 | 96.0 | 89.4 | 87.1 |
-| `Maize (white)` | South (`<7.5°N`, Bimodal) | 28 | 2367 | Nov (`88.8`) | May (`110.3`) | `21.5 pts (+24.2%)` | 99.7 | 109.4 | 110.3 | 108.6 | 106.1 | 96.8 | 89.6 | 89.4 | 88.8 |
-| `Maize (white)` | Center (`7.5°–9.5°N`, Transition) | 7 | 601 | Oct (`86.1`) | Jun (`109.3`) | `23.2 pts (+27.0%)` | 97.4 | 106.9 | 107.8 | 109.3 | 107.8 | 104.8 | 93.2 | 86.1 | 87.5 |
-| `Maize (white)` | North (`>=9.5°N`, Unimodal) | 14 | 1194 | Nov (`83.8`) | **Aug (`114.1`)** | **`30.3 pts (+36.1%)`** | 96.5 | 103.9 | 103.8 | 102.5 | 111.7 | 114.1 | 109.9 | 91.1 | 83.8 |
-| **`Tomatoes`** | **All Tier-1 (National)** | 43 | 3664 | **Sep (`69.0`)** | **Jun (`140.2`)** | **`71.1 pts (+103.1%)`** | 95.2 | 121.6 | 139.7 | 140.2 | 115.2 | 79.6 | 69.0 | 73.0 | 75.3 |
-| `Tomatoes` | South (`<7.5°N`, Bimodal) | 27 | 2278 | Sep (`63.9`) | May (`146.2`) | **`82.4 pts (+129.0%)`** | 98.0 | 127.7 | 146.2 | 144.8 | 111.1 | 70.0 | 63.9 | 71.8 | 72.1 |
-| `Tomatoes` | Center (`7.5°–9.5°N`, Transition) | 6 | 526 | Oct (`73.1`) | May (`130.3`) | `57.2 pts (+78.2%)` | 97.1 | 116.2 | 130.3 | 124.3 | 103.5 | 91.0 | 78.6 | 73.1 | 78.5 |
-| `Tomatoes` | North (`>=9.5°N`, Unimodal) | 10 | 860 | Oct (`76.0`) | Jun (`137.6`) | `61.5 pts (+80.9%)` | 87.2 | 108.9 | 128.0 | 137.6 | 132.9 | 97.3 | 76.7 | 76.0 | 82.0 |
-| **`Yam (white)`** | **All Tier-1 (National)** | 19 | 1603 | **Oct (`85.0`)** | **Jul (`121.9`)** | **`37.0 pts (+43.5%)`** | 91.2 | 103.4 | 109.1 | 112.9 | 121.9 | 116.1 | 92.0 | 85.0 | 86.8 |
-| `Yam (white)` | South (`<7.5°N`, Bimodal) | 8 | 675 | Nov (`88.5`) | Jul (`117.3`) | `28.8 pts (+32.6%)` | 91.7 | 102.7 | 108.2 | 110.8 | 117.3 | 114.3 | 94.5 | 88.8 | 88.5 |
-| `Yam (white)` | Center (`7.5°–9.5°N`, Transition) | 5 | 420 | Oct (`86.3`) | Jul (`119.7`) | `33.4 pts (+38.8%)` | 91.3 | 106.5 | 108.7 | 109.5 | 119.7 | 114.8 | 90.0 | 86.3 | 87.7 |
-| `Yam (white)` | North (`>=9.5°N`, Unimodal) | 6 | 508 | Oct (`78.9`) | Jul (`129.8`) | **`50.9 pts (+64.5%)`** | 90.4 | 101.9 | 110.7 | 118.0 | 129.8 | 119.8 | 90.4 | 78.9 | 84.0 |
-| `Yam` (Exploration) | All Tier-1 (National) | 17 | 1427 | Nov (`84.8`) | Aug (`120.7`) | `35.9 pts (+42.4%)` | 90.4 | 104.2 | 107.5 | 114.8 | 118.9 | 120.7 | 90.6 | 84.8 | 84.8 |
+Per `AGENTS.md` (*"At the end of each phase, STOP and write a summary in docs/STATUS.md... Do not start the next phase until the owner replies"*), we stop here and await your review before starting **Phase 3 (Web Application)**:
 
-**Key Insights ([`docs/figures/fig2_seasonality_by_zone.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig2_seasonality_by_zone.svg)):**
-- **Bimodal South vs. Unimodal North Phase Shift in `Maize (white)`:** In Southern Benin (`<7.5°N`, bimodal rainfall), the first maize harvest arrives in July–August, pulling the seasonal index down from **`110.3` in May** to **`96.8` in August** and **`89.6` in September**. In contrast, in Northern Benin (`>=9.5°N`, single rainy season), stocks reach maximum depletion in **July (`111.7`) and August (`114.1`)** before the main October–November harvest (`83.8` in November), yielding a **`+36.1%` peak-to-trough spread** in the North vs **`+24.2%`** in the South.
-- **Doubling of `Tomatoes` Prices Every Lean Season:** Fresh tomato prices more than double on average between the main harvest trough in **September (`69.0`)** and the May–June lean-season peak (**`139.7` in May, `140.2` in June**, **`+103.1%`** nationally, and **`+129.0%`** in the South where May reaches `146.2` vs September `63.9`).
-- **Pre-Harvest Scarcity Peak in `Yam (white)`:** White yam peaks in **July (`121.9` nationally, `129.8` in the North)** right before the new tuber harvest begins in August–October (**October trough `85.0` nationally, `78.9` in the North**, a **`+64.5%`** seasonal swing in Northern markets).
-
----
-
-### 3.3 Spatial Market Differences: Producer Hubs vs. Consumer Markets
-*Source script: [`src/analysis/eda.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/eda.py) → [`docs/tables/eda_market_differences.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/eda_market_differences.md) | Visualized in [`docs/figures/fig3_market_differences_tier1.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig3_market_differences_tier1.svg)*
-
-- **`Maize (white)` (`49` Tier-1 markets, Max/Min Market Mean Ratio = `1.79x`, Cross-Market CV = `13.2%`):**
-  - **Lowest-Cost Producer Markets:** `Cobly` (`149.1 XOF/kg`, `-26.2%` vs Tier-1 mean), `Azovè` (`160.8 XOF/kg`, `-20.4%`), `Tchaourou` (`163.1 XOF/kg`, `-19.2%`), `Kérou` (`163.3 XOF/kg`, `-19.2%`), `Glazoué` (`167.8 XOF/kg`, `-16.9%`), and `Kétou` (`169.8 XOF/kg`, `-15.9%`).
-  - **Highest-Cost Consumer/Deficit Markets:** `Dantokpa` (Cotonou, `#49/49` at `267.4 XOF/kg`, median `274.7 XOF/kg`, `+32.4%` above Tier-1 mean), `Sèdjè-Dénou` (`258.5 XOF/kg`, `+28.0%`), and `Hozin` (`244.9 XOF/kg`, `+21.2%`). The structural spatial spread between `Dantokpa` (`267.4 XOF/kg`) and wholesale hub `Glazoué` (`167.8 XOF/kg`) is **`+99.6 XOF/kg` (`+59.4%`)**.
-- **`Tomatoes` (`43` Tier-1 markets, Max/Min Market Mean Ratio = `6.33x`, Cross-Market CV = `33.8%`):**
-  - **Lowest-Cost Markets:** `Bassila` (`217.7 XOF/kg`, median `200.0 XOF/kg`, `-55.7%`), `Dasso` (`301.9 XOF/kg`, `-38.6%`), `Bembèrèkè` (`339.6 XOF/kg`, `-30.9%`), and `Bohicon` (`373.3 XOF/kg`, `-24.1%`).
-  - **Major Urban & Deficit Markets:** `Parakou` (`421.0 XOF/kg`), `Malanville (CBM)` (`429.6 XOF/kg`), `Dantokpa` (`481.3 XOF/kg`), `Ouando` (`493.2 XOF/kg`), `Glazoué` (`495.5 XOF/kg`), `Djougou` (`599.6 XOF/kg`), `Dassa-Zoumè` (`670.6 XOF/kg`), `Covè` (`749.8 XOF/kg`), and `Tatonnoukon` (`1,377.0 XOF/kg`, median `782.5 XOF/kg`).
-- **`Yam (white)` (`19` Tier-1 markets, Max/Min Market Mean Ratio = `4.07x`, Cross-Market CV = `39.2%`):**
-  - **Lowest-Cost Northern/Central Production Basins:** `Nikki` (`#1/19` at `170.1 XOF/kg`, median `90.0 XOF/kg`, `-58.1%`), `Bembèrèkè` (`186.6 XOF/kg`, `-54.1%`), `Glazoué` (`190.3 XOF/kg`, median `170.0 XOF/kg`, `-53.2%`), `Bassila` (`193.1 XOF/kg`, `-52.5%`), and `Ouesse` (`227.2 XOF/kg`, `-44.1%`).
-  - **Highest-Cost Consumer/Retail Markets:** `Comé` (`503.2 XOF/kg`, `+23.9%`), `Dantokpa` (`562.4 XOF/kg`, median `566.8 XOF/kg`, `+38.4%`), `Natitingou` (`582.0 XOF/kg`, `+43.3%`), `Dassa-Zoumè` (`682.7 XOF/kg`, `+68.1%`), and `Savalou` (`692.7 XOF/kg`, `+70.5%`).
-
----
-
-### 3.4 Quantitative Variety Comparison: `Yam (white)` vs. `Yam` (Exploration-Only)
-*Source script: [`src/analysis/eda.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/eda.py) → [`docs/tables/eda_yam_variety_comparison.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/eda_yam_variety_comparison.md)*
-
-| Grouping | Slice / Market | Concurrent Market-Months | `Yam (white)` Mean (Med) XOF/kg | `Yam` Mean (Med) XOF/kg | Mean Signed Spread (`Yam - Yam white`) | Mean Abs Diff `\|Yam - Yam white\|` | Mean Spread % (`Yam` vs `Yam white`) |
-| :--- | :--- | ---: | :--- | :--- | ---: | ---: | ---: |
-| **Summary** | **All Concurrent Market-Months (`2019–2026`)** | `1,956` | `450.7` (med `408.5`) | `318.4` (med `293.8`) | `-132.3` | `141.3` | `-24.5%` |
-| **Summary** | **Both Tier-1 Markets Concurrent (`14` Shared Markets)** | `1,150` | `439.8` (med `427.9`) | `319.6` (med `300.0`) | `-120.2` | `122.6` | `-24.9%` |
-| By Market | `Dantokpa` (`YW=88m, Y=92m`) | `88` | `562.4` (med `566.8`) | `358.4` (med `317.2`) | `-204.0` | `207.9` | `-34.2%` |
-| By Market | `Glazoué` (`YW=89m, Y=86m`) | `85` | `192.9` (med `170.0`) | `155.4` (med `129.0`) | `-37.5` | `40.8` | `-19.9%` |
-| By Market | `Savalou` (`YW=84m, Y=85m`) | `84` | `692.7` (med `650.0`) | `475.0` (med `487.5`) | `-217.7` | `219.7` | `-30.0%` |
-| By Market | `Bohicon` (`YW=85m, Y=82m`) | `81` | `456.1` (med `425.0`) | `270.8` (med `256.2`) | `-185.3` | `185.3` | `-39.7%` |
-| By Market | `Natitingou` (`YW=84m, Y=80m`) | `74` | `634.6` (med `661.9`) | `398.8` (med `375.2`) | `-235.8` | `238.8` | `-34.6%` |
-| By Market | `Ouando` (`YW=82m, Y=83m`) | `78` | `452.6` (med `440.6`) | `296.1` (med `300.0`) | `-156.6` | `156.6` | `-35.4%` |
-| Non-Overlapping Hub | `Djougou` (`YW=86m, Y=1m`) | `0` | `338.5` (med `295.0`) | Only `1` obs (`2020-08`) | `-` | `-` | `-` |
-| Non-Overlapping Hub | `Nikki` (`YW=85m, Y=1m`) | `0` | `170.1` (med `90.0`) | Only `1` obs (`2020-08`) | `-` | `-` | `-` |
-
-- Across `1,956` concurrent `(market, month)` pairs in `2019–2026`, `Yam (white)` averages **`450.7 XOF/kg`** (median `408.5 XOF/kg`) vs **`318.4 XOF/kg`** (median `293.8 XOF/kg`) for generic `Yam`, a mean absolute difference of **`141.3 XOF/kg`** (`122.6 XOF/kg` across the `1,150` concurrent observations in the `14` shared Tier-1 markets). This confirms Decision 1: merging the two WFP series would introduce severe artificial jumps whenever one variety is unrecorded.
-
----
-
-### 3.5 Empirical Candidate Shocks & Synchronized Abrupt Price Changes (`2019–2026`)
-*Source script: [`src/analysis/eda.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/eda.py) → [`docs/tables/eda_abrupt_changes.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/eda_abrupt_changes.md) & [`src/clean/clean_prices.py`](file:///home/brian/projets-ds/benin-agromarket/src/clean/clean_prices.py) → [`docs/tables/cleaning_audit_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/cleaning_audit_summary.md) | Visualized in [`docs/figures/fig4_abrupt_changes_and_outliers.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig4_abrupt_changes_and_outliers.svg)*
-
-- **Strict Empirical Reporting (Decision 3):** All candidate shocks and abrupt changes in [`docs/tables/eda_abrupt_changes.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/eda_abrupt_changes.md) (`43` synchronized multi-market surge/drop or jump-cluster months) are identified purely from price data (`>= 25%` of active Tier-1 markets surging `>= +35%` MoM or dropping `<= -30%` MoM, national Tier-1 median shifting `>= 25%` MoM, or `>= 3` markets triggering `is_outlier_jump = 1` in the same month). **No unverified external causes (e.g., border closures, policy changes, or weather shocks) are asserted.**
-- **Empirical Highlights from [`docs/tables/eda_abrupt_changes.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/eda_abrupt_changes.md):**
-  - **`Tomatoes` (`37` synchronized multi-market surge/drop events; `288` jump outliers `|ΔlnP| > ln2` and `44` level outliers `|z| > 3.5` across `2019–2026`):**
-    - Largest synchronized upward surges: **`2020-10`** (`22/42` Tier-1 markets [`52.4%`] surging `>= +35%` MoM; Tier-1 median `+47.6%` to `314 XOF/kg`; `10` jump outliers led by `Covè` `+1204%` and `Kalalé` `+282%`), **`2021-12`** (`16/43` markets [`37.2%`] surging `>= +35%`; median `+33.3%` to `400 XOF/kg`), **`2023-04`** (`15/43` markets [`34.9%`] surging `>= +35%`; median `+25.5%` to `625 XOF/kg`), **`2024-05` & `2024-06`** (`13/43` [`30.2%`] and `11/42` [`26.2%`] markets surging `>= +35%`; Tier-1 median reaching **`680 XOF/kg` (`+27.5%`) in `2024-05`** and **`862 XOF/kg` (`+26.7%`, mean `919 XOF/kg`) in `2024-06`**), and **`2025-04`** (`12/43` markets [`27.9%`]; median `+30.8%` to `675 XOF/kg`).
-    - Largest synchronized harvest drops: **`2020-08`** (`28/43` markets [`65.1%`] dropping `<= -30%` MoM; median `-50.7%` to `206 XOF/kg`; `20` jump outliers), **`2021-08`** (`26/43` markets [`60.5%`] dropping `<= -30%`; median `-45.2%` to `346 XOF/kg`; `16` jump outliers), **`2024-08`** (`25/43` markets [`58.1%`] dropping `<= -30%`; median `-32.1%` to `425 XOF/kg`), and **`2025-08`** (`21/42` markets [`50.0%`] dropping `<= -30%`; median `-32.1%` to `374 XOF/kg`).
-  - **`Yam (white)` (`6` synchronized multi-market surge/drop events; `43` jump outliers and `113` level outliers):**
-    - Notable synchronized shifts include **`2019-09`** (`5/19` markets [`26.3%`] dropping `<= -30%` MoM; median `-20.0%` to `230 XOF/kg`), **`2020-01`** (Tier-1 median surging **`+49.3%` MoM** from `175` to `261 XOF/kg`), and **`2021-09`** (`7/19` markets [`36.8%`] dropping `<= -30%` MoM; median `-17.5%` to `412 XOF/kg`).
-  - **`Maize (white)` (`14` market-level jump outliers `|ΔlnP| > ln2` and `32` level outliers `|z| > 3.5` in [`docs/tables/cleaning_audit_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/cleaning_audit_summary.md)):**
-    - Unlike perishable tomatoes, `Maize (white)` never had $\ge 25\%$ of Tier-1 markets jumping $\ge +35\%$ in a single month (`0` rows under the $\ge 25\%$ threshold in [`docs/tables/eda_abrupt_changes.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/eda_abrupt_changes.md)), reflecting storable grain buffering; its multi-year surge (`2021–2024`) unfolded through cumulative monthly steps rather than single-month nationwide doublings.
-
----
-
-### 3.6 Lagged Agroclimatic Correlations (`NASA POWER` vs. Detrended Log Price Anomalies)
-*Source script: [`src/analysis/eda.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/eda.py) → [`docs/tables/eda_weather_lag_correlations.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/eda_weather_lag_correlations.md) | Visualized in [`docs/figures/fig5_weather_lag_relationships.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig5_weather_lag_relationships.svg)*
-
-| Product | Agro-Ecological Zone | `precip_lag3m` (`t-3`) Pearson `r` (Spearman `rho`) | `precip_roll3m_lag1` (`t-3..t-1`) Pearson `r` (`rho`) | `t2m_lag1m` (`t-1`) Pearson `r` (`rho`) | `t2m_max_lag1m` (`t-1`) Pearson `r` (`rho`) | `rh2m_lag1m` (`t-1`) Pearson `r` (`rho`) |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **`Maize (white)`** | **All Tier-1 (`4,052` pairs)** | **`-0.243` (`-0.247`)** | `-0.142` (`-0.148`) | **`+0.233` (`+0.300`)** | `+0.147` (`+0.177`) | `+0.007` (`-0.065`) |
-| `Maize (white)` | South (`<7.5°N`, `2,292` pairs) | `-0.263` (`-0.275`) | `-0.233` (`-0.229`) | **`+0.400` (`+0.401`)** | `+0.277` (`+0.266`) | `-0.132` (`-0.165`) |
-| `Maize (white)` | Center (`7.5°–9.5°N`, `583` pairs) | **`-0.320` (`-0.361`)** | `-0.259` (`-0.258`) | `+0.308` (`+0.330`) | `+0.269` (`+0.280`) | `-0.088` (`-0.120`) |
-| `Maize (white)` | North (`>=9.5°N`, `1,177` pairs) | `-0.196` (`-0.168`) | `-0.016` (`+0.000`) | `+0.146` (`+0.180`) | `+0.065` (`+0.066`) | `+0.087` (`+0.101`) |
-| **`Tomatoes`** | **All Tier-1 (`3,580` pairs)** | **`-0.384` (`-0.422`)** | **`-0.340` (`-0.357`)** | **`+0.360` (`+0.476`)** | `+0.287` (`+0.359`) | `-0.103` (`-0.267`) |
-| `Tomatoes` | South (`<7.5°N`, `2,212` pairs) | `-0.399` (`-0.469`) | `-0.376` (`-0.415`) | **`+0.521` (`+0.543`)** | `+0.375` (`+0.414`) | `-0.258` (`-0.343`) |
-| `Tomatoes` | Center (`7.5°–9.5°N`, `516` pairs) | **`-0.470` (`-0.487`)** | **`-0.473` (`-0.471`)** | `+0.286` (`+0.341`) | `+0.357` (`+0.438`) | `-0.221` (`-0.352`) |
-| `Tomatoes` | North (`>=9.5°N`, `852` pairs) | `-0.332` (`-0.320`) | `-0.251` (`-0.189`) | `+0.324` (`+0.416`) | `+0.328` (`+0.373`) | `-0.052` (`-0.132`) |
-| **`Yam (white)`** | **All Tier-1 (`1,581` pairs)** | **`-0.245` (`-0.246`)** | `-0.092` (`-0.064`) | **`+0.186` (`+0.220`)** | `+0.123` (`+0.126`) | `+0.044` (`+0.019`) |
-| `Yam (white)` | Center (`7.5°–9.5°N`, `410` pairs) | `-0.284` (`-0.301`) | `-0.169` (`-0.156`) | `+0.155` (`+0.199`) | `+0.115` (`+0.137`) | `+0.025` (`+0.003`) |
-| `Yam (white)` | North (`>=9.5°N`, `503` pairs) | **`-0.311` (`-0.311`)** | `-0.146` (`-0.129`) | **`+0.268` (`+0.368`)** | `+0.212` (`+0.269`) | `+0.051` (`-0.014`) |
-
-**Key Insights ([`docs/figures/fig5_weather_lag_relationships.svg`](file:///home/brian/projets-ds/benin-agromarket/docs/figures/fig5_weather_lag_relationships.svg)):**
-- **Strong Negative 3-Month Lagged Rainfall Correlation (`precip_lag3m`):** Across all three crops, rainfall 3 months prior (`t-3`) correlates negatively with detrended seasonal price anomalies (`r = -0.384`, `rho = -0.422` for `Tomatoes`; `r = -0.245` for `Yam (white)`; `r = -0.243` for `Maize (white)`), reflecting the agronomic growth-to-harvest lag (~90 days from vegetative rainfall peak to market harvest arrival).
-- **Positive Lagged Temperature Correlation (`t2m_lag1m`):** High temperatures in `t-1` (late dry season / onset of rains) coincide with lean-season scarcity (`r = +0.521`, `rho = +0.543` for `Tomatoes` in the South; `r = +0.400` for `Maize (white)` in the South).
-- **Important Modeling Caveat for Phase 2 (`precip_anom_z_lag1m`):** While raw lagged rainfall/temperature capture the agro-climatic seasonal cycle, the deseasonalized rainfall z-score (`precip_anom_z_lag1m`, standardized against `2006–2018` monthly means) has a much smaller linear correlation with monthly price anomalies (`r = +0.092` for `Maize (white)`, `r = +0.047` for `Tomatoes`, `r = +0.011` for `Yam (white)`). Therefore, Phase 2 must rigorously test via ablation whether NASA POWER features add predictive power beyond deterministic calendar seasonality (`month` + agro-ecological zone).
-
----
-
-## 4. Proposed Plan & Open Questions for Phase 2 (Modeling)
-
-Per `AGENTS.md` (*"At the end of each phase, STOP and write a summary in docs/STATUS.md... Do not start the next phase until the owner replies"* and *"Ask before installing any package"*), we stop here and request your confirmation on the following choices before starting **Phase 2**:
-
-1. **Permission to Install Scientific/ML Packages in `.venv` (`requirements.txt`):**
-   - Currently `.venv` contains only the Python 3.12 standard library.
-   - May we install standard forecasting dependencies (`numpy`, `scipy`, `pandas`, `scikit-learn`, `statsmodels`, `lightgbm`) into `.venv` and pin exact versions in `requirements.txt`? (Alternatively, we can also implement baselines, Holt-Winters / ETS, Ridge/Linear autoregressive models, and tree ensembles directly or with minimal dependencies if you prefer a lightweight stack.)
-2. **Rolling-Origin Evaluation & Forecast Horizons ($h = 1, 2, 3$ months ahead):**
-   - We propose evaluating multi-step horizons **$h \in \{1, 2, 3\}$ months ahead** using **expanding-window rolling-origin cross-validation** across two historical backtest folds (e.g., **Fold 1:** `2023-10..2024-09` [`12` origins] and **Fold 2 / Holdout Test:** `2025-10..2026-09` [`12` origins]), reporting **MAE, RMSE, and MAPE per product and per market**, plus **80% and 90% empirical conformal / quantile prediction interval coverage**.
-3. **Model Hierarchy & Honest Baseline Comparison:**
-   - **Step 1 — Baselines:** (a) `Naive_LastValue` ($\hat{y}_{t+h|t} = y_t$), (b) `Seasonal_Naive_12m` ($\hat{y}_{t+h|t} = y_{t+h-12}$), and (c) `Seasonal_Ratio_Naive` (local level $y_t$ scaled by the market/zone seasonal index ratio from training data).
-   - **Step 2 — Classical Time-Series Models:** Per-market / hierarchical **ETS (Holt-Winters additive/multiplicative on $\log P$)** and **SARIMA / Ridge Autoregressive (`ARX(1, 2, 12)` + Fourier seasonality)**.
-   - **Step 3 — Gradient Boosting (`LightGBM` / `HistGradientBoostingRegressor`) with Weather Ablation:** Pooled panel model with market fixed effects/quantiles, autoregressive lags, seasonal Fourier features, and an explicit ablation with vs. without lagged NASA POWER features (`precip_lag1m..3m`, `precip_anom_z_lag1m`, `t2m_lag1m`). Any model that fails to beat the baselines will be reported transparently.
+1. **Data Contract Ready ([`web/public/data/forecasts.json`](file:///home/brian/projets-ds/benin-agromarket/web/public/data/forecasts.json)):**
+   - Contains all `111` Tier-1 series with historical observations, `2025-10..2026-09` out-of-sample backtest trajectories, `2026-10..2026-12` (`h=1, 2, 3`) point forecasts and `80%`/`90%` prediction intervals, per-market and per-product accuracy metrics (`MAE`, `RMSE`, `MAPE`, interval coverage), and explicit French + English coverage explanations for all `51` active Benin markets.
+2. **Phase 3 UI & Design Plan (`BRIEF.md`):**
+   - Build a fast, mobile-first, accessible French/English web application following the editorial/terracotta design brief in `BRIEF.md` with four views:
+     1. **Vue d'ensemble (Overview & Benin Map):** Interactive market map by agro-ecological zone, current staple prices (`2026-09`), and 3-month ahead signals.
+     2. **Explorateur de Marché (Market & Product Explorer):** Full historical trajectory (`2007–2026` with explicit `2017–2018` hiatus break), seasonal profile by latitude zone, and variety comparison (`Yam (white)` vs `Yam`).
+     3. **Prévisions & Intervalles (Forecasts & Decision Tool):** Multi-horizon fan chart (`h=1, 2, 3` with `80%` and `90%` bands), recent out-of-sample backtest overlay, and market-specific accuracy badge.
+     4. **Méthode, Modèles & Limites (Method, Models & Honest Limits):** Interactive model comparison table (`Baselines` vs `ETS/SARIMAX/Ridge_ARX` vs `HGBR`), NASA POWER weather ablation results, operational limits, and mandatory `CC BY-IGO 3.0` / NASA / FAOSTAT attributions.

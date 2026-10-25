@@ -1,0 +1,37 @@
+Product,Split,Dimension,Slice / Subgroup,Eval Pairs,Mean Actual (XOF/kg),MAE (XOF/kg),RMSE (XOF/kg),MAPE %,Skill vs SNaive12m,80% PI Coverage,90% PI Coverage
+Maize (white),Holdout Test (2025-10..2026-09),Agro-Ecological Zone,South (<7.5°N),1002,169.0,19.82,26.88,12.54%,+68.2%,79.8%,89.8%
+Maize (white),Holdout Test (2025-10..2026-09),Agro-Ecological Zone,Center (7.5°–9.5°N),252,129.7,15.92,20.76,13.32%,+74.5%,85.3%,92.5%
+Maize (white),Holdout Test (2025-10..2026-09),Agro-Ecological Zone,North (>=9.5°N),495,118.8,17.07,23.59,15.47%,+74.7%,79.4%,89.3%
+Maize (white),Holdout Test (2025-10..2026-09),Seasonal Regime,Harvest / Low-Price Season,588,149.3,18.83,25.53,14.25%,+64.2%,78.4%,88.4%
+Maize (white),Holdout Test (2025-10..2026-09),Seasonal Regime,Lean / High-Price Season,732,146.4,17.50,24.02,12.57%,+73.9%,82.1%,91.5%
+Maize (white),Holdout Test (2025-10..2026-09),Seasonal Regime,Transition (Post-Harvest/Dry),429,153.6,19.67,26.55,13.98%,+73.3%,80.7%,89.7%
+Maize (white),Validation (2022-01..2025-09),Agro-Ecological Zone,South (<7.5°N),3600,237.6,27.00,37.21,11.56%,+46.6%,77.0%,87.0%
+Maize (white),Validation (2022-01..2025-09),Agro-Ecological Zone,Center (7.5°–9.5°N),897,211.0,27.82,38.77,13.68%,+40.7%,73.1%,83.3%
+Maize (white),Validation (2022-01..2025-09),Agro-Ecological Zone,North (>=9.5°N),1803,212.1,30.65,43.96,15.81%,+44.2%,74.8%,84.0%
+Maize (white),Validation (2022-01..2025-09),Seasonal Regime,Harvest / Low-Price Season,1908,204.5,29.07,40.95,15.28%,+22.3%,71.1%,82.4%
+Maize (white),Validation (2022-01..2025-09),Seasonal Regime,Lean / High-Price Season,2931,241.0,30.23,41.98,12.96%,+52.5%,74.8%,84.5%
+Maize (white),Validation (2022-01..2025-09),Seasonal Regime,Transition (Post-Harvest/Dry),1461,226.1,22.81,31.54,10.44%,+48.6%,83.9%,91.8%
+Tomatoes,Holdout Test (2025-10..2026-09),Agro-Ecological Zone,South (<7.5°N),966,591.8,157.95,353.49,27.81%,+14.8%,84.7%,92.9%
+Tomatoes,Holdout Test (2025-10..2026-09),Agro-Ecological Zone,Center (7.5°–9.5°N),216,546.4,106.03,187.32,16.98%,+26.3%,82.9%,89.8%
+Tomatoes,Holdout Test (2025-10..2026-09),Agro-Ecological Zone,North (>=9.5°N),357,558.5,107.70,141.85,20.72%,+34.8%,87.1%,93.3%
+Tomatoes,Holdout Test (2025-10..2026-09),Seasonal Regime,Harvest / Low-Price Season,516,451.2,120.15,301.20,23.63%,+15.0%,81.8%,91.3%
+Tomatoes,Holdout Test (2025-10..2026-09),Seasonal Regime,Lean / High-Price Season,513,745.5,168.66,279.45,25.12%,+17.7%,87.9%,94.3%
+Tomatoes,Holdout Test (2025-10..2026-09),Seasonal Regime,Transition (Dry/Irrigated),510,537.0,128.26,308.69,25.21%,+28.1%,85.3%,92.0%
+Tomatoes,Validation (2022-01..2025-09),Agro-Ecological Zone,South (<7.5°N),3441,514.0,140.89,256.94,29.13%,+28.3%,82.9%,90.7%
+Tomatoes,Validation (2022-01..2025-09),Agro-Ecological Zone,Center (7.5°–9.5°N),774,506.7,105.37,155.67,22.17%,+29.5%,84.2%,90.6%
+Tomatoes,Validation (2022-01..2025-09),Agro-Ecological Zone,North (>=9.5°N),1287,547.1,136.48,224.52,24.05%,+21.2%,80.4%,89.0%
+Tomatoes,Validation (2022-01..2025-09),Seasonal Regime,Harvest / Low-Price Season,1797,376.8,105.63,199.58,29.87%,+20.5%,78.9%,87.9%
+Tomatoes,Validation (2022-01..2025-09),Seasonal Regime,Lean / High-Price Season,2058,673.5,180.40,287.96,27.50%,+30.5%,82.1%,89.6%
+Tomatoes,Validation (2022-01..2025-09),Seasonal Regime,Transition (Dry/Irrigated),1647,486.9,109.87,204.04,23.14%,+25.3%,86.9%,93.8%
+Yam (white),Holdout Test (2025-10..2026-09),Agro-Ecological Zone,South (<7.5°N),288,442.0,50.88,68.91,12.06%,+26.2%,79.9%,86.5%
+Yam (white),Holdout Test (2025-10..2026-09),Agro-Ecological Zone,Center (7.5°–9.5°N),177,411.9,73.09,121.91,16.40%,+51.1%,70.1%,83.6%
+Yam (white),Holdout Test (2025-10..2026-09),Agro-Ecological Zone,North (>=9.5°N),213,392.2,51.88,75.28,15.53%,+39.5%,77.0%,88.3%
+Yam (white),Holdout Test (2025-10..2026-09),Seasonal Regime,Harvest / Low-Price Season,228,392.8,69.07,105.86,18.09%,+20.4%,67.5%,78.1%
+Yam (white),Holdout Test (2025-10..2026-09),Seasonal Regime,Lean / High-Price Season,225,469.5,50.22,80.21,10.54%,+46.8%,84.0%,92.4%
+Yam (white),Holdout Test (2025-10..2026-09),Seasonal Regime,Transition (Storage),225,393.6,51.53,73.11,14.17%,+50.8%,77.8%,88.4%
+Yam (white),Validation (2022-01..2025-09),Agro-Ecological Zone,South (<7.5°N),1023,494.3,61.40,88.39,12.62%,+32.5%,80.4%,89.7%
+Yam (white),Validation (2022-01..2025-09),Agro-Ecological Zone,Center (7.5°–9.5°N),621,435.2,54.89,106.66,11.67%,+30.8%,81.6%,89.4%
+Yam (white),Validation (2022-01..2025-09),Agro-Ecological Zone,North (>=9.5°N),756,401.2,59.31,105.22,14.17%,+37.3%,81.0%,88.5%
+Yam (white),Validation (2022-01..2025-09),Seasonal Regime,Harvest / Low-Price Season,723,397.0,55.82,89.42,14.34%,+19.1%,76.2%,85.5%
+Yam (white),Validation (2022-01..2025-09),Seasonal Regime,Lean / High-Price Season,882,511.8,65.36,108.06,11.79%,+40.7%,81.7%,89.7%
+Yam (white),Validation (2022-01..2025-09),Seasonal Regime,Transition (Storage),795,428.7,55.01,96.15,12.71%,+34.4%,84.2%,92.2%

@@ -4,3 +4,6 @@ __pycache__/
 node_modules/
 data/raw/
 .ipynb_checkpoints/
+archive_local/
+data/processed/phase2_backtest_predictions.csv
+data/processed/phase2_future_forecasts_all_models.csv

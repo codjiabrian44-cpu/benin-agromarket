@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 620" width="1280" height="620" style="background:#FAF7F0;font-family:Inter,system-ui,-apple-system,sans-serif;">
+<rect x="0" y="0" width="1280" height="620" fill="#FAF7F0"/>
+<text x="36" y="42" font-size="21" font-weight="700" fill="#1E1B18">Figure 9 — Prediction Interval Calibration, NASA POWER Weather Ablation &amp; Seasonal Regime Accuracy</text>
+<text x="36" y="66" font-size="13" fill="#5C554E">Diagnostic audit of empirical 80%/90% interval coverage (Panel 9A), lagged weather feature ablation (Panel 9B), and seasonal regime MAPE (Panel 9C)</text>
+<rect x="36" y="86" width="392" height="496" rx="8" fill="#FFFFFF" stroke="#D5CBB8" stroke-width="1.2"/>
+<text x="50" y="110" font-size="13.5" font-weight="700" fill="#1E1B18">Panel 9A: Champion Interval Calibration (Holdout Test)</text>
+<text x="50" y="128" font-size="10.5" fill="#5C554E">Empirical coverage (%) vs 80.0% and 90.0% nominal targets</text>
+<line x1="315.0" y1="148" x2="315.0" y2="540" stroke="#B84A27" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="315.0" y="144" text-anchor="middle" font-size="9.5" font-weight="700" fill="#B84A27">80%</text>
+<line x1="335.5" y1="148" x2="335.5" y2="540" stroke="#284B63" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="335.5" y="144" text-anchor="middle" font-size="9.5" font-weight="700" fill="#284B63">90%</text>
+<line x1="151" y1="175.4" x2="356" y2="175.4" stroke="#E6DEC8" stroke-width="0.8"/>
+<text x="143" y="178.9" text-anchor="end" font-size="10.5" font-weight="600" fill="#1E1B18">Maize h=1m</text>
+<line x1="324.0" y1="175.4" x2="341.2" y2="175.4" stroke="#5C554E" stroke-width="2"/>
+<circle cx="324.0" cy="175.4" r="4.5" fill="#B84A27"/>
+<circle cx="341.2" cy="175.4" r="4.5" fill="#284B63"/>
+<text x="362" y="178.9" font-size="9.5" fill="#1E1B18" font-weight="600">84.4% / 92.8%</text>
+<line x1="151" y1="218.3" x2="356" y2="218.3" stroke="#E6DEC8" stroke-width="0.8"/>
+<text x="143" y="221.8" text-anchor="end" font-size="10.5" font-weight="600" fill="#1E1B18">Maize h=2m</text>
+<line x1="311.3" y1="218.3" x2="332.8" y2="218.3" stroke="#5C554E" stroke-width="2"/>
+<circle cx="311.3" cy="218.3" r="4.5" fill="#B84A27"/>
+<circle cx="332.8" cy="218.3" r="4.5" fill="#284B63"/>
+<text x="362" y="221.8" font-size="9.5" fill="#1E1B18" font-weight="600">78.2% / 88.7%</text>
+<line x1="151" y1="261.2" x2="356" y2="261.2" stroke="#E6DEC8" stroke-width="0.8"/>
+<text x="143" y="264.7" text-anchor="end" font-size="10.5" font-weight="600" fill="#1E1B18">Maize h=3m</text>
+<line x1="312.7" y1="261.2" x2="332.8" y2="261.2" stroke="#5C554E" stroke-width="2"/>
+<circle cx="312.7" cy="261.2" r="4.5" fill="#B84A27"/>
+<circle cx="332.8" cy="261.2" r="4.5" fill="#284B63"/>
+<text x="362" y="264.7" font-size="9.5" fill="#1E1B18" font-weight="600">78.9% / 88.7%</text>
+<line x1="151" y1="304.1" x2="356" y2="304.1" stroke="#E6DEC8" stroke-width="0.8"/>
+<text x="143" y="307.6" text-anchor="end" font-size="10.5" font-weight="600" fill="#1E1B18">Tomatoes h=1m</text>
+<line x1="325.2" y1="304.1" x2="339.2" y2="304.1" stroke="#5C554E" stroke-width="2"/>
+<circle cx="325.2" cy="304.1" r="4.5" fill="#B84A27"/>
+<circle cx="339.2" cy="304.1" r="4.5" fill="#284B63"/>
+<text x="362" y="307.6" font-size="9.5" fill="#1E1B18" font-weight="600">85.0% / 91.8%</text>
+<line x1="151" y1="347.0" x2="356" y2="347.0" stroke="#E6DEC8" stroke-width="0.8"/>
+<text x="143" y="350.5" text-anchor="end" font-size="10.5" font-weight="600" fill="#1E1B18">Tomatoes h=2m</text>
+<line x1="324.4" y1="347.0" x2="342.0" y2="347.0" stroke="#5C554E" stroke-width="2"/>
+<circle cx="324.4" cy="347.0" r="4.5" fill="#B84A27"/>
+<circle cx="342.0" cy="347.0" r="4.5" fill="#284B63"/>
+<text x="362" y="350.5" font-size="9.5" fill="#1E1B18" font-weight="600">84.6% / 93.2%</text>
+<line x1="151" y1="389.9" x2="356" y2="389.9" stroke="#E6DEC8" stroke-width="0.8"/>
+<text x="143" y="393.4" text-anchor="end" font-size="10.5" font-weight="600" fill="#1E1B18">Tomatoes h=3m</text>
+<line x1="326.0" y1="389.9" x2="340.8" y2="389.9" stroke="#5C554E" stroke-width="2"/>
+<circle cx="326.0" cy="389.9" r="4.5" fill="#B84A27"/>
+<circle cx="340.8" cy="389.9" r="4.5" fill="#284B63"/>
+<text x="362" y="393.4" font-size="9.5" fill="#1E1B18" font-weight="600">85.4% / 92.6%</text>
+<line x1="151" y1="432.8" x2="356" y2="432.8" stroke="#E6DEC8" stroke-width="0.8"/>
+<text x="143" y="436.3" text-anchor="end" font-size="10.5" font-weight="600" fill="#1E1B18">Yam h=1m</text>
+<line x1="314.3" y1="432.8" x2="337.0" y2="432.8" stroke="#5C554E" stroke-width="2"/>
+<circle cx="314.3" cy="432.8" r="4.5" fill="#B84A27"/>
+<circle cx="337.0" cy="432.8" r="4.5" fill="#284B63"/>
+<text x="362" y="436.3" font-size="9.5" fill="#1E1B18" font-weight="600">79.6% / 90.7%</text>
+<line x1="151" y1="475.7" x2="356" y2="475.7" stroke="#E6DEC8" stroke-width="0.8"/>
+<text x="143" y="479.2" text-anchor="end" font-size="10.5" font-weight="600" fill="#1E1B18">Yam h=2m</text>
+<line x1="311.6" y1="475.7" x2="328.8" y2="475.7" stroke="#5C554E" stroke-width="2"/>
+<circle cx="311.6" cy="475.7" r="4.5" fill="#B84A27"/>
+<circle cx="328.8" cy="475.7" r="4.5" fill="#284B63"/>
+<text x="362" y="479.2" font-size="9.5" fill="#1E1B18" font-weight="600">78.3% / 86.7%</text>
+<line x1="151" y1="518.6" x2="356" y2="518.6" stroke="#E6DEC8" stroke-width="0.8"/>
+<text x="143" y="522.1" text-anchor="end" font-size="10.5" font-weight="600" fill="#1E1B18">Yam h=3m</text>
+<line x1="297.0" y1="518.6" x2="317.9" y2="518.6" stroke="#5C554E" stroke-width="2"/>
+<circle cx="297.0" cy="518.6" r="4.5" fill="#B84A27"/>
+<circle cx="317.9" cy="518.6" r="4.5" fill="#284B63"/>
+<text x="362" y="522.1" font-size="9.5" fill="#1E1B18" font-weight="600">71.2% / 81.4%</text>
+<rect x="444" y="86" width="392" height="496" rx="8" fill="#FFFFFF" stroke="#D5CBB8" stroke-width="1.2"/>
+<text x="458" y="110" font-size="13.5" font-weight="700" fill="#1E1B18">Panel 9B: Weather Ablation (HGBR With vs No Weather)</text>
+<text x="458" y="128" font-size="10.5" fill="#5C554E">Relative MAE change (%) from adding lagged NASA POWER features</text>
+<line x1="669.5" y1="148" x2="669.5" y2="540" stroke="#1E1B18" stroke-width="1.3"/>
+<text x="669.5" y="144" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1E1B18">0.0% (Neutral)</text>
+<text x="551" y="168.2" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Maize Val h=1m</text>
+<rect x="649.2" y="160.2" width="20.3" height="9" rx="1.5" fill="#A4243B" fill-opacity="0.85"/>
+<text x="766" y="168.2" font-size="9" fill="#A4243B" font-weight="600">-0.72% (+0.1)</text>
+<text x="551" y="189.7" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Maize Val h=2m</text>
+<rect x="669.5" y="181.7" width="4.2" height="9" rx="1.5" fill="#2D6A4F" fill-opacity="0.85"/>
+<text x="766" y="189.7" font-size="9" fill="#2D6A4F" font-weight="600">+0.15% (-0.0)</text>
+<text x="551" y="211.1" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Maize Val h=3m</text>
+<rect x="660.6" y="203.1" width="9.0" height="9" rx="1.5" fill="#A4243B" fill-opacity="0.85"/>
+<text x="766" y="211.1" font-size="9" fill="#A4243B" font-weight="600">-0.32% (+0.1)</text>
+<text x="551" y="232.6" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Maize Test h=1m</text>
+<rect x="610.0" y="224.6" width="59.6" height="9" rx="1.5" fill="#A4243B" fill-opacity="0.85"/>
+<text x="766" y="232.6" font-size="9" fill="#A4243B" font-weight="600">-2.12% (+0.2)</text>
+<text x="551" y="254.0" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Maize Test h=2m</text>
+<rect x="615.9" y="246.0" width="53.6" height="9" rx="1.5" fill="#A4243B" fill-opacity="0.85"/>
+<text x="766" y="254.0" font-size="9" fill="#A4243B" font-weight="600">-1.91% (+0.4)</text>
+<text x="551" y="275.4" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Maize Test h=3m</text>
+<rect x="658.6" y="267.4" width="10.9" height="9" rx="1.5" fill="#A4243B" fill-opacity="0.85"/>
+<text x="766" y="275.4" font-size="9" fill="#A4243B" font-weight="600">-0.39% (+0.1)</text>
+<text x="551" y="296.9" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Tomatoes Val h=1m</text>
+<rect x="657.1" y="288.9" width="12.5" height="9" rx="1.5" fill="#A4243B" fill-opacity="0.85"/>
+<text x="766" y="296.9" font-size="9" fill="#A4243B" font-weight="600">-0.44% (+0.5)</text>
+<text x="551" y="318.3" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Tomatoes Val h=2m</text>
+<rect x="669.5" y="310.3" width="15.9" height="9" rx="1.5" fill="#2D6A4F" fill-opacity="0.85"/>
+<text x="766" y="318.3" font-size="9" fill="#2D6A4F" font-weight="600">+0.57% (-0.8)</text>
+<text x="551" y="339.8" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Tomatoes Val h=3m</text>
+<rect x="666.3" y="331.8" width="3.2" height="9" rx="1.5" fill="#A4243B" fill-opacity="0.85"/>
+<text x="766" y="339.8" font-size="9" fill="#A4243B" font-weight="600">-0.12% (+0.2)</text>
+<text x="551" y="361.2" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Tomatoes Test h=1m</text>
+<rect x="597.4" y="353.2" width="72.1" height="9" rx="1.5" fill="#A4243B" fill-opacity="0.85"/>
+<text x="766" y="361.2" font-size="9" fill="#A4243B" font-weight="600">-2.56% (+2.9)</text>
+<text x="551" y="382.7" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Tomatoes Test h=2m</text>
+<rect x="643.0" y="374.7" width="26.5" height="9" rx="1.5" fill="#A4243B" fill-opacity="0.85"/>
+<text x="766" y="382.7" font-size="9" fill="#A4243B" font-weight="600">-0.94% (+1.3)</text>
+<text x="551" y="404.1" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Tomatoes Test h=3m</text>
+<rect x="669.5" y="396.1" width="26.2" height="9" rx="1.5" fill="#2D6A4F" fill-opacity="0.85"/>
+<text x="766" y="404.1" font-size="9" fill="#2D6A4F" font-weight="600">+0.93% (-1.4)</text>
+<text x="551" y="425.6" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Yam Val h=1m</text>
+<rect x="642.1" y="417.6" width="27.4" height="9" rx="1.5" fill="#A4243B" fill-opacity="0.85"/>
+<text x="766" y="425.6" font-size="9" fill="#A4243B" font-weight="600">-0.97% (+0.4)</text>
+<text x="551" y="447.0" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Yam Val h=2m</text>
+<rect x="669.5" y="439.0" width="4.1" height="9" rx="1.5" fill="#2D6A4F" fill-opacity="0.85"/>
+<text x="766" y="447.0" font-size="9" fill="#2D6A4F" font-weight="600">+0.15% (-0.1)</text>
+<text x="551" y="468.4" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Yam Val h=3m</text>
+<rect x="669.1" y="460.4" width="1.5" height="9" rx="1.5" fill="#A4243B" fill-opacity="0.85"/>
+<text x="766" y="468.4" font-size="9" fill="#A4243B" font-weight="600">-0.02% (+0.0)</text>
+<text x="551" y="489.9" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Yam Test h=1m</text>
+<rect x="612.9" y="481.9" width="56.7" height="9" rx="1.5" fill="#A4243B" fill-opacity="0.85"/>
+<text x="766" y="489.9" font-size="9" fill="#A4243B" font-weight="600">-2.01% (+0.8)</text>
+<text x="551" y="511.3" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Yam Test h=2m</text>
+<rect x="607.0" y="503.3" width="62.6" height="9" rx="1.5" fill="#A4243B" fill-opacity="0.85"/>
+<text x="766" y="511.3" font-size="9" fill="#A4243B" font-weight="600">-2.22% (+1.3)</text>
+<text x="551" y="532.8" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Yam Test h=3m</text>
+<rect x="637.3" y="524.8" width="32.2" height="9" rx="1.5" fill="#A4243B" fill-opacity="0.85"/>
+<text x="766" y="532.8" font-size="9" fill="#A4243B" font-weight="600">-1.15% (+0.8)</text>
+<rect x="852" y="86" width="392" height="496" rx="8" fill="#FFFFFF" stroke="#D5CBB8" stroke-width="1.2"/>
+<text x="866" y="110" font-size="13.5" font-weight="700" fill="#1E1B18">Panel 9C: Error by Seasonal Regime &amp; Zone (Test)</text>
+<text x="866" y="128" font-size="10.5" fill="#5C554E">Champion Holdout Test MAPE (%) and MAE (XOF/kg) across slices</text>
+<text x="969" y="168.2" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Maize — South</text>
+<rect x="977" y="160.2" width="58.0" height="9" rx="1.5" fill="#284B63" fill-opacity="0.85"/>
+<text x="1168" y="168.2" font-size="9" fill="#1E1B18" font-weight="600">12.5% (20 XOF)</text>
+<text x="969" y="189.7" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Maize — Center</text>
+<rect x="977" y="181.7" width="61.6" height="9" rx="1.5" fill="#284B63" fill-opacity="0.85"/>
+<text x="1168" y="189.7" font-size="9" fill="#1E1B18" font-weight="600">13.3% (16 XOF)</text>
+<text x="969" y="211.1" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Maize — North</text>
+<rect x="977" y="203.1" width="71.6" height="9" rx="1.5" fill="#284B63" fill-opacity="0.85"/>
+<text x="1168" y="211.1" font-size="9" fill="#1E1B18" font-weight="600">15.5% (17 XOF)</text>
+<text x="969" y="232.6" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Maize — Harvest</text>
+<rect x="977" y="224.6" width="65.9" height="9" rx="1.5" fill="#C88A1E" fill-opacity="0.85"/>
+<text x="1168" y="232.6" font-size="9" fill="#1E1B18" font-weight="600">14.3% (19 XOF)</text>
+<text x="969" y="254.0" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Maize — Lean</text>
+<rect x="977" y="246.0" width="58.1" height="9" rx="1.5" fill="#C88A1E" fill-opacity="0.85"/>
+<text x="1168" y="254.0" font-size="9" fill="#1E1B18" font-weight="600">12.6% (18 XOF)</text>
+<text x="969" y="275.4" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Maize — Transition</text>
+<rect x="977" y="267.4" width="64.7" height="9" rx="1.5" fill="#C88A1E" fill-opacity="0.85"/>
+<text x="1168" y="275.4" font-size="9" fill="#1E1B18" font-weight="600">14.0% (20 XOF)</text>
+<text x="969" y="296.9" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Tomatoes — South</text>
+<rect x="977" y="288.9" width="128.6" height="9" rx="1.5" fill="#284B63" fill-opacity="0.85"/>
+<text x="1168" y="296.9" font-size="9" fill="#1E1B18" font-weight="600">27.8% (158 XOF)</text>
+<text x="969" y="318.3" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Tomatoes — Center</text>
+<rect x="977" y="310.3" width="78.5" height="9" rx="1.5" fill="#284B63" fill-opacity="0.85"/>
+<text x="1168" y="318.3" font-size="9" fill="#1E1B18" font-weight="600">17.0% (106 XOF)</text>
+<text x="969" y="339.8" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Tomatoes — North</text>
+<rect x="977" y="331.8" width="95.8" height="9" rx="1.5" fill="#284B63" fill-opacity="0.85"/>
+<text x="1168" y="339.8" font-size="9" fill="#1E1B18" font-weight="600">20.7% (108 XOF)</text>
+<text x="969" y="361.2" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Tomatoes — Harvest</text>
+<rect x="977" y="353.2" width="109.3" height="9" rx="1.5" fill="#C88A1E" fill-opacity="0.85"/>
+<text x="1168" y="361.2" font-size="9" fill="#1E1B18" font-weight="600">23.6% (120 XOF)</text>
+<text x="969" y="382.7" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Tomatoes — Lean</text>
+<rect x="977" y="374.7" width="116.2" height="9" rx="1.5" fill="#C88A1E" fill-opacity="0.85"/>
+<text x="1168" y="382.7" font-size="9" fill="#1E1B18" font-weight="600">25.1% (169 XOF)</text>
+<text x="969" y="404.1" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Tomatoes — Transition</text>
+<rect x="977" y="396.1" width="116.6" height="9" rx="1.5" fill="#C88A1E" fill-opacity="0.85"/>
+<text x="1168" y="404.1" font-size="9" fill="#1E1B18" font-weight="600">25.2% (128 XOF)</text>
+<text x="969" y="425.6" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Yam — South</text>
+<rect x="977" y="417.6" width="55.8" height="9" rx="1.5" fill="#284B63" fill-opacity="0.85"/>
+<text x="1168" y="425.6" font-size="9" fill="#1E1B18" font-weight="600">12.1% (51 XOF)</text>
+<text x="969" y="447.0" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Yam — Center</text>
+<rect x="977" y="439.0" width="75.8" height="9" rx="1.5" fill="#284B63" fill-opacity="0.85"/>
+<text x="1168" y="447.0" font-size="9" fill="#1E1B18" font-weight="600">16.4% (73 XOF)</text>
+<text x="969" y="468.4" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Yam — North</text>
+<rect x="977" y="460.4" width="71.8" height="9" rx="1.5" fill="#284B63" fill-opacity="0.85"/>
+<text x="1168" y="468.4" font-size="9" fill="#1E1B18" font-weight="600">15.5% (52 XOF)</text>
+<text x="969" y="489.9" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Yam — Harvest</text>
+<rect x="977" y="481.9" width="83.7" height="9" rx="1.5" fill="#C88A1E" fill-opacity="0.85"/>
+<text x="1168" y="489.9" font-size="9" fill="#1E1B18" font-weight="600">18.1% (69 XOF)</text>
+<text x="969" y="511.3" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Yam — Lean</text>
+<rect x="977" y="503.3" width="48.8" height="9" rx="1.5" fill="#C88A1E" fill-opacity="0.85"/>
+<text x="1168" y="511.3" font-size="9" fill="#1E1B18" font-weight="600">10.5% (50 XOF)</text>
+<text x="969" y="532.8" text-anchor="end" font-size="9.5" font-weight="600" fill="#1E1B18">Yam — Transition</text>
+<rect x="977" y="524.8" width="65.5" height="9" rx="1.5" fill="#C88A1E" fill-opacity="0.85"/>
+<text x="1168" y="532.8" font-size="9" fill="#1E1B18" font-weight="600">14.2% (52 XOF)</text>
+<text x="36" y="608" font-size="11" fill="#5C554E">Source: Generated by src/evaluate/figures.py from data/processed/phase2_backtest_predictions.csv. All numbers computed dynamically at runtime.</text>
+</svg>

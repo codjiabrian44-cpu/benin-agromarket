@@ -15,9 +15,13 @@ from typing import Literal
 PROJECT_ROOT: Path = Path(__file__).resolve().parents[1]
 RAW_DIR: Path = PROJECT_ROOT / "data" / "raw"
 PROCESSED_DIR: Path = PROJECT_ROOT / "data" / "processed"
+PROCESSED_DATA_DIR: Path = PROCESSED_DIR
 DOCS_DIR: Path = PROJECT_ROOT / "docs"
 DOCS_TABLES_DIR: Path = DOCS_DIR / "tables"
+TABLES_DIR: Path = DOCS_TABLES_DIR
 DOCS_FIGURES_DIR: Path = DOCS_DIR / "figures"
+FIGURES_DIR: Path = DOCS_FIGURES_DIR
+MODELS_DIR: Path = PROJECT_ROOT / "models"
 
 WFP_PRICES_RAW_CSV: Path = RAW_DIR / "wfp_food_prices_ben.csv"
 WFP_MARKETS_RAW_CSV: Path = RAW_DIR / "wfp_markets_ben.csv"
