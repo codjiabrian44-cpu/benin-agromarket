@@ -66,3 +66,11 @@ until the owner replies.
 - Never type statistics by hand. Every number in docs/*.md must come from a script in src/ whose output is saved in docs/tables/.
 - Cite the script path next to each table. Regenerate tables whenever the data or the code changes.
 - If a number cannot be produced by a script, do not write it.
+
+## Numbers in figures and labels
+- Numbers inside figure titles, labels and captions must be computed from the data at runtime, never hardcoded in strings.
+- A label must describe exactly the data plotted (same markets, same period).
+
+## No leakage from full-sample diagnostics
+- Never use robust_z, is_outlier_level, is_outlier_jump or any other full-sample diagnostic column as a model input.
+- Any outlier treatment inside a model must be computed strictly within the causal training window of each backtest origin.
