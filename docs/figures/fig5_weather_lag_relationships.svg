@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 720" width="1160" height="720" role="img" aria-label="Figure 5 — Bénin AgroMarket: NASA POWER Agroclimatic Regimes &amp; Lagged Price Anomaly Relationships (2019–2026)">
+  <title>Figure 5 — Bénin AgroMarket: NASA POWER Agroclimatic Regimes &amp; Lagged Price Anomaly Relationships (2019–2026)</title>
+  <desc>Left panel shows monthly MERRA-2 rainfall (PRECTOTCORR) across South, Center, and North Benin vs seasonal price indices; right panel shows lagged correlation profiles.</desc>
+  <style>
+    text { font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif; fill: #1E1E1C; }
+    .fig-title { font-family: "Georgia", "Times New Roman", serif; font-size: 20px; font-weight: bold; fill: #1E1E1C; }
+    .fig-subtitle { font-size: 12.5px; fill: #5C5850; }
+    .panel-title { font-size: 13.5px; font-weight: bold; fill: #1E1E1C; }
+    .axis-label { font-size: 11px; fill: #5C5850; }
+    .tick-label { font-size: 10.5px; fill: #5C5850; }
+    .badge-text { font-size: 10.5px; font-weight: bold; }
+    .note-text { font-size: 10.5px; fill: #5C5850; }
+  </style>
+  <rect x="0" y="0" width="1160" height="720" fill="#FAF7F2" />
+  <text x="40" y="36" class="fig-title">Figure 5 — Cycles agroclimatiques NASA POWER (pluviométrie &amp; température) et corrélations décalées (t-1 à t-3)</text>
+  <text x="40" y="56" class="fig-subtitle">Gauche : cycle mensuel des précipitations (PRECTOTCORR, mm/jour) par zone vs indice saisonnier des prix | Droite : corrélations de Pearson r avec les variables météo décalées</text>
+  <rect x="75.0" y="98.0" width="490.0" height="247.0" fill="#FFFFFF" stroke="#D4CBB8" stroke-width="1.2" />
+  <text x="75.0" y="90.0" class="panel-title">5A. Cycle pluviométrique mensuel NASA POWER (PRECTOTCORR, mm/jour)</text>
+  <line x1="75.0" y1="345.0" x2="565.0" y2="345.0" stroke="#E4DDD0" stroke-width="0.9" />
+  <text x="67.0" y="349.0" text-anchor="end" class="tick-label">0</text>
+  <line x1="75.0" y1="295.6" x2="565.0" y2="295.6" stroke="#E4DDD0" stroke-width="0.9" />
+  <text x="67.0" y="299.6" text-anchor="end" class="tick-label">2</text>
+  <line x1="75.0" y1="246.2" x2="565.0" y2="246.2" stroke="#E4DDD0" stroke-width="0.9" />
+  <text x="67.0" y="250.2" text-anchor="end" class="tick-label">4</text>
+  <line x1="75.0" y1="196.8" x2="565.0" y2="196.8" stroke="#E4DDD0" stroke-width="0.9" />
+  <text x="67.0" y="200.8" text-anchor="end" class="tick-label">6</text>
+  <line x1="75.0" y1="147.4" x2="565.0" y2="147.4" stroke="#E4DDD0" stroke-width="0.9" />
+  <text x="67.0" y="151.4" text-anchor="end" class="tick-label">8</text>
+  <line x1="75.0" y1="98.0" x2="565.0" y2="98.0" stroke="#E4DDD0" stroke-width="0.9" />
+  <text x="67.0" y="102.0" text-anchor="end" class="tick-label">10</text>
+  <text x="75.0" y="361.0" text-anchor="middle" class="tick-label">Jan</text>
+  <text x="119.5" y="361.0" text-anchor="middle" class="tick-label">Feb</text>
+  <text x="164.1" y="361.0" text-anchor="middle" class="tick-label">Mar</text>
+  <text x="208.6" y="361.0" text-anchor="middle" class="tick-label">Apr</text>
+  <text x="253.2" y="361.0" text-anchor="middle" class="tick-label">May</text>
+  <text x="297.7" y="361.0" text-anchor="middle" class="tick-label">Jun</text>
+  <text x="342.3" y="361.0" text-anchor="middle" class="tick-label">Jul</text>
+  <text x="386.8" y="361.0" text-anchor="middle" class="tick-label">Aug</text>
+  <text x="431.4" y="361.0" text-anchor="middle" class="tick-label">Sep</text>
+  <text x="475.9" y="361.0" text-anchor="middle" class="tick-label">Oct</text>
+  <text x="520.5" y="361.0" text-anchor="middle" class="tick-label">Nov</text>
+  <text x="565.0" y="361.0" text-anchor="middle" class="tick-label">Dec</text>
+  <polyline points="75.0,332.1 119.5,318.6 164.1,273.1 208.6,237.4 253.2,221.6 297.7,116.1 342.3,218.7 386.8,259.0 431.4,154.6 475.9,196.7 520.5,292.1 565.0,331.7" fill="none" stroke="#C84B31" stroke-width="2.5" />
+  <polyline points="75.0,337.5 119.5,331.2 164.1,291.3 208.6,260.8 253.2,232.0 297.7,151.9 342.3,172.7 386.8,164.1 431.4,123.1 475.9,182.0 520.5,327.7 565.0,341.8" fill="none" stroke="#D99B26" stroke-width="2.5" />
+  <polyline points="75.0,343.7 119.5,342.4 164.1,315.1 208.6,291.2 253.2,246.8 297.7,161.0 342.3,152.1 386.8,106.4 431.4,138.7 475.9,253.1 520.5,340.0 565.0,345.0" fill="none" stroke="#3A6073" stroke-width="2.5" />
+  <text x="87.0" y="118.0" font-size="10.5" font-weight="bold" fill="#C84B31">South (&lt;7.5°N, Bimodal)</text>
+  <text x="250.0" y="118.0" font-size="10.5" font-weight="bold" fill="#D99B26">Center (7.5°–9.5°N)</text>
+  <text x="400.0" y="118.0" font-size="10.5" font-weight="bold" fill="#3A6073">North (&gt;=9.5°N, Unimodal)</text>
+  <rect x="75.0" y="410.0" width="490.0" height="255.0" fill="#FFFFFF" stroke="#D4CBB8" stroke-width="1.2" />
+  <text x="75.0" y="402.0" class="panel-title">5B. Réponse saisonnière des prix (Indice 100 = moyenne annuelle, Tier-1)</text>
+  <line x1="75.0" y1="665.0" x2="565.0" y2="665.0" stroke="#E4DDD0" stroke-width="0.9" />
+  <text x="67.0" y="669.0" text-anchor="end" class="tick-label">60</text>
+  <line x1="75.0" y1="614.0" x2="565.0" y2="614.0" stroke="#E4DDD0" stroke-width="0.9" />
+  <text x="67.0" y="618.0" text-anchor="end" class="tick-label">80</text>
+  <line x1="75.0" y1="563.0" x2="565.0" y2="563.0" stroke="#1E1E1C" stroke-width="1.4" />
+  <text x="67.0" y="567.0" text-anchor="end" class="tick-label">100</text>
+  <line x1="75.0" y1="512.0" x2="565.0" y2="512.0" stroke="#E4DDD0" stroke-width="0.9" />
+  <text x="67.0" y="516.0" text-anchor="end" class="tick-label">120</text>
+  <line x1="75.0" y1="461.0" x2="565.0" y2="461.0" stroke="#E4DDD0" stroke-width="0.9" />
+  <text x="67.0" y="465.0" text-anchor="end" class="tick-label">140</text>
+  <line x1="75.0" y1="410.0" x2="565.0" y2="410.0" stroke="#E4DDD0" stroke-width="0.9" />
+  <text x="67.0" y="414.0" text-anchor="end" class="tick-label">160</text>
+  <text x="75.0" y="681.0" text-anchor="middle" class="tick-label">Jan</text>
+  <text x="119.5" y="681.0" text-anchor="middle" class="tick-label">Feb</text>
+  <text x="164.1" y="681.0" text-anchor="middle" class="tick-label">Mar</text>
+  <text x="208.6" y="681.0" text-anchor="middle" class="tick-label">Apr</text>
+  <text x="253.2" y="681.0" text-anchor="middle" class="tick-label">May</text>
+  <text x="297.7" y="681.0" text-anchor="middle" class="tick-label">Jun</text>
+  <text x="342.3" y="681.0" text-anchor="middle" class="tick-label">Jul</text>
+  <text x="386.8" y="681.0" text-anchor="middle" class="tick-label">Aug</text>
+  <text x="431.4" y="681.0" text-anchor="middle" class="tick-label">Sep</text>
+  <text x="475.9" y="681.0" text-anchor="middle" class="tick-label">Oct</text>
+  <text x="520.5" y="681.0" text-anchor="middle" class="tick-label">Nov</text>
+  <text x="565.0" y="681.0" text-anchor="middle" class="tick-label">Dec</text>
+  <polyline points="75.0,567.0 119.5,562.5 164.1,557.8 208.6,543.9 253.2,542.3 297.7,545.2 342.3,542.7 386.8,555.4 431.4,573.1 475.9,589.9 520.5,595.8 565.0,580.2" fill="none" stroke="#D99B26" stroke-width="2.5" />
+  <polyline points="75.0,575.3 119.5,560.5 164.1,554.8 208.6,507.9 253.2,461.7 297.7,460.6 342.3,524.1 386.8,615.1 431.4,642.0 475.9,631.9 520.5,625.9 565.0,596.3" fill="none" stroke="#C84B31" stroke-width="2.5" />
+  <polyline points="75.0,585.4 119.5,581.6 164.1,566.5 208.6,554.3 253.2,539.8 297.7,530.2 342.3,507.1 386.8,521.8 431.4,583.4 475.9,601.4 520.5,596.6 565.0,587.8" fill="none" stroke="#2D5A27" stroke-width="2.5" />
+  <text x="87.0" y="430.0" font-size="10.5" font-weight="bold" fill="#D99B26">Maize (white)</text>
+  <text x="210.0" y="430.0" font-size="10.5" font-weight="bold" fill="#C84B31">Tomatoes</text>
+  <text x="310.0" y="430.0" font-size="10.5" font-weight="bold" fill="#2D5A27">Yam (white)</text>
+  <rect x="765.0" y="98.0" width="360.0" height="567.0" fill="#FFFFFF" stroke="#D4CBB8" stroke-width="1.2" />
+  <text x="610.0" y="90.0" class="panel-title">5C. Corrélation de Pearson r (Anomalie saisonnière log-prix vs Météo décalée)</text>
+  <line x1="765.0" y1="98.0" x2="765.0" y2="665.0" stroke="#E4DDD0" stroke-width="0.8" />
+  <text x="765.0" y="681.0" text-anchor="middle" class="tick-label">-0.6</text>
+  <line x1="825.0" y1="98.0" x2="825.0" y2="665.0" stroke="#E4DDD0" stroke-width="0.8" />
+  <text x="825.0" y="681.0" text-anchor="middle" class="tick-label">-0.4</text>
+  <line x1="885.0" y1="98.0" x2="885.0" y2="665.0" stroke="#E4DDD0" stroke-width="0.8" />
+  <text x="885.0" y="681.0" text-anchor="middle" class="tick-label">-0.2</text>
+  <line x1="945.0" y1="98.0" x2="945.0" y2="665.0" stroke="#1E1E1C" stroke-width="1.4" />
+  <text x="945.0" y="681.0" text-anchor="middle" class="tick-label">+0.0</text>
+  <line x1="1005.0" y1="98.0" x2="1005.0" y2="665.0" stroke="#E4DDD0" stroke-width="0.8" />
+  <text x="1005.0" y="681.0" text-anchor="middle" class="tick-label">+0.2</text>
+  <line x1="1065.0" y1="98.0" x2="1065.0" y2="665.0" stroke="#E4DDD0" stroke-width="0.8" />
+  <text x="1065.0" y="681.0" text-anchor="middle" class="tick-label">+0.4</text>
+  <line x1="1125.0" y1="98.0" x2="1125.0" y2="665.0" stroke="#E4DDD0" stroke-width="0.8" />
+  <text x="1125.0" y="681.0" text-anchor="middle" class="tick-label">+0.6</text>
+  <text x="757.0" y="137.4" text-anchor="end" font-size="10.5" font-weight="bold" fill="#1E1E1C">precip_lag1m (t-1)</text>
+  <rect x="945.0" y="114.4" width="12.6" height="10" fill="#D99B26" rx="1.5" />
+  <text x="962.6" y="122.9" text-anchor="start" font-size="9" fill="#1E1E1C">+0.04</text>
+  <rect x="915.6" y="128.4" width="29.4" height="10" fill="#C84B31" rx="1.5" />
+  <text x="910.6" y="136.9" text-anchor="end" font-size="9" fill="#1E1E1C">-0.10</text>
+  <rect x="945.0" y="142.4" width="24.1" height="10" fill="#2D5A27" rx="1.5" />
+  <text x="974.1" y="150.9" text-anchor="start" font-size="9" fill="#1E1E1C">+0.08</text>
+  <text x="757.0" y="208.3" text-anchor="end" font-size="10.5" font-weight="bold" fill="#1E1E1C">precip_lag2m (t-2)</text>
+  <rect x="906.2" y="185.3" width="38.8" height="10" fill="#D99B26" rx="1.5" />
+  <text x="901.2" y="193.8" text-anchor="end" font-size="9" fill="#1E1E1C">-0.13</text>
+  <rect x="853.6" y="199.3" width="91.4" height="10" fill="#C84B31" rx="1.5" />
+  <text x="848.6" y="207.8" text-anchor="end" font-size="9" fill="#1E1E1C">-0.30</text>
+  <rect x="928.9" y="213.3" width="16.1" height="10" fill="#2D5A27" rx="1.5" />
+  <text x="923.9" y="221.8" text-anchor="end" font-size="9" fill="#1E1E1C">-0.05</text>
+  <text x="757.0" y="279.2" text-anchor="end" font-size="10.5" font-weight="bold" fill="#1E1E1C">precip_lag3m (t-3)</text>
+  <rect x="872.0" y="256.2" width="73.0" height="10" fill="#D99B26" rx="1.5" />
+  <text x="867.0" y="264.7" text-anchor="end" font-size="9" fill="#1E1E1C">-0.24</text>
+  <rect x="829.9" y="270.2" width="115.1" height="10" fill="#C84B31" rx="1.5" />
+  <text x="824.9" y="278.7" text-anchor="end" font-size="9" fill="#1E1E1C">-0.38</text>
+  <rect x="871.5" y="284.2" width="73.5" height="10" fill="#2D5A27" rx="1.5" />
+  <text x="866.5" y="292.7" text-anchor="end" font-size="9" fill="#1E1E1C">-0.25</text>
+  <text x="757.0" y="350.1" text-anchor="end" font-size="10.5" font-weight="bold" fill="#1E1E1C">precip_roll3m_lag1</text>
+  <rect x="902.5" y="327.1" width="42.5" height="10" fill="#D99B26" rx="1.5" />
+  <text x="897.5" y="335.6" text-anchor="end" font-size="9" fill="#1E1E1C">-0.14</text>
+  <rect x="843.1" y="341.1" width="101.9" height="10" fill="#C84B31" rx="1.5" />
+  <text x="838.1" y="349.6" text-anchor="end" font-size="9" fill="#1E1E1C">-0.34</text>
+  <rect x="917.4" y="355.1" width="27.6" height="10" fill="#2D5A27" rx="1.5" />
+  <text x="912.4" y="363.6" text-anchor="end" font-size="9" fill="#1E1E1C">-0.09</text>
+  <text x="757.0" y="420.9" text-anchor="end" font-size="10.5" font-weight="bold" fill="#1E1E1C">precip_anom_z_lag1m</text>
+  <rect x="945.0" y="397.9" width="27.5" height="10" fill="#D99B26" rx="1.5" />
+  <text x="977.5" y="406.4" text-anchor="start" font-size="9" fill="#1E1E1C">+0.09</text>
+  <rect x="945.0" y="411.9" width="14.0" height="10" fill="#C84B31" rx="1.5" />
+  <text x="964.0" y="420.4" text-anchor="start" font-size="9" fill="#1E1E1C">+0.05</text>
+  <rect x="945.0" y="425.9" width="3.3" height="10" fill="#2D5A27" rx="1.5" />
+  <text x="953.3" y="434.4" text-anchor="start" font-size="9" fill="#1E1E1C">+0.01</text>
+  <text x="757.0" y="491.8" text-anchor="end" font-size="10.5" font-weight="bold" fill="#1E1E1C">t2m_lag1m (t-1)</text>
+  <rect x="945.0" y="468.8" width="70.0" height="10" fill="#D99B26" rx="1.5" />
+  <text x="1020.0" y="477.3" text-anchor="start" font-size="9" fill="#1E1E1C">+0.23</text>
+  <rect x="945.0" y="482.8" width="107.9" height="10" fill="#C84B31" rx="1.5" />
+  <text x="1057.9" y="491.3" text-anchor="start" font-size="9" fill="#1E1E1C">+0.36</text>
+  <rect x="945.0" y="496.8" width="55.8" height="10" fill="#2D5A27" rx="1.5" />
+  <text x="1005.8" y="505.3" text-anchor="start" font-size="9" fill="#1E1E1C">+0.19</text>
+  <text x="757.0" y="562.7" text-anchor="end" font-size="10.5" font-weight="bold" fill="#1E1E1C">t2m_max_lag1m (t-1)</text>
+  <rect x="945.0" y="539.7" width="44.2" height="10" fill="#D99B26" rx="1.5" />
+  <text x="994.2" y="548.2" text-anchor="start" font-size="9" fill="#1E1E1C">+0.15</text>
+  <rect x="945.0" y="553.7" width="86.1" height="10" fill="#C84B31" rx="1.5" />
+  <text x="1036.1" y="562.2" text-anchor="start" font-size="9" fill="#1E1E1C">+0.29</text>
+  <rect x="945.0" y="567.7" width="37.0" height="10" fill="#2D5A27" rx="1.5" />
+  <text x="987.0" y="576.2" text-anchor="start" font-size="9" fill="#1E1E1C">+0.12</text>
+  <text x="757.0" y="633.6" text-anchor="end" font-size="10.5" font-weight="bold" fill="#1E1E1C">rh2m_lag1m (t-1)</text>
+  <rect x="945.0" y="610.6" width="2.1" height="10" fill="#D99B26" rx="1.5" />
+  <text x="952.1" y="619.1" text-anchor="start" font-size="9" fill="#1E1E1C">+0.01</text>
+  <rect x="914.2" y="624.6" width="30.8" height="10" fill="#C84B31" rx="1.5" />
+  <text x="909.2" y="633.1" text-anchor="end" font-size="9" fill="#1E1E1C">-0.10</text>
+  <rect x="945.0" y="638.6" width="13.2" height="10" fill="#2D5A27" rx="1.5" />
+  <text x="963.2" y="647.1" text-anchor="start" font-size="9" fill="#1E1E1C">+0.04</text>
+  <text x="40" y="704" class="note-text">Source: src/analysis/eda.py → docs/tables/eda_weather_lag_correlations.md (NASA POWER MERRA-2 agroclimatology joined to 2019–2026 Tier-1 markets).</text>
+</svg>

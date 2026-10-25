@@ -1,9 +1,9 @@
 # Data Documentation — Bénin AgroMarket (`docs/DATA.md`)
 
 **Last updated:** 2026-10-25  
-**Phase:** Phase 0 (Data Audit — Completed)
+**Phase:** Phase 1(a) (Data Ingestion & Cleaning Pipeline Complete)
 
-This document inventories every primary and candidate dataset audited for **Bénin AgroMarket** (forecasting staple food prices in Benin: maize, yam, tomato), including exact source URLs, licenses, download dates, verified SHA-256 and MD5 checksums, schemas, coverage statistics, and known limitations.
+All statistics, row counts, coverage metrics, and checksums in this document are produced deterministically by [`src/analysis/coverage.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/coverage.py) and [`src/clean/clean_prices.py`](file:///home/brian/projets-ds/benin-agromarket/src/clean/clean_prices.py) and saved in [`docs/tables/`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/).
 
 ---
 
@@ -19,22 +19,25 @@ This document inventories every primary and candidate dataset audited for **Bén
 - **Publisher / Organization:** World Food Programme (WFP — VAM Economic & Market Analysis)
 - **Upstream Data Sources (per HDX `dataset_source` field):**  
   `CT, FPMA, Government of Benin, Institut National de la Statistique et de l'Analyse Économique (INSAE) via FAO: GIEWS, ONASA, SAGSA, SIMA - Niger`
-- **License:** **CC BY-IGO** — Creative Commons Attribution for Intergovernmental Organisations 3.0 (`http://creativecommons.org/licenses/by/3.0/igo/legalcode`). Permits free sharing and adaptation for any purpose with appropriate attribution to WFP and upstream national partners.
+- **License:** **CC BY-IGO 3.0** — Creative Commons Attribution for Intergovernmental Organisations (`http://creativecommons.org/licenses/by/3.0/igo/legalcode`).
 
 #### Verified Downloaded Resources in `data/raw/`
+*Source script: [`src/analysis/coverage.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/coverage.py) → [`docs/tables/raw_dataset_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/raw_dataset_summary.md)*
+
 | Resource | Local Path | Direct Download URL | Size (Bytes) | Data Rows | SHA-256 Checksum | MD5 Checksum |
 | :--- | :--- | :--- | ---: | ---: | :--- | :--- |
-| **Food Prices CSV** | `data/raw/wfp_food_prices_ben.csv` | `https://data.humdata.org/dataset/66c7d54e-0c3b-45e5-9a46-07ea6f195093/resource/7da1ea0a-56c7-450a-af2c-d477745fc856/download/wfp_food_prices_ben.csv` | `17,567,844` | `146,501` (+1 header) | `535e584050f851b81f1b7523b0f58c6deb9ba5f6a89cd790413bd03f6cb7f4a7` | `a0be1e7b6de7806941d48240915284bc` |
-| **Markets Metadata CSV** | `data/raw/wfp_markets_ben.csv` | `https://data.humdata.org/dataset/66c7d54e-0c3b-45e5-9a46-07ea6f195093/resource/030d5114-a642-4b5b-8915-019c6f1e8d4e/download/wfp_markets_ben.csv` | `3,119` | `69` (+1 header) | `68795328eec4b2e4f5c64ff0e040cf53e9d2d640a91e5a1bfe7d51351fcccf66` | `9cc2d01869dbf763405e40a0d6132b3a` |
+| **Food Prices CSV** | `data/raw/wfp_food_prices_ben.csv` | `https://data.humdata.org/dataset/66c7d54e-0c3b-45e5-9a46-07ea6f195093/resource/7da1ea0a-56c7-450a-af2c-d477745fc856/download/wfp_food_prices_ben.csv` | `17,567,844` | `146,501` | `535e584050f851b81f1b7523b0f58c6deb9ba5f6a89cd790413bd03f6cb7f4a7` | `a0be1e7b6de7806941d48240915284bc` |
+| **Markets Metadata CSV** | `data/raw/wfp_markets_ben.csv` | `https://data.humdata.org/dataset/66c7d54e-0c3b-45e5-9a46-07ea6f195093/resource/030d5114-a642-4b5b-8915-019c6f1e8d4e/download/wfp_markets_ben.csv` | `3,119` | `69` | `68795328eec4b2e4f5c64ff0e040cf53e9d2d640a91e5a1bfe7d51351fcccf66` | `9cc2d01869dbf763405e40a0d6132b3a` |
 
 ### 1.2 Verified Schema & Empirical Distributions
-#### `wfp_food_prices_ben.csv` (`146,501` data rows × `16` columns)
-| Column | Type | Empirical Summary in `wfp_food_prices_ben.csv` |
+*Source script: [`src/analysis/coverage.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/coverage.py) → [`docs/tables/raw_dataset_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/raw_dataset_summary.md)*
+
+| Column | Type | Empirical Summary in `wfp_food_prices_ben.csv` (`146,501` rows) |
 | :--- | :--- | :--- |
 | `date` | `string (YYYY-MM-DD)` | Mid-month dates (`YYYY-MM-15`), spanning `2002-01-15` to `2026-09-15` |
 | `admin1` | `string` | All `12` Départements of Benin (`Alibori`, `Atakora`, `Atlantique`, `Borgou`, `Collines`, `Couffo`, `Donga`, `Littoral`, `Mono`, `Oueme`, `Plateau`, `Zou`) |
 | `admin2` | `string` | Commune name (`0` missing values) |
-| `market` | `string` | `51` active markets with price observations |
+| `market` | `string` | `51` active markets with price observations (`18` additional entries in `wfp_markets_ben.csv` have `0` price rows) |
 | `market_id` | `integer` | Unique WFP numeric identifier for each market |
 | `latitude` | `float` | WGS84 decimal degrees (`0` missing values across all `51` active markets) |
 | `longitude` | `float` | WGS84 decimal degrees (`0` missing values across all `51` active markets) |
@@ -43,75 +46,70 @@ This document inventories every primary and candidate dataset audited for **Bén
 | `commodity_id` | `integer` | Unique WFP commodity identifier |
 | `unit` | `string` | `2` standardized units: `KG` (`138,082` rows — all solids/crops) and `L` (`8,419` rows — `Oil (groundnut)` and `Oil (palm)` only) |
 | `priceflag` | `string` | `100%` `actual` (`146,501` rows; `0` aggregate or imputed rows) |
-| `pricetype` | `string` | `Retail`: `146,174` rows (`99.78%`); `Wholesale`: `327` rows (`0.22%`, restricted to `Malanville (CBM)` in `2002–2012`) |
+| `pricetype` | `string` | `Retail`: `146,174` rows; `Wholesale`: `327` rows (restricted to `Malanville (CBM)` in `2002-01-15..2012-02-15`) |
 | `currency` | `string` | `100%` `XOF` (`146,501` rows — West African CFA Franc) |
-| `price` | `float` | Nominal price in `XOF` per `unit` (`KG` or `L`) |
+| `price` | `float` | Nominal price in `XOF` per `unit` (`0` non-positive or non-finite values) |
 | `usdprice` | `float` | Nominal price converted to `USD` per `unit` |
 
-#### `wfp_markets_ben.csv` (`69` data rows × `7` columns)
-- Columns: `market_id, market, countryiso3, admin1, admin2, latitude, longitude`.
-- Contains `69` market rows (`51` active markets present in `wfp_food_prices_ben.csv` + `18` registered markets with `0` price records in the dataset).
+### 1.3 Known Issues & Structural Regimes Identified in Audit
+*Source script: [`src/analysis/coverage.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/coverage.py) → [`docs/tables/yearly_observation_density.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/yearly_observation_density.md) and [`docs/tables/raw_dataset_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/raw_dataset_summary.md)*
 
-### 1.3 Known Issues & Structural Regimes Identified in Phase 0 Audit
 1. **Two Distinct Temporal Regimes & the 2017–2018 Reporting Hiatus:**
-   - **Pre-2019 Regime (`2002–2018`):**
-     - `2002-01` to `2012-02`: Only `Wholesale` cereal prices (`Maize`, `Millet`, `Rice (imported)`, `Sorghum`, `Wheat`) in a single cross-border market (`Malanville (CBM)`, `327` rows total).
+   - **Pre-2019 Exploration Regime (`2002–2018`):**
+     - `2002-01` to `2012-02`: Only `Wholesale` cereal prices (`Maize`, `Millet`, `Rice (imported)`, `Sorghum`, `Wheat`) in `Malanville (CBM)` (`327` rows total).
      - `2007-01` to `2011-12`: Only `1` retail market (`Dantokpa`, Cotonou, `12` obs/year) for `Maize (white)`, `Cassava meal (gari)`, `Rice (imported)`, `Beans (white)`, and `Sorghum`.
-     - `2012-04` to `2016-12`: Gradual expansion to `~20` retail markets, followed by a **near-total nationwide reporting hiatus in 2017–2018** (`0` observations in 2017–2018 for `Maize (white)` and `Beans (white)`; only `9` obs in 2017 and `26–30` obs in 2018 across `4` urban markets for `Maize`, `Yam`, `Cassava meal (gari)`, `Rice (imported)`, and `Sorghum`).
-   - **Modern Continuous SIM-Bénin Regime (`2019-01-15` to `2026-09-15`, 93 months / 7.75 years):**
-     - Starting January/July 2019, standardized monthly retail price collection (`pricetype='Retail'`, `unit='KG'`, `priceflag='actual'`) covers **50 active markets** across all 12 departments with **93.5%–98.9% monthly completeness** (`86–90` observed months out of `93`) for core staples.
+     - `2012-04` to `2016-12`: Retail collection added `Malanville (CBM)` in April 2012 (`2` markets, `21` obs in 2012), `Parakou` in 2013 (`3` markets, `24–30` obs in 2013), and expanded to `~20` retail markets in `2014–2016` (`238–245` obs/year in 2015 and `205–212` obs/year in 2016), followed by a **near-total nationwide reporting hiatus in `2017–2018`** (`0` observations in 2017–2018 for `Maize (white)` and `Beans (white)`; only `9` obs in 2017 and `26–30` obs in 2018 across `4` urban markets for `Maize`, `Yam`, `Cassava meal (gari)`, `Rice (imported)`, and `Sorghum`).
+   - **Modern Continuous SIM-Bénin Regime (`2019-01-15` to `2026-09-15`, `93` months):**
+     - Starting January/July 2019, standardized monthly retail price collection (`pricetype='Retail'`, `unit='KG'`, `priceflag='actual'`) covers **`50` active markets** across all `12` departments (`N'Dali` is the only market among the `51` active markets that ceased reporting in `2016-02` with `0` rows in `2019–2026`).
 2. **Commodity Variety Split (`Maize` vs. `Maize (white)` and `Yam` vs. `Yam (white)`):**
-   - **Maize:** `Maize (white)` (`4,868` rows, `51` markets, `2007–2026`) is the primary series. Generic `Maize` (`145` rows, `4` markets, `2013–2019`) overlaps with `Maize (white)` on `20` months in `Dantokpa` and `15` months in `Parakou`/`Natitingou` (while filling 2017–2018 in those 4 markets). `Maize (yellow)` (`1,856` rows, `48` markets) only starts on `2023-04-15` (`42` months).
+   - **Maize:** `Maize (white)` (`4,868` rows, `51` markets, `2007–2026`; `4,239` rows in `2019–2026` across `50` markets, with `49` Tier-1 markets $\ge 80\text{m}$) is the primary series. Generic `Maize` (`145` rows, `4` markets, `2013–2019`) overlaps with `Maize (white)` on `20` months in `Dantokpa` and `15` months in `Parakou` and `Natitingou` (`0` overlap in `Abomey`). `Maize (yellow)` (`1,856` rows, `48` markets) only starts on `2023-04-15` (`42` months).
    - **Yam:** WFP tracks two concurrent fresh retail yam series in `KG`:
-     - `Yam` (`2,820` rows, `49` markets, `2013-01-15` to `2026-09-15`): Represents early/preferred yam varieties (*igname précoce / laboko*).
-     - `Yam (white)` (`2,727` rows, `47` markets, `2019-01-15` to `2026-09-15`): Represents standard white yam (*igname blanche / kokoro*).
-     - **Critical Finding:** In markets where both are recorded on the same date (e.g., `88` overlapping months in `Dantokpa`, `84` in `Savalou`, `82` in `Abomey`), their prices differ by **`129–239 XOF/kg` on average**. Therefore, `Yam` and `Yam (white)` **must never be merged or averaged into a single synthetic series**. Furthermore, major northern yam markets like **Djougou** (`86/93` months) and **Nikki** (`85/93` months) report `Yam (white)` almost exclusively (`1` row of `Yam` in Djougou), whereas **Abomey** (`110` months) and **Dantokpa** (`128` months) have long histories of `Yam` plus full 2019–2026 series of `Yam (white)`.
-     - Processed yam is also tracked separately from `2020-04-15`: `Yam (flour)` (*cossette moulue / télibo*, `1,915` rows, `39` markets) and `Yam (dry)` (*cossette d'igname*, `1,591` rows, `36` markets).
-3. **18 Inactive Markets in `wfp_markets_ben.csv`:**
-   - Out of `69` markets in `wfp_markets_ben.csv`, `18` have `0` rows in `wfp_food_prices_ben.csv` (including a duplicate spelling `Comè` `market_id=1765` whereas active `Comé` is `market_id=2714`, plus 17 rural communes in Alibori, Atakora, Mono, and Zou). Only the `51` active markets (`50` active in `2019–2026`) should be retained in Phase 1.
+     - `Yam (white)` (`2,727` rows, `47` markets, `2019-01-15..2026-09-15`; `19` Tier-1 markets $\ge 80\text{m}$): Staple white yam (*igname blanche / kokoro*).
+     - `Yam` (`2,820` rows, `49` markets, `2013-01-15..2026-09-15`; `2,721` rows in `2019–2026`, `17` Tier-1 markets $\ge 80\text{m}$): Early/preferred yam (*igname précoce / laboko*).
+     - **Price Spread & Market Split (`docs/tables/raw_dataset_summary.md`):** On concurrent market-months, `Yam` and `Yam (white)` differ by `207.9 XOF/kg` in `Dantokpa` (`88` overlapping months), `219.7 XOF/kg` in `Savalou` (`84` overlapping months), `129.3 XOF/kg` in `Abomey` (`82` overlapping months), `238.8 XOF/kg` in `Natitingou` (`74` overlapping months), `185.3 XOF/kg` in `Bohicon` (`81` overlapping months), and `156.6 XOF/kg` in `Ouando` (`78` overlapping months). Conversely, major northern yam hubs **`Djougou`** (`86 / 93` months of `Yam (white)`) and **`Nikki`** (`85 / 93` months of `Yam (white)`) have only **`1` row each of `Yam`** (`2020-08`).
 
 ---
 
-## 2. Exogenous Weather Context: NASA POWER Agroclimatology API
+## 2. Exogenous Weather Dataset: NASA POWER Agroclimatology (`nasa_power_benin_markets.csv`)
 
-### 2.1 Overview & Provenance
-- **Dataset Title:** NASA POWER (Prediction Of Worldwide Energy Resources) — Agroclimatology (`AG`) Daily & Monthly Point Data
-- **Base API Endpoints:**
-  - Daily: `https://power.larc.nasa.gov/api/temporal/daily/point`
-  - Monthly: `https://power.larc.nasa.gov/api/temporal/monthly/point`
+### 2.1 Overview, Provenance & Checksums
+*Source scripts: [`src/ingest/download_nasa_power.py`](file:///home/brian/projets-ds/benin-agromarket/src/ingest/download_nasa_power.py) and [`src/clean/clean_prices.py`](file:///home/brian/projets-ds/benin-agromarket/src/clean/clean_prices.py) → [`docs/tables/nasa_power_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/nasa_power_summary.md)*
+
+- **Dataset Title:** NASA POWER (Prediction Of Worldwide Energy Resources) — Agroclimatology (`AG`) Monthly Point Data
+- **Exact API URL Template Used by [`src/ingest/download_nasa_power.py`](file:///home/brian/projets-ds/benin-agromarket/src/ingest/download_nasa_power.py):**  
+  `https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=PRECTOTCORR,T2M,T2M_MAX,T2M_MIN,RH2M&community=AG&longitude={grid_lon}&latitude={grid_lat}&start=2006&end=2026&format=JSON`
 - **Provider:** NASA Langley Research Center (LaRC)
-- **License:** **NASA Open Data Policy (Public Domain / Unrestricted Reuse)**. Free for academic, open-source, and commercial redistribution without an API key; attribution to *NASA Langley Research Center (LaRC) POWER Project*.
-- **Audit Date:** `2026-10-25`
+- **License:** **NASA Open Data Policy (Public Domain / Unrestricted Reuse)** with attribution to the *NASA Langley Research Center (LaRC) POWER Project*.
+- **Download Date:** `2026-10-25`
 
-### 2.2 Selected Agroclimatic Parameters
-| Parameter | Unit | Description | Relevance to Benin Staple Prices |
-| :--- | :--- | :--- | :--- |
-| `PRECTOTCORR` | `mm/day` | MERRA-2 bias-corrected total precipitation | Captures onset/cessation of rainy seasons (bimodal in south, unimodal in north), drought shocks, and harvest timing |
-| `T2M` | `°C` | Mean air temperature at 2 meters | Crop evapotranspiration stress and post-harvest perishability (critical for tomato & yam storage) |
-| `T2M_MAX` | `°C` | Maximum daily air temperature at 2 meters | Heatwave stress during maize flowering/grain filling |
-| `T2M_MIN` | `°C` | Minimum daily air temperature at 2 meters | Nighttime temperature anomalies |
-| `RH2M` | `%` | Relative humidity at 2 meters | Fungal/rot risk during storage (yam, maize drying) and tomato blight pressure |
+| Resource | Local Path | Size (Bytes) | Data Rows | Grid Cells | Temporal Span | SHA-256 Checksum | MD5 Checksum |
+| :--- | :--- | ---: | ---: | ---: | :--- | :--- | :--- |
+| **NASA POWER Monthly CSV** | `data/raw/nasa_power_benin_markets.csv` | `474,338` | `5,727` | `23` | `2006-01..2026-09` | `1a20724807476b3ca20948e6a595a4503bf80d0ede17943f96634785548714f3` | `807f94211c4d91a05f153ad949d792c9` |
 
-### 2.3 Coverage & Known Issues
-- **Temporal Coverage:** `1981-01-01` to near-real-time.
-- **Spatial Resolution:** `0.5° × 0.625°` (~55 km × 69 km grid cells). All `51` active WFP markets have verified `(latitude, longitude)` coordinates in `wfp_food_prices_ben.csv` (`0` missing).
-- **Forecasting Leakage Constraint:** Only **lagged** agroclimatic features (e.g., 1-, 3-, and 6-month rolling rainfall anomalies and temperature stress prior to forecast origin $t$) may be used in forecasting models.
+### 2.2 Parameters & Completeness
+*Source script: [`src/clean/clean_prices.py`](file:///home/brian/projets-ds/benin-agromarket/src/clean/clean_prices.py) → [`docs/tables/nasa_power_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/nasa_power_summary.md)*
+
+- The `51` active Benin markets map onto **`23` unique MERRA-2 `0.5° × 0.625°` grid cells** (`249` months each from `2006-01` to `2026-09`, yielding `23 × 249 = 5,727` grid-month rows).
+- **Completeness:** All `5` parameters (`PRECTOTCORR`, `T2M`, `T2M_MAX`, `T2M_MIN`, `RH2M`) have **`5,727 / 5,727` valid observations (`0` missing `-999` values)**.
+- **Leakage Prevention in [`src/clean/clean_prices.py`](file:///home/brian/projets-ds/benin-agromarket/src/clean/clean_prices.py):** Only strictly lagged features (`precip_lag1m`, `precip_lag2m`, `precip_lag3m`, `precip_roll3m_lag1`, `precip_anom_z_lag1m`, `t2m_lag1m`, `t2m_max_lag1m`, `t2m_min_lag1m`, `rh2m_lag1m`) are joined to price observations, and the climatological baseline ($\mu, \sigma$ per grid cell and calendar month) for `precip_anom_z_lag1m` is computed strictly over **`2006–2018`** (prior to the `2019–2026` modeling window).
 
 ---
 
-## 3. National Macro Context: FAOSTAT Producer Prices (`PP`) & Consumer Price Index (`CP`)
+## 3. Cleaned & Processed Datasets in `data/processed/`
 
-- **Dataset URLs:** https://www.fao.org/faostat/en/#data/PP and https://www.fao.org/faostat/en/#data/CP
-- **License:** **CC BY 4.0** (FAO Open Data Licensing Policy).
-- **Coverage & Role:** National aggregate (`Benin`, `ISO3=BEN`), annual producer prices (`1991–2024`) and monthly Food/General CPI (`2000–present`). Useful for macro inflation context (`XOF` nominal vs. real price deflation) and national sanity checks; cannot replace subnational market series.
+*Source script: [`src/clean/clean_prices.py`](file:///home/brian/projets-ds/benin-agromarket/src/clean/clean_prices.py) → [`docs/tables/cleaning_audit_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/cleaning_audit_summary.md)*
+
+| Processed File | Rows | Description |
+| :--- | ---: | :--- |
+| `data/processed/markets_active.csv` | `51` | All `51` active Benin markets with WGS84 coordinates, snapped MERRA-2 `(grid_lat, grid_lon)`, `2019–2026` observation counts, and Tier-1 binary flags per product (`18` inactive metadata markets stripped). |
+| `data/processed/prices_cleaned_all.csv` | `14,551` | All observed `Retail, KG, XOF, actual` rows across `2007–2026` for the `4` enabled products (`Maize (white)`: `4,868`; `Tomatoes`: `4,136`; `Yam (white)`: `2,727`; `Yam`: `2,820`), annotated with `regime`, market tiers, outlier flags (`0` rows deleted), and lagged NASA POWER features. |
+| `data/processed/modeling_panel_2019_2026.csv` | `10,323` | Regular monthly calendar grid (`93` months: `2019-01-15..2026-09-15`) for Tier-1 markets of the `3` `forecast_primary` products (`Maize (white)`: `49 × 93 = 4,557` rows, `4,162` observed; `Tomatoes`: `43 × 93 = 3,999` rows, `3,664` observed; `Yam (white)`: `19 × 93 = 1,767` rows, `1,603` observed). Unobserved months have `is_observed = 0` and `price = ""` (`0` silent imputations). |
 
 ---
 
-## 4. Other Candidate Sources Evaluated (from `BRIEF.md`)
+## 4. Reference & Context Sources Audited
 
-1. **ONASA / CT-SAGSA (*Bulletin SIM-Agricole*) / DSA / INStaD (Benin National Agencies):**
-   - Ground collection from ONASA, CT-SAGSA, and INSAE/INStaD is **already ingested upstream** into `wfp_food_prices_ben.csv` (as confirmed by the HDX `dataset_source` field and the 50-market SIM rollout visible in the CSV from January 2019 onward). Standalone national portals publish PDF bulletins without open machine-readable historical CSVs.
-2. **World Bank Real-Time Food Prices (RTFP):**
-   - Uses machine-learning imputation on top of the WFP feed. Per `AGENTS.md` (*"Never invent, simulate or fill data silently"*), we model strictly on the unimputed `actual` observations in `wfp_food_prices_ben.csv`.
-3. **FEWS NET / SIMA-Niger:**
-   - Cross-border wholesale series for `Malanville (CBM)` (`SIMA - Niger`) is already included in `wfp_food_prices_ben.csv`. FEWS NET regional reports provide qualitative context for border/trade shocks (e.g., 2019–2020 Nigeria border closure, 2023–2024 Niger corridor closure).
+1. **FAOSTAT Producer Prices (`PP`) & Consumer Price Index (`CP`):** https://www.fao.org/faostat/en/#data/PP and https://www.fao.org/faostat/en/#data/CP (`CC BY 4.0`). National macro context.
+2. **ONASA / CT-SAGSA (*Bulletin SIM-Agricole*) / DSA / INStaD:** Upstream ground collectors already consolidated into `wfp_food_prices_ben.csv`.
+3. **World Bank Real-Time Food Prices (RTFP):** Excluded from training due to machine-learning imputation (`AGENTS.md` rule against silent/synthetic filling).
+4. **FEWS NET / SIMA-Niger:** Cross-border shock context for northern Benin (`Malanville (CBM)`).

@@ -1,0 +1,68 @@
+Product,Price Rank (Low→High),Market,Admin1,Zone,Obs (2019-26),Mean (XOF/kg),Median (XOF/kg),P25–P75 (IQR),Min..Max,Spread vs Tier-1 Mean %,Product Max/Min Mkt Ratio (Cross-Mkt CV%),Category / Note
+Maize (white),1 / 49,Cobly,Atakora,North (>=9.5°N),89,149.1,150.9,107.8–172.4 (64.6),69..276,-26.2%,1.79x (CV 13.2%),Lowest #1
+Maize (white),2 / 49,Azovè,Couffo,South (<7.5°N),85,160.8,156.0,138.9–177.8 (38.9),67..282,-20.4%,1.79x (CV 13.2%),Lowest #2
+Maize (white),3 / 49,Tchaourou,Borgou,Center (7.5°–9.5°N),81,163.1,161.0,137.0–185.5 (48.5),113..274,-19.2%,1.79x (CV 13.2%),Lowest #3
+Maize (white),4 / 49,Kérou,Atakora,North (>=9.5°N),86,163.3,164.8,123.6–183.2 (59.5),92..284,-19.2%,1.79x (CV 13.2%),Benchmark
+Maize (white),5 / 49,Glazoué,Collines,Center (7.5°–9.5°N),90,167.8,153.0,109.9–229.4 (119.5),82..352,-16.9%,1.79x (CV 13.2%),Benchmark
+Maize (white),8 / 49,Kétou,Plateau,South (<7.5°N),89,169.8,163.8,137.9–196.8 (58.9),69..328,-15.9%,1.79x (CV 13.2%),Benchmark
+Maize (white),18 / 49,Nikki,Borgou,North (>=9.5°N),89,187.6,190.1,133.0–228.0 (95.0),76..342,-7.1%,1.79x (CV 13.2%),Benchmark
+Maize (white),20 / 49,Savalou,Collines,Center (7.5°–9.5°N),85,190.1,191.3,154.2–214.1 (59.9),90..323,-5.9%,1.79x (CV 13.2%),Benchmark
+Maize (white),24 / 49,Ouando,Oueme,South (<7.5°N),87,202.9,200.0,160.7–232.5 (71.8),114..343,+0.5%,1.79x (CV 13.2%),Benchmark
+Maize (white),28 / 49,Comé,Mono,South (<7.5°N),87,207.6,200.9,177.3–239.2 (61.9),142..355,+2.8%,1.79x (CV 13.2%),Benchmark
+Maize (white),29 / 49,Malanville (CBM),Alibori,North (>=9.5°N),87,208.1,206.5,157.9–244.6 (86.6),105..358,+3.1%,1.79x (CV 13.2%),Benchmark
+Maize (white),32 / 49,Djougou,Donga,North (>=9.5°N),88,212.1,231.0,164.2–239.0 (74.8),116..340,+5.0%,1.79x (CV 13.2%),Benchmark
+Maize (white),34 / 49,Natitingou,Atakora,North (>=9.5°N),84,214.4,219.8,165.0–220.6 (55.6),137..334,+6.1%,1.79x (CV 13.2%),Benchmark
+Maize (white),36 / 49,Bohicon,Zou,South (<7.5°N),87,216.4,214.3,165.0–247.1 (82.1),104..392,+7.2%,1.79x (CV 13.2%),Benchmark
+Maize (white),39 / 49,Parakou,Borgou,Center (7.5°–9.5°N),84,222.5,197.9,192.3–214.3 (21.9),160..403,+10.2%,1.79x (CV 13.2%),Benchmark
+Maize (white),47 / 49,Hozin,Oueme,South (<7.5°N),84,244.9,252.5,187.9–279.7 (91.8),126..442,+21.2%,1.79x (CV 13.2%),Highest #3
+Maize (white),48 / 49,Sèdjè-Dénou,Atlantique,South (<7.5°N),83,258.5,288.5,192.3–302.0 (109.7),165..406,+28.0%,1.79x (CV 13.2%),Highest #2
+Maize (white),49 / 49,Dantokpa,Littoral,South (<7.5°N),84,267.4,274.7,220.0–288.5 (68.5),160..426,+32.4%,1.79x (CV 13.2%),"Highest #1, Benchmark"
+Tomatoes,1 / 43,Bassila,Donga,Center (7.5°–9.5°N),85,217.7,200.0,190.0–245.5 (55.5),131..449,-55.7%,6.33x (CV 33.8%),Lowest #1
+Tomatoes,2 / 43,Dasso,Zou,South (<7.5°N),82,301.9,274.7,201.6–354.6 (153.0),115..971,-38.6%,6.33x (CV 33.8%),Lowest #2
+Tomatoes,3 / 43,Bembèrèkè,Borgou,North (>=9.5°N),86,339.6,300.0,254.2–421.9 (167.8),140..800,-30.9%,6.33x (CV 33.8%),Lowest #3
+Tomatoes,6 / 43,Bohicon,Zou,South (<7.5°N),87,373.3,350.0,297.5–451.0 (153.5),175..694,-24.1%,6.33x (CV 33.8%),Benchmark
+Tomatoes,13 / 43,Parakou,Borgou,Center (7.5°–9.5°N),90,421.0,425.0,390.4–450.0 (59.6),316..541,-14.4%,6.33x (CV 33.8%),Benchmark
+Tomatoes,15 / 43,Malanville (CBM),Alibori,North (>=9.5°N),87,429.6,403.5,364.6–438.3 (73.8),255..1069,-12.6%,6.33x (CV 33.8%),Benchmark
+Tomatoes,17 / 43,Kétou,Plateau,South (<7.5°N),88,435.6,388.8,211.6–552.8 (341.2),56..1531,-11.4%,6.33x (CV 33.8%),Benchmark
+Tomatoes,20 / 43,Natitingou,Atakora,North (>=9.5°N),88,469.3,388.8,288.7–591.2 (302.5),143..1325,-4.6%,6.33x (CV 33.8%),Benchmark
+Tomatoes,25 / 43,Dantokpa,Littoral,South (<7.5°N),89,481.3,435.0,336.7–557.5 (220.8),117..1236,-2.1%,6.33x (CV 33.8%),Benchmark
+Tomatoes,26 / 43,Ouando,Oueme,South (<7.5°N),87,493.2,432.8,325.0–616.9 (291.9),126..1250,+0.3%,6.33x (CV 33.8%),Benchmark
+Tomatoes,28 / 43,Glazoué,Collines,Center (7.5°–9.5°N),90,495.5,485.9,400.0–573.4 (173.4),120..1042,+0.8%,6.33x (CV 33.8%),Benchmark
+Tomatoes,34 / 43,Kérou,Atakora,North (>=9.5°N),86,543.9,528.1,487.5–604.7 (117.2),317..837,+10.6%,6.33x (CV 33.8%),Benchmark
+Tomatoes,35 / 43,Comé,Mono,South (<7.5°N),86,547.4,491.2,351.2–732.8 (381.6),78..1581,+11.3%,6.33x (CV 33.8%),Benchmark
+Tomatoes,36 / 43,Savalou,Collines,Center (7.5°–9.5°N),85,552.7,539.0,450.0–650.0 (200.0),165..933,+12.4%,6.33x (CV 33.8%),Benchmark
+Tomatoes,39 / 43,Djougou,Donga,North (>=9.5°N),88,599.6,483.3,335.0–725.8 (390.8),200..3300,+21.9%,6.33x (CV 33.8%),Benchmark
+Tomatoes,41 / 43,Dassa-Zoumè,Collines,Center (7.5°–9.5°N),86,670.6,541.7,433.3–840.7 (407.3),188..1933,+36.4%,6.33x (CV 33.8%),Highest #3
+Tomatoes,42 / 43,Covè,Zou,South (<7.5°N),83,749.8,692.0,414.4–1000.0 (585.6),90..2000,+52.5%,6.33x (CV 33.8%),Highest #2
+Tomatoes,43 / 43,Tatonnoukon,Plateau,South (<7.5°N),84,1377.0,782.5,423.8–2776.4 (2352.7),111..4250,+180.0%,6.33x (CV 33.8%),Highest #1
+Yam (white),1 / 19,Nikki,Borgou,North (>=9.5°N),85,170.1,90.0,90.0–95.0 (5.0),75..807,-58.1%,4.07x (CV 39.2%),"Lowest #1, Benchmark"
+Yam (white),2 / 19,Bembèrèkè,Borgou,North (>=9.5°N),85,186.6,195.2,150.0–203.0 (53.0),75..350,-54.1%,4.07x (CV 39.2%),Lowest #2
+Yam (white),3 / 19,Glazoué,Collines,Center (7.5°–9.5°N),89,190.3,170.0,141.2–204.3 (63.1),88..558,-53.2%,4.07x (CV 39.2%),"Lowest #3, Benchmark"
+Yam (white),4 / 19,Bassila,Donga,Center (7.5°–9.5°N),84,193.1,191.8,181.8–197.5 (15.7),159..414,-52.5%,4.07x (CV 39.2%),Tier-1
+Yam (white),5 / 19,Ouesse,Collines,Center (7.5°–9.5°N),81,227.2,220.0,159.2–300.0 (140.8),83..400,-44.1%,4.07x (CV 39.2%),Tier-1
+Yam (white),6 / 19,Kétou,Plateau,South (<7.5°N),88,323.7,312.5,248.8–400.0 (151.2),180..530,-20.3%,4.07x (CV 39.2%),Benchmark
+Yam (white),7 / 19,Péhunco,Atakora,North (>=9.5°N),83,337.5,294.0,219.9–412.2 (192.3),167..1128,-16.9%,4.07x (CV 39.2%),Tier-1
+Yam (white),8 / 19,Djougou,Donga,North (>=9.5°N),86,338.5,295.0,219.4–436.9 (217.5),98..778,-16.7%,4.07x (CV 39.2%),Benchmark
+Yam (white),9 / 19,Dogbo,Couffo,South (<7.5°N),81,436.5,450.0,400.0–487.5 (87.5),210..705,+7.4%,4.07x (CV 39.2%),Tier-1
+Yam (white),10 / 19,Ouando,Oueme,South (<7.5°N),82,444.6,433.1,400.0–500.0 (100.0),235..700,+9.5%,4.07x (CV 39.2%),Benchmark
+Yam (white),11 / 19,Azovè,Couffo,South (<7.5°N),84,444.7,448.3,413.4–475.0 (61.6),301..700,+9.5%,4.07x (CV 39.2%),Tier-1
+Yam (white),12 / 19,Bohicon,Zou,South (<7.5°N),85,450.0,425.0,362.5–505.0 (142.5),242..800,+10.8%,4.07x (CV 39.2%),Benchmark
+Yam (white),13 / 19,Kérou,Atakora,North (>=9.5°N),85,476.0,467.0,393.8–568.8 (175.0),150..800,+17.2%,4.07x (CV 39.2%),Benchmark
+Yam (white),14 / 19,Abomey,Zou,South (<7.5°N),82,476.5,397.9,329.9–656.2 (326.3),150..1333,+17.3%,4.07x (CV 39.2%),Tier-1
+Yam (white),15 / 19,Comé,Mono,South (<7.5°N),85,503.2,550.0,408.8–600.0 (191.2),198..650,+23.9%,4.07x (CV 39.2%),Benchmark
+Yam (white),16 / 19,Dantokpa,Littoral,South (<7.5°N),88,562.4,566.8,431.2–652.5 (221.3),300..1000,+38.4%,4.07x (CV 39.2%),Benchmark
+Yam (white),17 / 19,Natitingou,Atakora,North (>=9.5°N),84,582.0,634.8,479.4–715.3 (235.9),113..1213,+43.3%,4.07x (CV 39.2%),"Highest #3, Benchmark"
+Yam (white),18 / 19,Dassa-Zoumè,Collines,Center (7.5°–9.5°N),82,682.7,623.0,500.0–800.0 (300.0),325..1500,+68.1%,4.07x (CV 39.2%),Highest #2
+Yam (white),19 / 19,Savalou,Collines,Center (7.5°–9.5°N),84,692.7,650.0,600.0–800.0 (200.0),412..1260,+70.5%,4.07x (CV 39.2%),"Highest #1, Benchmark"
+Yam,1 / 17,Glazoué,Collines,Center (7.5°–9.5°N),86,155.8,129.5,105.3–180.0 (74.7),74..408,-53.7%,3.13x (CV 27.4%),"Lowest #1, Benchmark"
+Yam,2 / 17,Bembèrèkè,Borgou,North (>=9.5°N),85,171.6,162.5,130.0–200.0 (70.0),75..600,-49.0%,3.13x (CV 27.4%),Lowest #2
+Yam,3 / 17,Péhunco,Atakora,North (>=9.5°N),84,242.2,225.6,172.2–283.8 (111.6),116..840,-28.0%,3.13x (CV 27.4%),Lowest #3
+Yam,4 / 17,Kétou,Plateau,South (<7.5°N),85,251.1,250.0,195.2–299.2 (104.0),125..400,-25.4%,3.13x (CV 27.4%),Benchmark
+Yam,5 / 17,Bohicon,Zou,South (<7.5°N),82,271.3,256.2,232.2–300.0 (67.8),150..425,-19.4%,3.13x (CV 27.4%),Benchmark
+Yam,6 / 17,Ouando,Oueme,South (<7.5°N),83,303.9,300.0,231.2–366.2 (135.0),150..550,-9.7%,3.13x (CV 27.4%),Benchmark
+Yam,9 / 17,Dantokpa,Littoral,South (<7.5°N),92,358.9,317.2,279.1–400.0 (120.9),200..700,+6.6%,3.13x (CV 27.4%),Benchmark
+Yam,12 / 17,Kérou,Atakora,North (>=9.5°N),86,377.6,383.2,320.3–440.8 (120.5),125..700,+12.2%,3.13x (CV 27.4%),Benchmark
+Yam,13 / 17,Natitingou,Atakora,North (>=9.5°N),80,383.6,358.6,223.4–516.0 (292.6),136..889,+14.0%,3.13x (CV 27.4%),Benchmark
+Yam,15 / 17,Comé,Mono,South (<7.5°N),82,429.4,450.0,366.7–500.0 (133.3),167..575,+27.6%,3.13x (CV 27.4%),"Highest #3, Benchmark"
+Yam,16 / 17,Savalou,Collines,Center (7.5°–9.5°N),85,475.5,487.5,425.0–525.0 (100.0),300..633,+41.3%,3.13x (CV 27.4%),"Highest #2, Benchmark"
+Yam,17 / 17,Ouègbo,Atlantique,South (<7.5°N),81,487.2,366.7,312.5–722.3 (409.8),200..838,+44.8%,3.13x (CV 27.4%),Highest #1

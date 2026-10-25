@@ -1,0 +1,31 @@
+Grouping,Slice / Market / Month,Concurrent Market-Months,Yam (white) [Kokoro] Mean (Med) XOF/kg,Yam [Laboko/Early] Mean (Med) XOF/kg,Mean Signed Spread (Yam - Yam white),Mean Abs Diff |Yam - Yam white|,Mean Early Yam Premium %,% Months Early Yam > White Yam
+Summary,All Concurrent Market-Months (2019-2026),1956,450.7 (med 408.5),318.4 (med 293.8),-132.3,141.3,-24.5%,3.3%
+Summary,Both Tier-1 Markets Concurrent (14 Shared Tier-1 Markets),1150,439.8 (med 427.9),319.6 (med 300.0),-120.2,122.6,-24.9%,1.5%
+By Calendar Month,M01 (Jan),179,418.7 (med 381.7),289.8 (med 275.0),-128.9,136.6,-26.2%,4.5%
+By Calendar Month,M02 (Feb),188,410.1 (med 369.2),286.7 (med 266.2),-123.4,125.7,-25.5%,3.2%
+By Calendar Month,M03 (Mar),159,409.7 (med 385.0),294.2 (med 287.5),-115.5,122.1,-23.4%,4.4%
+By Calendar Month,M04 (Apr),172,469.0 (med 420.2),335.4 (med 306.2),-133.6,137.2,-25.1%,2.9%
+By Calendar Month,M05 (May),162,498.1 (med 450.0),352.9 (med 335.4),-145.3,152.3,-25.4%,1.2%
+By Calendar Month,M06 (Jun),151,523.5 (med 462.7),383.8 (med 352.9),-139.7,153.1,-22.7%,3.3%
+By Calendar Month,M07 (Jul),156,531.6 (med 498.1),376.1 (med 350.0),-155.6,161.6,-23.9%,2.6%
+By Calendar Month,M08 (Aug),145,528.1 (med 475.8),391.0 (med 353.6),-137.1,169.6,-18.6%,5.5%
+By Calendar Month,M09 (Sep),177,441.9 (med 412.5),304.9 (med 270.8),-136.9,147.3,-24.0%,6.2%
+By Calendar Month,M10 (Oct),158,402.7 (med 373.8),284.4 (med 250.2),-118.3,139.0,-22.6%,3.8%
+By Calendar Month,M11 (Nov),148,392.3 (med 369.4),262.4 (med 254.3),-129.8,131.0,-28.6%,1.4%
+By Calendar Month,M12 (Dec),161,401.2 (med 382.2),275.6 (med 262.5),-125.5,125.8,-26.9%,0.6%
+By Market,"Dantokpa (YW=88m, Y=92m)",88,562.4 (med 566.8),358.4 (med 317.2),-204.0,207.9,-34.2%,4.5%
+By Market,"Glazoué (YW=89m, Y=86m)",85,192.9 (med 170.0),155.4 (med 129.0),-37.5,40.8,-19.9%,4.7%
+By Market,"Savalou (YW=84m, Y=85m)",84,692.7 (med 650.0),475.0 (med 487.5),-217.7,219.7,-30.0%,1.2%
+By Market,"Kétou (YW=88m, Y=85m)",84,327.5 (med 320.9),250.9 (med 250.0),-76.5,76.5,-23.0%,0.0%
+By Market,"Kérou (YW=85m, Y=86m)",85,476.0 (med 467.0),377.3 (med 383.0),-98.6,98.6,-21.4%,0.0%
+By Market,"Bembèrèkè (YW=85m, Y=85m)",84,187.1 (med 196.1),171.8 (med 163.2),-15.3,26.0,-8.8%,2.4%
+By Market,"Comé (YW=85m, Y=82m)",81,504.6 (med 550.0),427.9 (med 450.0),-76.7,76.7,-14.9%,0.0%
+By Market,"Bohicon (YW=85m, Y=82m)",81,456.1 (med 425.0),270.8 (med 256.2),-185.3,185.3,-39.7%,0.0%
+By Market,"Natitingou (YW=84m, Y=80m)",74,634.6 (med 661.9),398.8 (med 375.2),-235.8,238.8,-34.6%,4.1%
+By Market,"Azovè (YW=84m, Y=81m)",80,444.2 (med 447.5),372.8 (med 368.3),-71.4,71.4,-15.9%,0.0%
+By Market,"Péhunco (YW=83m, Y=84m)",83,337.5 (med 294.0),235.0 (med 225.0),-102.5,102.7,-27.8%,1.2%
+By Market,"Abomey (YW=82m, Y=87m)",82,476.5 (med 397.9),357.9 (med 300.0),-118.6,129.3,-21.9%,2.4%
+By Market,"Ouando (YW=82m, Y=83m)",78,452.6 (med 440.6),296.1 (med 300.0),-156.6,156.6,-35.4%,0.0%
+By Market,"Dogbo (YW=81m, Y=82m)",81,436.5 (med 450.0),339.0 (med 350.0),-97.5,97.5,-22.6%,0.0%
+By Market (Non-Overlapping Hub),"Djougou (YW=86m, Y=1m)",0,338.5 (med 295.0),Only 1 obs (2020-08),-,-,-,-
+By Market (Non-Overlapping Hub),"Nikki (YW=85m, Y=1m)",0,170.1 (med 90.0),Only 1 obs (2020-08),-,-,-,-

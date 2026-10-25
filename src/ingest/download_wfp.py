@@ -1,8 +1,8 @@
 """Download official WFP Benin food prices and market metadata from HDX.
 
 This module downloads only from the exact official HDX URLs recorded in
-``docs/DATA.md``, verifies downloaded file sizes against expected metadata,
-and computes SHA-256 and MD5 checksums for reproducibility.
+``docs/DATA.md``, verifies downloaded file sizes and expected SHA-256 / MD5
+checksums for reproducibility.
 """
 
 from __future__ import annotations
@@ -12,9 +12,7 @@ import hashlib
 from pathlib import Path
 import urllib.request
 
-
-PROJECT_ROOT: Path = Path(__file__).resolve().parents[2]
-RAW_DATA_DIR: Path = PROJECT_ROOT / "data" / "raw"
+from src.config import RAW_DIR
 
 
 @dataclass(frozen=True)
@@ -26,6 +24,7 @@ class RemoteResource:
     filename: str
     expected_min_bytes: int
     expected_md5: str | None = None
+    expected_sha256: str | None = None
 
 
 WFP_BENIN_RESOURCES: tuple[RemoteResource, ...] = (
@@ -38,6 +37,7 @@ WFP_BENIN_RESOURCES: tuple[RemoteResource, ...] = (
         filename="wfp_food_prices_ben.csv",
         expected_min_bytes=10_000_000,
         expected_md5="a0be1e7b6de7806941d48240915284bc",
+        expected_sha256="535e584050f851b81f1b7523b0f58c6deb9ba5f6a89cd790413bd03f6cb7f4a7",
     ),
     RemoteResource(
         name="WFP Benin Markets Metadata",
@@ -48,6 +48,7 @@ WFP_BENIN_RESOURCES: tuple[RemoteResource, ...] = (
         filename="wfp_markets_ben.csv",
         expected_min_bytes=1_000,
         expected_md5="9cc2d01869dbf763405e40a0d6132b3a",
+        expected_sha256="68795328eec4b2e4f5c64ff0e040cf53e9d2d640a91e5a1bfe7d51351fcccf66",
     ),
 )
 
@@ -74,9 +75,38 @@ def compute_checksums(file_path: Path, chunk_size: int = 1024 * 1024) -> tuple[s
     return sha256_hasher.hexdigest(), md5_hasher.hexdigest()
 
 
+def verify_local_resource(resource: RemoteResource, target_path: Path) -> DownloadResult:
+    """Verify size and expected MD5/SHA-256 checksums of a local file."""
+    size_bytes = target_path.stat().st_size
+    if size_bytes < resource.expected_min_bytes:
+        raise ValueError(
+            f"File {target_path} is unexpectedly small: "
+            f"{size_bytes} bytes < {resource.expected_min_bytes} bytes."
+        )
+
+    sha256_hex, md5_hex = compute_checksums(target_path)
+    if resource.expected_md5 and md5_hex != resource.expected_md5:
+        raise ValueError(
+            f"MD5 mismatch for {target_path}: expected {resource.expected_md5}, got {md5_hex}"
+        )
+    if resource.expected_sha256 and sha256_hex != resource.expected_sha256:
+        raise ValueError(
+            f"SHA-256 mismatch for {target_path}: "
+            f"expected {resource.expected_sha256}, got {sha256_hex}"
+        )
+
+    return DownloadResult(
+        resource=resource,
+        local_path=target_path,
+        size_bytes=size_bytes,
+        sha256=sha256_hex,
+        md5=md5_hex,
+    )
+
+
 def download_resource(
     resource: RemoteResource,
-    output_dir: Path = RAW_DATA_DIR,
+    output_dir: Path = RAW_DIR,
     timeout_seconds: int = 120,
 ) -> DownloadResult:
     """Download a single resource to ``output_dir`` and verify its size and checksums."""
@@ -92,24 +122,10 @@ def download_resource(
             while chunk := response.read(1024 * 256):
                 out_file.write(chunk)
 
-    size_bytes = target_path.stat().st_size
-    if size_bytes < resource.expected_min_bytes:
-        raise ValueError(
-            f"Downloaded file {target_path} is unexpectedly small: "
-            f"{size_bytes} bytes < {resource.expected_min_bytes} bytes."
-        )
-
-    sha256_hex, md5_hex = compute_checksums(target_path)
-    return DownloadResult(
-        resource=resource,
-        local_path=target_path,
-        size_bytes=size_bytes,
-        sha256=sha256_hex,
-        md5=md5_hex,
-    )
+    return verify_local_resource(resource, target_path)
 
 
-def download_all_wfp(output_dir: Path = RAW_DATA_DIR) -> list[DownloadResult]:
+def download_all_wfp(output_dir: Path = RAW_DIR) -> list[DownloadResult]:
     """Download all official WFP Benin resources recorded in ``docs/DATA.md``."""
     results: list[DownloadResult] = []
     for resource in WFP_BENIN_RESOURCES:

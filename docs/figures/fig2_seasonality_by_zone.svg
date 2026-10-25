@@ -1,0 +1,387 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 760" width="1160" height="760" role="img" aria-label="Figure 2 — Bénin AgroMarket: 12-Month Seasonal Price Profiles by Agro-Ecological Latitude Zone (2019–2026 Tier-1 Markets)">
+  <title>Figure 2 — Bénin AgroMarket: 12-Month Seasonal Price Profiles by Agro-Ecological Latitude Zone (2019–2026 Tier-1 Markets)</title>
+  <desc>Four-panel seasonal index chart (100 = annual market mean) comparing South (&lt;7.5N), Center (7.5-9.5N), and North (&gt;=9.5N) across Maize (white), Tomatoes, Yam (white), and Early Yam.</desc>
+  <style>
+    text { font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif; fill: #1E1E1C; }
+    .fig-title { font-family: "Georgia", "Times New Roman", serif; font-size: 20px; font-weight: bold; fill: #1E1E1C; }
+    .fig-subtitle { font-size: 12.5px; fill: #5C5850; }
+    .panel-title { font-size: 13.5px; font-weight: bold; fill: #1E1E1C; }
+    .axis-label { font-size: 11px; fill: #5C5850; }
+    .tick-label { font-size: 10.5px; fill: #5C5850; }
+    .badge-text { font-size: 10.5px; font-weight: bold; }
+    .note-text { font-size: 10.5px; fill: #5C5850; }
+  </style>
+  <rect x="0" y="0" width="1160" height="760" fill="#FAF7F2" />
+  <text x="40" y="36" class="fig-title">Figure 2 — Profils saisonniers mensuels par zone agro-écologique (2019–2026, Indice 100 = moyenne annuelle)</text>
+  <text x="40" y="56" class="fig-subtitle">Indice déflaté par marché-année sur les marchés Tier-1 : Sud (&lt;7.5°N, bimodal), Centre (7.5°–9.5°N, transition) et Nord (&gt;=9.5°N, unimodal) avec bande IQR nationale</text>
+  <rect x="40" y="68" width="1080" height="26" fill="#F3EFE6" stroke="#D4CBB8" rx="4" />
+  <line x1="60" y1="81" x2="88" y2="81" stroke="#C84B31" stroke-width="2.5"  />
+  <text x="95" y="85" font-size="11" font-weight="bold" fill="#1E1E1C">South (&lt;7.5°N, Bimodal)</text>
+  <line x1="325" y1="81" x2="353" y2="81" stroke="#D99B26" stroke-width="2.5"  />
+  <text x="360" y="85" font-size="11" font-weight="bold" fill="#1E1E1C">Center (7.5°–9.5°N, Transition)</text>
+  <line x1="590" y1="81" x2="618" y2="81" stroke="#3A6073" stroke-width="2.5"  />
+  <text x="625" y="85" font-size="11" font-weight="bold" fill="#1E1E1C">North (&gt;=9.5°N, Unimodal)</text>
+  <line x1="855" y1="81" x2="883" y2="81" stroke="#1E1E1C" stroke-width="2.5" stroke-dasharray="5,3" />
+  <text x="890" y="85" font-size="11" font-weight="bold" fill="#1E1E1C">National Tier-1 Mean &amp; P25–P75 IQR Band</text>
+  <rect x="75.0" y="128.0" width="485.0" height="250.0" fill="#FFFFFF" stroke="#D4CBB8" stroke-width="1.2" />
+  <text x="75.0" y="120.0" class="panel-title">2A. Maïs blanc — Maize (white) [49 Tier-1 Markets]</text>
+  <line x1="75.0" y1="378.0" x2="560.0" y2="378.0" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="67.0" y="382.0" text-anchor="end" class="tick-label">60</text>
+  <line x1="75.0" y1="322.4" x2="560.0" y2="322.4" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="67.0" y="326.4" text-anchor="end" class="tick-label">80</text>
+  <line x1="75.0" y1="266.9" x2="560.0" y2="266.9" stroke="#1E1E1C" stroke-width="1.4" stroke-dasharray="3,3" />
+  <text x="67.0" y="270.9" text-anchor="end" class="tick-label">100</text>
+  <line x1="75.0" y1="211.3" x2="560.0" y2="211.3" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="67.0" y="215.3" text-anchor="end" class="tick-label">120</text>
+  <line x1="75.0" y1="155.8" x2="560.0" y2="155.8" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="67.0" y="159.8" text-anchor="end" class="tick-label">140</text>
+  <line x1="75.0" y1="128.0" x2="75.0" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="75.0" y="394.0" text-anchor="middle" class="tick-label">Jan</text>
+  <line x1="119.1" y1="128.0" x2="119.1" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="119.1" y="394.0" text-anchor="middle" class="tick-label">Feb</text>
+  <line x1="163.2" y1="128.0" x2="163.2" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="163.2" y="394.0" text-anchor="middle" class="tick-label">Mar</text>
+  <line x1="207.3" y1="128.0" x2="207.3" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="207.3" y="394.0" text-anchor="middle" class="tick-label">Apr</text>
+  <line x1="251.4" y1="128.0" x2="251.4" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="251.4" y="394.0" text-anchor="middle" class="tick-label">May</text>
+  <line x1="295.5" y1="128.0" x2="295.5" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="295.5" y="394.0" text-anchor="middle" class="tick-label">Jun</text>
+  <line x1="339.5" y1="128.0" x2="339.5" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="339.5" y="394.0" text-anchor="middle" class="tick-label">Jul</text>
+  <line x1="383.6" y1="128.0" x2="383.6" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="383.6" y="394.0" text-anchor="middle" class="tick-label">Aug</text>
+  <line x1="427.7" y1="128.0" x2="427.7" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="427.7" y="394.0" text-anchor="middle" class="tick-label">Sep</text>
+  <line x1="471.8" y1="128.0" x2="471.8" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="471.8" y="394.0" text-anchor="middle" class="tick-label">Oct</text>
+  <line x1="515.9" y1="128.0" x2="515.9" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="515.9" y="394.0" text-anchor="middle" class="tick-label">Nov</text>
+  <line x1="560.0" y1="128.0" x2="560.0" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="560.0" y="394.0" text-anchor="middle" class="tick-label">Dec</text>
+  <polygon points="75.0,242.6 119.1,242.5 163.2,236.4 207.3,220.5 251.4,219.1 295.5,225.2 339.5,227.1 383.6,233.1 427.7,257.2 471.8,270.1 515.9,279.3 560.0,260.5 560.0,313.5 515.9,325.9 471.8,325.8 427.7,313.1 383.6,289.8 339.5,264.0 295.5,269.1 251.4,270.4 207.3,273.6 163.2,289.4 119.1,292.0 75.0,297.8" fill="#9E9689" fill-opacity="0.20" />
+  <polyline points="75.0,267.7 119.1,262.2 163.2,255.7 207.3,240.8 251.4,238.3 295.5,242.9 339.5,249.9 383.6,275.7 427.7,295.8 471.8,296.2 515.9,298.1 560.0,279.4" fill="none" stroke="#C84B31" stroke-width="2.3"  />
+  <circle cx="75.0" cy="267.7" r="2.8" fill="#C84B31" />
+  <circle cx="119.1" cy="262.2" r="2.8" fill="#C84B31" />
+  <circle cx="163.2" cy="255.7" r="2.8" fill="#C84B31" />
+  <circle cx="207.3" cy="240.8" r="2.8" fill="#C84B31" />
+  <circle cx="251.4" cy="238.3" r="2.8" fill="#C84B31" />
+  <circle cx="295.5" cy="242.9" r="2.8" fill="#C84B31" />
+  <circle cx="339.5" cy="249.9" r="2.8" fill="#C84B31" />
+  <circle cx="383.6" cy="275.7" r="2.8" fill="#C84B31" />
+  <circle cx="427.7" cy="295.8" r="2.8" fill="#C84B31" />
+  <circle cx="471.8" cy="296.2" r="2.8" fill="#C84B31" />
+  <circle cx="515.9" cy="298.1" r="2.8" fill="#C84B31" />
+  <circle cx="560.0" cy="279.4" r="2.8" fill="#C84B31" />
+  <polyline points="75.0,274.0 119.1,263.1 163.2,253.2 207.3,247.6 251.4,245.2 295.5,241.0 339.5,245.3 383.6,253.5 427.7,285.7 471.8,305.5 515.9,301.6 560.0,286.9" fill="none" stroke="#D99B26" stroke-width="2.3"  />
+  <circle cx="75.0" cy="274.0" r="2.8" fill="#D99B26" />
+  <circle cx="119.1" cy="263.1" r="2.8" fill="#D99B26" />
+  <circle cx="163.2" cy="253.2" r="2.8" fill="#D99B26" />
+  <circle cx="207.3" cy="247.6" r="2.8" fill="#D99B26" />
+  <circle cx="251.4" cy="245.2" r="2.8" fill="#D99B26" />
+  <circle cx="295.5" cy="241.0" r="2.8" fill="#D99B26" />
+  <circle cx="339.5" cy="245.3" r="2.8" fill="#D99B26" />
+  <circle cx="383.6" cy="253.5" r="2.8" fill="#D99B26" />
+  <circle cx="427.7" cy="285.7" r="2.8" fill="#D99B26" />
+  <circle cx="471.8" cy="305.5" r="2.8" fill="#D99B26" />
+  <circle cx="515.9" cy="301.6" r="2.8" fill="#D99B26" />
+  <circle cx="560.0" cy="286.9" r="2.8" fill="#D99B26" />
+  <polyline points="75.0,276.6 119.1,276.0 163.2,276.1 207.3,256.1 251.4,256.3 295.5,260.0 339.5,234.5 383.6,227.7 427.7,239.3 471.8,291.6 515.9,311.8 560.0,296.7" fill="none" stroke="#3A6073" stroke-width="2.3"  />
+  <circle cx="75.0" cy="276.6" r="2.8" fill="#3A6073" />
+  <circle cx="119.1" cy="276.0" r="2.8" fill="#3A6073" />
+  <circle cx="163.2" cy="276.1" r="2.8" fill="#3A6073" />
+  <circle cx="207.3" cy="256.1" r="2.8" fill="#3A6073" />
+  <circle cx="251.4" cy="256.3" r="2.8" fill="#3A6073" />
+  <circle cx="295.5" cy="260.0" r="2.8" fill="#3A6073" />
+  <circle cx="339.5" cy="234.5" r="2.8" fill="#3A6073" />
+  <circle cx="383.6" cy="227.7" r="2.8" fill="#3A6073" />
+  <circle cx="427.7" cy="239.3" r="2.8" fill="#3A6073" />
+  <circle cx="471.8" cy="291.6" r="2.8" fill="#3A6073" />
+  <circle cx="515.9" cy="311.8" r="2.8" fill="#3A6073" />
+  <circle cx="560.0" cy="296.7" r="2.8" fill="#3A6073" />
+  <polyline points="75.0,271.2 119.1,266.4 163.2,261.3 207.3,246.1 251.4,244.4 295.5,247.5 339.5,244.8 383.6,258.6 427.7,277.9 471.8,296.2 515.9,302.6 560.0,285.7" fill="none" stroke="#1E1E1C" stroke-width="2.3" stroke-dasharray="5,3" />
+  <circle cx="75.0" cy="271.2" r="2.8" fill="#1E1E1C" />
+  <circle cx="119.1" cy="266.4" r="2.8" fill="#1E1E1C" />
+  <circle cx="163.2" cy="261.3" r="2.8" fill="#1E1E1C" />
+  <circle cx="207.3" cy="246.1" r="2.8" fill="#1E1E1C" />
+  <circle cx="251.4" cy="244.4" r="2.8" fill="#1E1E1C" />
+  <circle cx="295.5" cy="247.5" r="2.8" fill="#1E1E1C" />
+  <circle cx="339.5" cy="244.8" r="2.8" fill="#1E1E1C" />
+  <circle cx="383.6" cy="258.6" r="2.8" fill="#1E1E1C" />
+  <circle cx="427.7" cy="277.9" r="2.8" fill="#1E1E1C" />
+  <circle cx="471.8" cy="296.2" r="2.8" fill="#1E1E1C" />
+  <circle cx="515.9" cy="302.6" r="2.8" fill="#1E1E1C" />
+  <circle cx="560.0" cy="285.7" r="2.8" fill="#1E1E1C" />
+  <text x="85.0" y="146.0" font-size="10.5" font-weight="bold" fill="#1E1E1C">Peak: May (108.1) | Trough: Nov (87.1) | Spread: +24.1%</text>
+  <rect x="635.0" y="128.0" width="485.0" height="250.0" fill="#FFFFFF" stroke="#D4CBB8" stroke-width="1.2" />
+  <text x="635.0" y="120.0" class="panel-title">2B. Tomate fraîche — Tomatoes [43 Tier-1 Markets]</text>
+  <line x1="635.0" y1="378.0" x2="1120.0" y2="378.0" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="627.0" y="382.0" text-anchor="end" class="tick-label">40</text>
+  <line x1="635.0" y1="315.5" x2="1120.0" y2="315.5" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="627.0" y="319.5" text-anchor="end" class="tick-label">80</text>
+  <line x1="635.0" y1="253.0" x2="1120.0" y2="253.0" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="627.0" y="257.0" text-anchor="end" class="tick-label">120</text>
+  <line x1="635.0" y1="190.5" x2="1120.0" y2="190.5" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="627.0" y="194.5" text-anchor="end" class="tick-label">160</text>
+  <line x1="635.0" y1="128.0" x2="1120.0" y2="128.0" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="627.0" y="132.0" text-anchor="end" class="tick-label">200</text>
+  <line x1="635.0" y1="128.0" x2="635.0" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="635.0" y="394.0" text-anchor="middle" class="tick-label">Jan</text>
+  <line x1="679.1" y1="128.0" x2="679.1" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="679.1" y="394.0" text-anchor="middle" class="tick-label">Feb</text>
+  <line x1="723.2" y1="128.0" x2="723.2" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="723.2" y="394.0" text-anchor="middle" class="tick-label">Mar</text>
+  <line x1="767.3" y1="128.0" x2="767.3" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="767.3" y="394.0" text-anchor="middle" class="tick-label">Apr</text>
+  <line x1="811.4" y1="128.0" x2="811.4" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="811.4" y="394.0" text-anchor="middle" class="tick-label">May</text>
+  <line x1="855.5" y1="128.0" x2="855.5" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="855.5" y="394.0" text-anchor="middle" class="tick-label">Jun</text>
+  <line x1="899.5" y1="128.0" x2="899.5" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="899.5" y="394.0" text-anchor="middle" class="tick-label">Jul</text>
+  <line x1="943.6" y1="128.0" x2="943.6" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="943.6" y="394.0" text-anchor="middle" class="tick-label">Aug</text>
+  <line x1="987.7" y1="128.0" x2="987.7" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="987.7" y="394.0" text-anchor="middle" class="tick-label">Sep</text>
+  <line x1="1031.8" y1="128.0" x2="1031.8" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="1031.8" y="394.0" text-anchor="middle" class="tick-label">Oct</text>
+  <line x1="1075.9" y1="128.0" x2="1075.9" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="1075.9" y="394.0" text-anchor="middle" class="tick-label">Nov</text>
+  <line x1="1120.0" y1="128.0" x2="1120.0" y2="378.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="1120.0" y="394.0" text-anchor="middle" class="tick-label">Dec</text>
+  <polygon points="635.0,262.8 679.1,261.2 723.2,260.1 767.3,225.0 811.4,184.8 855.5,192.8 899.5,235.3 943.6,284.5 987.7,308.0 1031.8,300.2 1075.9,298.1 1120.0,278.4 1120.0,332.9 1075.9,348.9 1031.8,356.9 987.7,359.7 943.6,347.5 899.5,300.2 855.5,270.4 811.4,270.3 767.3,281.9 723.2,301.7 679.1,311.9 635.0,323.9" fill="#9E9689" fill-opacity="0.20" />
+  <polyline points="635.0,287.4 679.1,276.5 723.2,275.9 767.3,240.9 811.4,212.0 855.5,214.2 899.5,266.9 943.6,331.0 987.7,340.7 1031.8,328.3 1075.9,327.9 1120.0,309.3" fill="none" stroke="#C84B31" stroke-width="2.3"  />
+  <circle cx="635.0" cy="287.4" r="2.8" fill="#C84B31" />
+  <circle cx="679.1" cy="276.5" r="2.8" fill="#C84B31" />
+  <circle cx="723.2" cy="275.9" r="2.8" fill="#C84B31" />
+  <circle cx="767.3" cy="240.9" r="2.8" fill="#C84B31" />
+  <circle cx="811.4" cy="212.0" r="2.8" fill="#C84B31" />
+  <circle cx="855.5" cy="214.2" r="2.8" fill="#C84B31" />
+  <circle cx="899.5" cy="266.9" r="2.8" fill="#C84B31" />
+  <circle cx="943.6" cy="331.0" r="2.8" fill="#C84B31" />
+  <circle cx="987.7" cy="340.7" r="2.8" fill="#C84B31" />
+  <circle cx="1031.8" cy="328.3" r="2.8" fill="#C84B31" />
+  <circle cx="1075.9" cy="327.9" r="2.8" fill="#C84B31" />
+  <circle cx="1120.0" cy="309.3" r="2.8" fill="#C84B31" />
+  <polyline points="635.0,288.8 679.1,272.2 723.2,267.5 767.3,259.0 811.4,236.9 855.5,246.3 899.5,278.8 943.6,298.3 987.7,317.6 1031.8,326.3 1075.9,317.9 1120.0,301.5" fill="none" stroke="#D99B26" stroke-width="2.3"  />
+  <circle cx="635.0" cy="288.8" r="2.8" fill="#D99B26" />
+  <circle cx="679.1" cy="272.2" r="2.8" fill="#D99B26" />
+  <circle cx="723.2" cy="267.5" r="2.8" fill="#D99B26" />
+  <circle cx="767.3" cy="259.0" r="2.8" fill="#D99B26" />
+  <circle cx="811.4" cy="236.9" r="2.8" fill="#D99B26" />
+  <circle cx="855.5" cy="246.3" r="2.8" fill="#D99B26" />
+  <circle cx="899.5" cy="278.8" r="2.8" fill="#D99B26" />
+  <circle cx="943.6" cy="298.3" r="2.8" fill="#D99B26" />
+  <circle cx="987.7" cy="317.6" r="2.8" fill="#D99B26" />
+  <circle cx="1031.8" cy="326.3" r="2.8" fill="#D99B26" />
+  <circle cx="1075.9" cy="317.9" r="2.8" fill="#D99B26" />
+  <circle cx="1120.0" cy="301.5" r="2.8" fill="#D99B26" />
+  <polyline points="635.0,304.2 679.1,304.6 723.2,294.6 767.3,270.4 811.4,240.5 855.5,225.5 899.5,232.8 943.6,288.4 987.7,320.7 1031.8,321.7 1075.9,312.4 1120.0,295.2" fill="none" stroke="#3A6073" stroke-width="2.3"  />
+  <circle cx="635.0" cy="304.2" r="2.8" fill="#3A6073" />
+  <circle cx="679.1" cy="304.6" r="2.8" fill="#3A6073" />
+  <circle cx="723.2" cy="294.6" r="2.8" fill="#3A6073" />
+  <circle cx="767.3" cy="270.4" r="2.8" fill="#3A6073" />
+  <circle cx="811.4" cy="240.5" r="2.8" fill="#3A6073" />
+  <circle cx="855.5" cy="225.5" r="2.8" fill="#3A6073" />
+  <circle cx="899.5" cy="232.8" r="2.8" fill="#3A6073" />
+  <circle cx="943.6" cy="288.4" r="2.8" fill="#3A6073" />
+  <circle cx="987.7" cy="320.7" r="2.8" fill="#3A6073" />
+  <circle cx="1031.8" cy="321.7" r="2.8" fill="#3A6073" />
+  <circle cx="1075.9" cy="312.4" r="2.8" fill="#3A6073" />
+  <circle cx="1120.0" cy="295.2" r="2.8" fill="#3A6073" />
+  <polyline points="635.0,291.8 679.1,282.7 723.2,279.2 767.3,250.5 811.4,222.2 855.5,221.5 899.5,260.4 943.6,316.2 987.7,332.6 1031.8,326.5 1075.9,322.8 1120.0,304.7" fill="none" stroke="#1E1E1C" stroke-width="2.3" stroke-dasharray="5,3" />
+  <circle cx="635.0" cy="291.8" r="2.8" fill="#1E1E1C" />
+  <circle cx="679.1" cy="282.7" r="2.8" fill="#1E1E1C" />
+  <circle cx="723.2" cy="279.2" r="2.8" fill="#1E1E1C" />
+  <circle cx="767.3" cy="250.5" r="2.8" fill="#1E1E1C" />
+  <circle cx="811.4" cy="222.2" r="2.8" fill="#1E1E1C" />
+  <circle cx="855.5" cy="221.5" r="2.8" fill="#1E1E1C" />
+  <circle cx="899.5" cy="260.4" r="2.8" fill="#1E1E1C" />
+  <circle cx="943.6" cy="316.2" r="2.8" fill="#1E1E1C" />
+  <circle cx="987.7" cy="332.6" r="2.8" fill="#1E1E1C" />
+  <circle cx="1031.8" cy="326.5" r="2.8" fill="#1E1E1C" />
+  <circle cx="1075.9" cy="322.8" r="2.8" fill="#1E1E1C" />
+  <circle cx="1120.0" cy="304.7" r="2.8" fill="#1E1E1C" />
+  <text x="645.0" y="146.0" font-size="10.5" font-weight="bold" fill="#1E1E1C">Peak: Jun (140.2) | Trough: Sep (69.0) | Spread: +103.1%</text>
+  <rect x="75.0" y="445.0" width="485.0" height="250.0" fill="#FFFFFF" stroke="#D4CBB8" stroke-width="1.2" />
+  <text x="75.0" y="437.0" class="panel-title">2C. Igname blanche (Kokoro) — Yam (white) [19 Tier-1 Markets]</text>
+  <line x1="75.0" y1="695.0" x2="560.0" y2="695.0" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="67.0" y="699.0" text-anchor="end" class="tick-label">60</text>
+  <line x1="75.0" y1="639.4" x2="560.0" y2="639.4" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="67.0" y="643.4" text-anchor="end" class="tick-label">80</text>
+  <line x1="75.0" y1="583.9" x2="560.0" y2="583.9" stroke="#1E1E1C" stroke-width="1.4" stroke-dasharray="3,3" />
+  <text x="67.0" y="587.9" text-anchor="end" class="tick-label">100</text>
+  <line x1="75.0" y1="528.3" x2="560.0" y2="528.3" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="67.0" y="532.3" text-anchor="end" class="tick-label">120</text>
+  <line x1="75.0" y1="472.8" x2="560.0" y2="472.8" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="67.0" y="476.8" text-anchor="end" class="tick-label">140</text>
+  <line x1="75.0" y1="445.0" x2="75.0" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="75.0" y="711.0" text-anchor="middle" class="tick-label">Jan</text>
+  <line x1="119.1" y1="445.0" x2="119.1" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="119.1" y="711.0" text-anchor="middle" class="tick-label">Feb</text>
+  <line x1="163.2" y1="445.0" x2="163.2" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="163.2" y="711.0" text-anchor="middle" class="tick-label">Mar</text>
+  <line x1="207.3" y1="445.0" x2="207.3" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="207.3" y="711.0" text-anchor="middle" class="tick-label">Apr</text>
+  <line x1="251.4" y1="445.0" x2="251.4" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="251.4" y="711.0" text-anchor="middle" class="tick-label">May</text>
+  <line x1="295.5" y1="445.0" x2="295.5" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="295.5" y="711.0" text-anchor="middle" class="tick-label">Jun</text>
+  <line x1="339.5" y1="445.0" x2="339.5" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="339.5" y="711.0" text-anchor="middle" class="tick-label">Jul</text>
+  <line x1="383.6" y1="445.0" x2="383.6" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="383.6" y="711.0" text-anchor="middle" class="tick-label">Aug</text>
+  <line x1="427.7" y1="445.0" x2="427.7" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="427.7" y="711.0" text-anchor="middle" class="tick-label">Sep</text>
+  <line x1="471.8" y1="445.0" x2="471.8" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="471.8" y="711.0" text-anchor="middle" class="tick-label">Oct</text>
+  <line x1="515.9" y1="445.0" x2="515.9" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="515.9" y="711.0" text-anchor="middle" class="tick-label">Nov</text>
+  <line x1="560.0" y1="445.0" x2="560.0" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="560.0" y="711.0" text-anchor="middle" class="tick-label">Dec</text>
+  <polygon points="75.0,579.1 119.1,578.1 163.2,568.1 207.3,556.6 251.4,538.2 295.5,520.1 339.5,491.9 383.6,502.8 427.7,574.8 471.8,593.7 515.9,587.5 560.0,583.0 560.0,636.7 515.9,651.1 471.8,658.8 427.7,633.2 383.6,575.7 339.5,569.8 295.5,575.0 251.4,586.0 207.3,597.7 163.2,612.1 119.1,627.7 75.0,636.1" fill="#9E9689" fill-opacity="0.20" />
+  <polyline points="75.0,606.9 119.1,605.6 163.2,588.9 207.3,576.5 251.4,561.1 295.5,553.8 339.5,535.9 383.6,544.3 427.7,599.2 471.8,615.1 515.9,615.9 560.0,603.5" fill="none" stroke="#C84B31" stroke-width="2.3"  />
+  <circle cx="75.0" cy="606.9" r="2.8" fill="#C84B31" />
+  <circle cx="119.1" cy="605.6" r="2.8" fill="#C84B31" />
+  <circle cx="163.2" cy="588.9" r="2.8" fill="#C84B31" />
+  <circle cx="207.3" cy="576.5" r="2.8" fill="#C84B31" />
+  <circle cx="251.4" cy="561.1" r="2.8" fill="#C84B31" />
+  <circle cx="295.5" cy="553.8" r="2.8" fill="#C84B31" />
+  <circle cx="339.5" cy="535.9" r="2.8" fill="#C84B31" />
+  <circle cx="383.6" cy="544.3" r="2.8" fill="#C84B31" />
+  <circle cx="427.7" cy="599.2" r="2.8" fill="#C84B31" />
+  <circle cx="471.8" cy="615.1" r="2.8" fill="#C84B31" />
+  <circle cx="515.9" cy="615.9" r="2.8" fill="#C84B31" />
+  <circle cx="560.0" cy="603.5" r="2.8" fill="#C84B31" />
+  <polyline points="75.0,607.9 119.1,595.5 163.2,585.0 207.3,565.9 251.4,559.7 295.5,557.4 339.5,529.2 383.6,542.7 427.7,611.7 471.8,622.1 515.9,618.1 560.0,611.4" fill="none" stroke="#D99B26" stroke-width="2.3"  />
+  <circle cx="75.0" cy="607.9" r="2.8" fill="#D99B26" />
+  <circle cx="119.1" cy="595.5" r="2.8" fill="#D99B26" />
+  <circle cx="163.2" cy="585.0" r="2.8" fill="#D99B26" />
+  <circle cx="207.3" cy="565.9" r="2.8" fill="#D99B26" />
+  <circle cx="251.4" cy="559.7" r="2.8" fill="#D99B26" />
+  <circle cx="295.5" cy="557.4" r="2.8" fill="#D99B26" />
+  <circle cx="339.5" cy="529.2" r="2.8" fill="#D99B26" />
+  <circle cx="383.6" cy="542.7" r="2.8" fill="#D99B26" />
+  <circle cx="427.7" cy="611.7" r="2.8" fill="#D99B26" />
+  <circle cx="471.8" cy="622.1" r="2.8" fill="#D99B26" />
+  <circle cx="515.9" cy="618.1" r="2.8" fill="#D99B26" />
+  <circle cx="560.0" cy="611.4" r="2.8" fill="#D99B26" />
+  <polyline points="75.0,610.5 119.1,609.4 163.2,588.3 207.3,578.6 251.4,554.3 295.5,533.9 339.5,501.2 383.6,528.9 427.7,610.6 471.8,642.5 515.9,628.3 560.0,620.1" fill="none" stroke="#3A6073" stroke-width="2.3"  />
+  <circle cx="75.0" cy="610.5" r="2.8" fill="#3A6073" />
+  <circle cx="119.1" cy="609.4" r="2.8" fill="#3A6073" />
+  <circle cx="163.2" cy="588.3" r="2.8" fill="#3A6073" />
+  <circle cx="207.3" cy="578.6" r="2.8" fill="#3A6073" />
+  <circle cx="251.4" cy="554.3" r="2.8" fill="#3A6073" />
+  <circle cx="295.5" cy="533.9" r="2.8" fill="#3A6073" />
+  <circle cx="339.5" cy="501.2" r="2.8" fill="#3A6073" />
+  <circle cx="383.6" cy="528.9" r="2.8" fill="#3A6073" />
+  <circle cx="427.7" cy="610.6" r="2.8" fill="#3A6073" />
+  <circle cx="471.8" cy="642.5" r="2.8" fill="#3A6073" />
+  <circle cx="515.9" cy="628.3" r="2.8" fill="#3A6073" />
+  <circle cx="560.0" cy="620.1" r="2.8" fill="#3A6073" />
+  <polyline points="75.0,608.3 119.1,604.2 163.2,587.8 207.3,574.4 251.4,558.6 295.5,548.2 339.5,523.0 383.6,539.0 427.7,606.1 471.8,625.7 515.9,620.5 560.0,610.9" fill="none" stroke="#1E1E1C" stroke-width="2.3" stroke-dasharray="5,3" />
+  <circle cx="75.0" cy="608.3" r="2.8" fill="#1E1E1C" />
+  <circle cx="119.1" cy="604.2" r="2.8" fill="#1E1E1C" />
+  <circle cx="163.2" cy="587.8" r="2.8" fill="#1E1E1C" />
+  <circle cx="207.3" cy="574.4" r="2.8" fill="#1E1E1C" />
+  <circle cx="251.4" cy="558.6" r="2.8" fill="#1E1E1C" />
+  <circle cx="295.5" cy="548.2" r="2.8" fill="#1E1E1C" />
+  <circle cx="339.5" cy="523.0" r="2.8" fill="#1E1E1C" />
+  <circle cx="383.6" cy="539.0" r="2.8" fill="#1E1E1C" />
+  <circle cx="427.7" cy="606.1" r="2.8" fill="#1E1E1C" />
+  <circle cx="471.8" cy="625.7" r="2.8" fill="#1E1E1C" />
+  <circle cx="515.9" cy="620.5" r="2.8" fill="#1E1E1C" />
+  <circle cx="560.0" cy="610.9" r="2.8" fill="#1E1E1C" />
+  <text x="85.0" y="463.0" font-size="10.5" font-weight="bold" fill="#1E1E1C">Peak: Jul (121.9) | Trough: Oct (85.0) | Spread: +43.5%</text>
+  <rect x="635.0" y="445.0" width="485.0" height="250.0" fill="#FFFFFF" stroke="#D4CBB8" stroke-width="1.2" />
+  <text x="635.0" y="437.0" class="panel-title">2D. Igname précoce (Laboko) — Yam [EXPLORATION ONLY, 17 Tier-1 Markets]</text>
+  <line x1="635.0" y1="695.0" x2="1120.0" y2="695.0" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="627.0" y="699.0" text-anchor="end" class="tick-label">60</text>
+  <line x1="635.0" y1="639.4" x2="1120.0" y2="639.4" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="627.0" y="643.4" text-anchor="end" class="tick-label">80</text>
+  <line x1="635.0" y1="583.9" x2="1120.0" y2="583.9" stroke="#1E1E1C" stroke-width="1.4" stroke-dasharray="3,3" />
+  <text x="627.0" y="587.9" text-anchor="end" class="tick-label">100</text>
+  <line x1="635.0" y1="528.3" x2="1120.0" y2="528.3" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="627.0" y="532.3" text-anchor="end" class="tick-label">120</text>
+  <line x1="635.0" y1="472.8" x2="1120.0" y2="472.8" stroke="#E4DDD0" stroke-width="0.9"  />
+  <text x="627.0" y="476.8" text-anchor="end" class="tick-label">140</text>
+  <line x1="635.0" y1="445.0" x2="635.0" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="635.0" y="711.0" text-anchor="middle" class="tick-label">Jan</text>
+  <line x1="679.1" y1="445.0" x2="679.1" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="679.1" y="711.0" text-anchor="middle" class="tick-label">Feb</text>
+  <line x1="723.2" y1="445.0" x2="723.2" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="723.2" y="711.0" text-anchor="middle" class="tick-label">Mar</text>
+  <line x1="767.3" y1="445.0" x2="767.3" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="767.3" y="711.0" text-anchor="middle" class="tick-label">Apr</text>
+  <line x1="811.4" y1="445.0" x2="811.4" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="811.4" y="711.0" text-anchor="middle" class="tick-label">May</text>
+  <line x1="855.5" y1="445.0" x2="855.5" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="855.5" y="711.0" text-anchor="middle" class="tick-label">Jun</text>
+  <line x1="899.5" y1="445.0" x2="899.5" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="899.5" y="711.0" text-anchor="middle" class="tick-label">Jul</text>
+  <line x1="943.6" y1="445.0" x2="943.6" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="943.6" y="711.0" text-anchor="middle" class="tick-label">Aug</text>
+  <line x1="987.7" y1="445.0" x2="987.7" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="987.7" y="711.0" text-anchor="middle" class="tick-label">Sep</text>
+  <line x1="1031.8" y1="445.0" x2="1031.8" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="1031.8" y="711.0" text-anchor="middle" class="tick-label">Oct</text>
+  <line x1="1075.9" y1="445.0" x2="1075.9" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="1075.9" y="711.0" text-anchor="middle" class="tick-label">Nov</text>
+  <line x1="1120.0" y1="445.0" x2="1120.0" y2="695.0" stroke="#E4DDD0" stroke-width="0.7" />
+  <text x="1120.0" y="711.0" text-anchor="middle" class="tick-label">Dec</text>
+  <polygon points="635.0,583.8 679.1,574.9 723.2,569.6 767.3,552.9 811.4,544.3 855.5,512.3 899.5,494.9 943.6,500.1 987.7,578.9 1031.8,593.1 1075.9,593.4 1120.0,591.5 1120.0,642.2 1075.9,659.2 1031.8,663.9 987.7,637.6 943.6,577.3 899.5,578.2 855.5,575.2 811.4,582.5 767.3,588.5 723.2,605.5 679.1,625.9 635.0,640.1" fill="#9E9689" fill-opacity="0.20" />
+  <polyline points="635.0,610.1 679.1,594.2 723.2,587.8 767.3,571.9 811.4,561.5 855.5,544.9 899.5,536.3 943.6,536.1 987.7,608.9 1031.8,622.8 1075.9,625.1 1120.0,607.0" fill="none" stroke="#C84B31" stroke-width="2.3"  />
+  <circle cx="635.0" cy="610.1" r="2.8" fill="#C84B31" />
+  <circle cx="679.1" cy="594.2" r="2.8" fill="#C84B31" />
+  <circle cx="723.2" cy="587.8" r="2.8" fill="#C84B31" />
+  <circle cx="767.3" cy="571.9" r="2.8" fill="#C84B31" />
+  <circle cx="811.4" cy="561.5" r="2.8" fill="#C84B31" />
+  <circle cx="855.5" cy="544.9" r="2.8" fill="#C84B31" />
+  <circle cx="899.5" cy="536.3" r="2.8" fill="#C84B31" />
+  <circle cx="943.6" cy="536.1" r="2.8" fill="#C84B31" />
+  <circle cx="987.7" cy="608.9" r="2.8" fill="#C84B31" />
+  <circle cx="1031.8" cy="622.8" r="2.8" fill="#C84B31" />
+  <circle cx="1075.9" cy="625.1" r="2.8" fill="#C84B31" />
+  <circle cx="1120.0" cy="607.0" r="2.8" fill="#C84B31" />
+  <polyline points="635.0,610.4 679.1,603.0 723.2,596.5 767.3,560.1 811.4,570.5 855.5,561.1 899.5,563.6 943.6,550.9 987.7,611.4 1031.8,595.0 1075.9,586.2 1120.0,598.1" fill="none" stroke="#D99B26" stroke-width="2.3"  />
+  <circle cx="635.0" cy="610.4" r="2.8" fill="#D99B26" />
+  <circle cx="679.1" cy="603.0" r="2.8" fill="#D99B26" />
+  <circle cx="723.2" cy="596.5" r="2.8" fill="#D99B26" />
+  <circle cx="767.3" cy="560.1" r="2.8" fill="#D99B26" />
+  <circle cx="811.4" cy="570.5" r="2.8" fill="#D99B26" />
+  <circle cx="855.5" cy="561.1" r="2.8" fill="#D99B26" />
+  <circle cx="899.5" cy="563.6" r="2.8" fill="#D99B26" />
+  <circle cx="943.6" cy="550.9" r="2.8" fill="#D99B26" />
+  <circle cx="987.7" cy="611.4" r="2.8" fill="#D99B26" />
+  <circle cx="1031.8" cy="595.0" r="2.8" fill="#D99B26" />
+  <circle cx="1075.9" cy="586.2" r="2.8" fill="#D99B26" />
+  <circle cx="1120.0" cy="598.1" r="2.8" fill="#D99B26" />
+  <polyline points="635.0,611.2 679.1,609.4 723.2,592.0 767.3,579.1 811.4,563.0 855.5,526.5 899.5,501.1 943.6,488.2 987.7,611.8 1031.8,650.3 1075.9,649.4 1120.0,624.5" fill="none" stroke="#3A6073" stroke-width="2.3"  />
+  <circle cx="635.0" cy="611.2" r="2.8" fill="#3A6073" />
+  <circle cx="679.1" cy="609.4" r="2.8" fill="#3A6073" />
+  <circle cx="723.2" cy="592.0" r="2.8" fill="#3A6073" />
+  <circle cx="767.3" cy="579.1" r="2.8" fill="#3A6073" />
+  <circle cx="811.4" cy="563.0" r="2.8" fill="#3A6073" />
+  <circle cx="855.5" cy="526.5" r="2.8" fill="#3A6073" />
+  <circle cx="899.5" cy="501.1" r="2.8" fill="#3A6073" />
+  <circle cx="943.6" cy="488.2" r="2.8" fill="#3A6073" />
+  <circle cx="987.7" cy="611.8" r="2.8" fill="#3A6073" />
+  <circle cx="1031.8" cy="650.3" r="2.8" fill="#3A6073" />
+  <circle cx="1075.9" cy="649.4" r="2.8" fill="#3A6073" />
+  <circle cx="1120.0" cy="624.5" r="2.8" fill="#3A6073" />
+  <polyline points="635.0,610.4 679.1,598.8 723.2,589.8 767.3,572.2 811.4,562.9 855.5,542.7 899.5,531.3 943.6,526.3 987.7,609.9 1031.8,626.1 1075.9,626.1 1120.0,610.1" fill="none" stroke="#1E1E1C" stroke-width="2.3" stroke-dasharray="5,3" />
+  <circle cx="635.0" cy="610.4" r="2.8" fill="#1E1E1C" />
+  <circle cx="679.1" cy="598.8" r="2.8" fill="#1E1E1C" />
+  <circle cx="723.2" cy="589.8" r="2.8" fill="#1E1E1C" />
+  <circle cx="767.3" cy="572.2" r="2.8" fill="#1E1E1C" />
+  <circle cx="811.4" cy="562.9" r="2.8" fill="#1E1E1C" />
+  <circle cx="855.5" cy="542.7" r="2.8" fill="#1E1E1C" />
+  <circle cx="899.5" cy="531.3" r="2.8" fill="#1E1E1C" />
+  <circle cx="943.6" cy="526.3" r="2.8" fill="#1E1E1C" />
+  <circle cx="987.7" cy="609.9" r="2.8" fill="#1E1E1C" />
+  <circle cx="1031.8" cy="626.1" r="2.8" fill="#1E1E1C" />
+  <circle cx="1075.9" cy="626.1" r="2.8" fill="#1E1E1C" />
+  <circle cx="1120.0" cy="610.1" r="2.8" fill="#1E1E1C" />
+  <text x="645.0" y="463.0" font-size="10.5" font-weight="bold" fill="#1E1E1C">Peak: Aug (120.7) | Trough: Nov (84.8) | Spread: +42.4%</text>
+  <text x="40" y="744" class="note-text">Source: src/analysis/eda.py → docs/tables/eda_seasonality_profile.md (2019–2026 Tier-1 markets). Shaded band = National P25–P75 IQR of market-year seasonal indices.</text>
+</svg>
