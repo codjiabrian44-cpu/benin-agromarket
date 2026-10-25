@@ -56,3 +56,8 @@ until the owner replies.
 ## Rendering and files
 - All text is French: always declare UTF-8 (<meta charset="utf-8"> and correct HTTP headers). Check that accents render correctly.
 - Save screenshots in docs/screenshots/, never in the project root.
+
+## Downloads
+- Download data with Python scripts in src/ingest/ (standard library or requests), never with curl or wget.
+- Only download from the exact URLs recorded in docs/DATA.md (official sources such as data.humdata.org).
+- After each download, verify file size and record the SHA-256 checksum in docs/DATA.md.
