@@ -51,9 +51,33 @@ WEB_DATA_DIR = PROJECT_ROOT / "web" / "public" / "data"
 
 PRODUCT_LABELS_FR: Dict[str, str] = {
     "Maize (white)": "Maïs blanc",
-    "Tomatoes": "Tomate fraîche",
+    "Tomatoes": "Tomate",
     "Yam (white)": "Igname blanche (kokoro)",
     "Yam": "Igname précoce (laboko — exploration)",
+}
+
+MODEL_LABELS_FR: Dict[str, str] = {
+    "Naive_LastValue": "Dernier prix connu (méthode simple)",
+    "Seasonal_Ratio_Naive": "Ratio saisonnier (méthode simple)",
+    "Seasonal_Naive_12m": "Prix du même mois l'an dernier (méthode simple)",
+    "Ridge_ARX": "Régression saisonnière régularisée",
+    "HGBR_NoWeather": "Arbres de décision sur historique de prix",
+    "HGBR_WithWeather": "Arbres de décision (prix et météo)",
+    "ETS_HoltWinters": "Lissage exponentiel saisonnier",
+    "SARIMAX_101_011_12": "Modèle autorégressif saisonnier",
+    "SARIMA": "Modèle autorégressif saisonnier",
+}
+
+MODEL_LABELS_EN: Dict[str, str] = {
+    "Naive_LastValue": "Last known price (simple method)",
+    "Seasonal_Ratio_Naive": "Seasonal ratio (simple method)",
+    "Seasonal_Naive_12m": "Same month last year (simple method)",
+    "Ridge_ARX": "Regularized seasonal regression",
+    "HGBR_NoWeather": "Decision trees on price history",
+    "HGBR_WithWeather": "Decision trees (prices and weather)",
+    "ETS_HoltWinters": "Seasonal exponential smoothing",
+    "SARIMAX_101_011_12": "Seasonal autoregressive model",
+    "SARIMA": "Seasonal autoregressive model",
 }
 
 SEASON_REGIME_BY_PRODUCT_MONTH: Dict[str, Dict[int, str]] = {
@@ -277,7 +301,7 @@ def compute_product_horizon_reliability(
     best_model_test_stats: Dict[str, float],
     val_skill_vs_best_base: float = 0.0,
 ) -> Dict[str, Any]:
-    """Compute holdout-derived `reliability` status and bilingual 1-sentence UI notes."""
+    """Compute test-derived `reliability` status and plain-language bilingual UI notes."""
     cov80 = float(champ_test_stats["cov80"])
     cov90 = float(champ_test_stats["cov90"])
     mae = float(champ_test_stats["mae"])
@@ -287,6 +311,15 @@ def compute_product_horizon_reliability(
     skill_vs_best_base = (1.0 - mae / base_mae) * 100.0 if base_mae > 0 else 0.0
     nominal_80 = 80
 
+    champ_fr = MODEL_LABELS_FR.get(champ_id, champ_id)
+    champ_en = MODEL_LABELS_EN.get(champ_id, champ_id)
+    base_fr = MODEL_LABELS_FR.get(best_base_id, best_base_id)
+    base_en = MODEL_LABELS_EN.get(best_base_id, best_base_id)
+    best_test_fr = MODEL_LABELS_FR.get(best_model_test_id, best_model_test_id)
+    best_test_en = MODEL_LABELS_EN.get(best_model_test_id, best_model_test_id)
+    h_fr = "1 mois" if horizon == 1 else f"{horizon} mois"
+    h_en = "1 month" if horizon == 1 else f"{horizon} months"
+
     is_baseline_champ = champ_id in {"Naive_LastValue", "Seasonal_Naive_12m", "Seasonal_Ratio_Naive"}
     intervals_narrow = (cov80 < 75.0) or (cov90 < 85.0)
     worse_on_holdout = (mae - best_test_mae) > 0.5
@@ -294,72 +327,76 @@ def compute_product_horizon_reliability(
     if intervals_narrow and is_baseline_champ:
         status = "baseline_retained_intervals_too_narrow"
         note_fr = (
-            f"Référence saisonnière ({champ_id}) retenue par parcimonie (MAPE test {mape:.1f} %), "
-            f"mais les intervalles à {nominal_80} % sont trop étroits sur le holdout "
-            f"({cov80:.1f} % vs {nominal_80} % nominal) lors des transitions de récolte."
+            f"Méthode retenue : {champ_fr} (erreur moyenne de {mae:.1f} XOF/kg en test, soit {mape:.1f} %), "
+            f"mais la fourchette à {nominal_80} % est un peu trop étroite lors des variations rapides de prix "
+            f"({cov80:.1f} % des prix observés en test tombent dans la fourchette au lieu de {nominal_80} %)."
         )
         note_en = (
-            f"Seasonal baseline ({champ_id}) retained by parsimony (holdout MAPE {mape:.1f}%), "
-            f"but {nominal_80}% prediction intervals are too narrow on the holdout "
-            f"({cov80:.1f}% vs {nominal_80}% nominal) around harvest transitions."
+            f"Selected method: {champ_en} (average test error of {mae:.1f} XOF/kg, or {mape:.1f}%), "
+            f"but the {nominal_80}% interval is slightly too narrow during rapid price swings "
+            f"({cov80:.1f}% of observed test prices fall inside the interval instead of {nominal_80}%)."
         )
     elif intervals_narrow:
         status = "intervals_too_narrow"
         note_fr = (
-            f"Précision ponctuelle solide ({champ_id}, MAPE test {mape:.1f} %), mais la couverture "
-            f"empirique à {nominal_80} % ({cov80:.1f} %) est inférieure à la cible nominale de {nominal_80} %."
+            f"Méthode retenue : {champ_fr} (erreur moyenne de {mae:.1f} XOF/kg en test, soit {mape:.1f} %), "
+            f"mais la fourchette à {nominal_80} % n'a couvert que {cov80:.1f} % des prix observés en test "
+            f"(cible : {nominal_80} %)."
         )
         note_en = (
-            f"Solid point accuracy ({champ_id}, holdout MAPE {mape:.1f}%), but empirical {nominal_80}% interval "
-            f"coverage ({cov80:.1f}%) is below the {nominal_80}% nominal target."
+            f"Selected method: {champ_en} (average test error of {mae:.1f} XOF/kg, or {mape:.1f}%), "
+            f"but the {nominal_80}% interval covered {cov80:.1f}% of observed test prices "
+            f"(target: {nominal_80}%)."
         )
     elif is_baseline_champ:
         status = "baseline_retained"
         if champ_id == "Naive_LastValue":
             note_fr = (
-                f"Référence de persistance locale ({champ_id}) retenue : aucun modèle complexe ne bat "
-                f"le dernier prix observé à h={horizon} mois (MAE test {mae:.1f} XOF/kg, MAPE {mape:.1f} %, "
-                f"couverture {nominal_80} % bien calibrée à {cov80:.1f} %)."
+                f"Méthode retenue : {champ_fr}. À {h_fr}, aucune méthode statistique complexe ne fait "
+                f"mieux que le dernier prix connu (erreur moyenne en test : {mae:.1f} XOF/kg, soit {mape:.1f} % ; "
+                f"fourchette à {nominal_80} % fiable à {cov80:.1f} %)."
             )
             note_en = (
-                f"Local persistence baseline ({champ_id}) retained: no complex model beats the last "
-                f"observed price at h={horizon}m (holdout MAE {mae:.1f} XOF/kg, MAPE {mape:.1f}%, "
-                f"well-calibrated {nominal_80}% coverage at {cov80:.1f}%)."
+                f"Selected method: {champ_en}. At {h_en}, no complex statistical model beats the last "
+                f"known price (average test error: {mae:.1f} XOF/kg, or {mape:.1f}%; "
+                f"{nominal_80}% interval well calibrated at {cov80:.1f}%)."
             )
         else:
             note_fr = (
-                f"Référence saisonnière causale ({champ_id}) retenue par parcimonie (MAE test {mae:.1f} XOF/kg, "
-                f"MAPE {mape:.1f} %, couverture {nominal_80} % calibrée à {cov80:.1f} %)."
+                f"Méthode retenue : {champ_fr}, choisie car elle égale les modèles complexes "
+                f"(erreur moyenne en test : {mae:.1f} XOF/kg, soit {mape:.1f} % ; "
+                f"fourchette à {nominal_80} % fiable à {cov80:.1f} %)."
             )
             note_en = (
-                f"Causal seasonal baseline ({champ_id}) retained by parsimony (holdout MAE {mae:.1f} XOF/kg, "
-                f"MAPE {mape:.1f}%, calibrated {nominal_80}% coverage at {cov80:.1f}%)."
+                f"Selected method: {champ_en}, retained because it matches complex models "
+                f"(average test error: {mae:.1f} XOF/kg, or {mape:.1f}%; "
+                f"{nominal_80}% interval well calibrated at {cov80:.1f}%)."
             )
     else:
         status = "calibrated"
         if skill_vs_best_base >= 0.0:
             note_fr = (
-                f"Modèle {champ_id} bien calibré sur le holdout (MAE {mae:.1f} XOF/kg, MAPE {mape:.1f} %, "
-                f"gain de {skill_vs_best_base:+.1f} % vs meilleure référence {best_base_id}, "
-                f"couverture {nominal_80} % à {cov80:.1f} %)."
+                f"Méthode retenue : {champ_fr}, avec des fourchettes fiables en test "
+                f"(erreur moyenne : {mae:.1f} XOF/kg, soit {mape:.1f} %, gain de {skill_vs_best_base:+.1f} % "
+                f"par rapport à « {base_fr} », fourchette à {nominal_80} % couvrant {cov80:.1f} % des cas)."
             )
             note_en = (
-                f"Calibrated {champ_id} model on holdout (MAE {mae:.1f} XOF/kg, MAPE {mape:.1f}%, "
-                f"{skill_vs_best_base:+.1f}% skill vs best baseline {best_base_id}, "
-                f"{nominal_80}% interval coverage at {cov80:.1f}%)."
+                f"Selected method: {champ_en}, with well-calibrated test intervals "
+                f"(average error: {mae:.1f} XOF/kg, or {mape:.1f}%, {skill_vs_best_base:+.1f}% gain "
+                f"over '{base_en}', {nominal_80}% interval covering {cov80:.1f}% of cases)."
             )
         else:
             note_fr = (
-                f"Modèle {champ_id} retenu sur validation ({val_skill_vs_best_base:+.1f} % vs {best_base_id}) "
-                f"avec intervalles bien calibrés sur le holdout (couverture {nominal_80} % à {cov80:.1f} %, "
-                f"MAE {mae:.1f} XOF/kg, MAPE {mape:.1f} %), mais devancé sur le holdout par "
-                f"{best_model_test_id} ({best_test_mae:.1f} XOF/kg)."
+                f"Méthode retenue : {champ_fr}, sélectionnée sur la période d'entraînement "
+                f"({val_skill_vs_best_base:+.1f} % par rapport à « {base_fr} ») avec une fourchette à {nominal_80} % "
+                f"fiable en test ({cov80:.1f} % des cas, erreur moyenne de {mae:.1f} XOF/kg), bien que devancée "
+                f"sur les 12 mois de test par « {best_test_fr} » ({best_test_mae:.1f} XOF/kg)."
             )
             note_en = (
-                f"{champ_id} selected on validation ({val_skill_vs_best_base:+.1f}% vs {best_base_id}) "
-                f"with calibrated holdout intervals ({nominal_80}% coverage at {cov80:.1f}%, "
-                f"MAE {mae:.1f} XOF/kg, MAPE {mape:.1f}%), though trailed on the holdout by "
-                f"{best_model_test_id} ({best_test_mae:.1f} XOF/kg)."
+                f"Selected method: {champ_en}, chosen on the validation period "
+                f"({val_skill_vs_best_base:+.1f}% vs '{base_en}') with a reliable {nominal_80}% test interval "
+                f"({cov80:.1f}% coverage, average error {mae:.1f} XOF/kg), though trailed on the 12 test months "
+                f"by '{best_test_en}' ({best_test_mae:.1f} XOF/kg)."
             )
 
     return {
@@ -1774,19 +1811,19 @@ def export_web_forecasts_json(
             is_t1 = tier_str.startswith("Tier-1")
             if is_t1:
                 reason_fr = (
-                    f"Marché Tier-1 ({obs_m}/93 mois observés en 2019–2026, seuil >= 80/93) : "
-                    "prévisions actives avec intervalles à 80 % et 90 %."
+                    f"Marché bien suivi ({obs_m}/93 relevés de prix entre 2019 et 2026, seuil d'au moins 80 mois sur 93) : "
+                    "prévisions actives avec fourchettes à 80 % et 90 %."
                 )
                 reason_en = (
-                    f"Tier-1 market ({obs_m}/93 observed months in 2019–2026, threshold >= 80/93): "
+                    f"Well-tracked market ({obs_m}/93 price records between 2019 and 2026, threshold of at least 80 months out of 93): "
                     "active forecasts with 80% and 90% intervals."
                 )
             elif obs_m == 0:
-                reason_fr = "Aucune observation post-2019 pour ce produit dans ce marché : prévision désactivée conformément à la règle anti-invention de données."
-                reason_en = "Zero post-2019 observations for this product in this market: forecasting disabled per data integrity rules."
+                reason_fr = "Aucun relevé depuis 2019 pour ce produit dans ce marché : prévision désactivée conformément à la règle anti-invention de données."
+                reason_en = "Zero post-2019 price records for this product in this market: forecasting disabled per data integrity rules."
             else:
-                reason_fr = f"Couverture insuffisante ({obs_m}/93 mois observés en 2019–2026, seuil Tier-1 fixé à 80/93 mois) : historique affiché en mode exploration uniquement, sans prévision hasardeuse."
-                reason_en = f"Insufficient coverage ({obs_m}/93 observed months in 2019–2026 vs 80/93 Tier-1 threshold): historical series shown for exploration only, no forecast issued."
+                reason_fr = f"Suivi partiel ({obs_m}/93 relevés de prix entre 2019 et 2026, seuil fixé à 80 mois sur 93) : historique affiché en mode exploration uniquement, sans prévision hasardeuse."
+                reason_en = f"Partial coverage ({obs_m}/93 price records between 2019 and 2026 vs 80/93 threshold): historical series shown for exploration only, no forecast issued."
 
             prod_status[slug] = {
                 "tier": tier_str,

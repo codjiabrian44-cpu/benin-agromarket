@@ -328,6 +328,26 @@ def validate_forecasts_export(
         "baseline_retained_intervals_too_narrow",
     }
 
+    forbidden_note_tokens = (
+        "Tier-1",
+        "MAPE",
+        "MAE",
+        "holdout",
+        "h=1",
+        "h=2",
+        "h=3",
+        "Naive_LastValue",
+        "Seasonal_Ratio_Naive",
+        "Seasonal_Naive_12m",
+        "Ridge_ARX",
+        "HGBR_NoWeather",
+        "HGBR_WithWeather",
+        "ETS_HoltWinters",
+        "SARIMAX",
+        "récolte",
+        "soudure",
+    )
+
     for slug in EXPECTED_TIER1_COUNTS_BY_SLUG:
         p_meta = products_dict.get(slug, {})
         rel_by_h = p_meta.get("reliability_by_horizon", {})
@@ -338,11 +358,13 @@ def validate_forecasts_export(
             status_val = str(r_obj.get("status", ""))
             note_fr = str(r_obj.get("note_fr", "")).strip()
             note_en = str(r_obj.get("note_en", "")).strip()
+            has_jargon = any(tok in note_fr or tok in note_en for tok in forbidden_note_tokens)
             if (
                 status_val not in allowed_rel_statuses
                 or h_obj.get("reliability") != status_val
                 or len(note_fr) < 20
                 or len(note_en) < 20
+                or has_jargon
             ):
                 rel_violations += 1
             else:
@@ -350,17 +372,20 @@ def validate_forecasts_export(
 
     for s in series_list:
         for fp in s.get("forecasts", []):
+            n_fr = str(fp.get("reliability_note_fr", "")).strip()
+            n_en = str(fp.get("reliability_note_en", "")).strip()
             if (
                 str(fp.get("reliability", "")) not in allowed_rel_statuses
-                or len(str(fp.get("reliability_note_fr", "")).strip()) < 20
-                or len(str(fp.get("reliability_note_en", "")).strip()) < 20
+                or len(n_fr) < 20
+                or len(n_en) < 20
+                or any(tok in n_fr or tok in n_en for tok in forbidden_note_tokens)
             ):
                 rel_violations += 1
 
     c7_pass = (rel_violations == 0) and (len(rel_summary) == 9)
     record_check(
         "CHK-07",
-        "Per-(product, horizon) holdout `reliability` status and bilingual FR/EN notes",
+        "Per-(product, horizon) `reliability` status and plain-language FR/EN notes (zero jargon)",
         c7_pass,
         f"Violations={rel_violations}; 9 product-horizons: {', '.join(rel_summary)}",
     )

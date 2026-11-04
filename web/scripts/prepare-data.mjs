@@ -1,13 +1,18 @@
 /**
  * Build-time data validator, splitter, and self-hosted font/license bundler.
  *
- * Per `docs/PHASE3_BRIEF.md`:
+ * Per `docs/PHASE3_BRIEF.md` and `AGENTS.md`:
  * - Validates `web/public/data/forecasts.json` at build time before generating pages.
+ * - Ensures all 93 calendar months (`2019-01-15..2026-09-15`) are represented on the monthly
+ *   grid with `price: number | null` and `is_observed: boolean` so `d3.line().defined()` breaks
+ *   cleanly at every unobserved month (`2020-02`, `2021-07`, etc.).
+ * - Ensures plain-language bilingual reliability notes (`note_fr`, `note_en`) free of internal
+ *   model identifiers or technical jargon.
  * - Splits `forecasts.json` + generated CSV tables in `docs/tables/` into:
  *   1. `web/public/data/home-summary.json` (compact summary for Home `/` and `/en/`, never shipping all 111 full series)
- *   2. `web/public/data/product-maize_white.json` (49 Tier-1 series + monthly Tier-1 median reference)
- *   3. `web/public/data/product-tomatoes.json` (43 Tier-1 series + monthly Tier-1 median reference)
- *   4. `web/public/data/product-yam_white.json` (19 Tier-1 series + monthly Tier-1 median reference)
+ *   2. `web/public/data/product-maize_white.json` (49 well-tracked series + monthly median reference)
+ *   3. `web/public/data/product-tomatoes.json` (43 well-tracked series + monthly median reference)
+ *   4. `web/public/data/product-yam_white.json` (19 well-tracked series + monthly median reference)
  *   5. `web/public/data/method-tables.json` (script-generated Phase 1/2 tables for `/methode` and `/en/method`)
  * - Copies self-hosted variable Latin `.woff2` fonts (`Fraunces` and `Instrument Sans`, 65.15 KiB total <= 70 KB budget)
  *   and their SIL Open Font License (`OFL-1.1`) files into `web/public/fonts/`.
@@ -24,6 +29,104 @@ const PUBLIC_DATA_DIR = path.join(WEB_ROOT, 'public', 'data');
 const PUBLIC_FONTS_DIR = path.join(WEB_ROOT, 'public', 'fonts');
 const SRC_GEN_DIR = path.join(WEB_ROOT, 'src', 'data', 'generated');
 const TABLES_DIR = path.join(PROJECT_ROOT, 'docs', 'tables');
+
+const MODEL_LABELS_FR = {
+  Naive_LastValue: 'Dernier prix connu (méthode simple)',
+  Seasonal_Ratio_Naive: 'Ratio saisonnier (méthode simple)',
+  Seasonal_Naive_12m: "Prix du même mois l'an dernier (méthode simple)",
+  Ridge_ARX: 'Régression saisonnière régularisée',
+  HGBR_NoWeather: 'Arbres de décision sur historique de prix',
+  HGBR_WithWeather: 'Arbres de décision (prix et météo)',
+  ETS_HoltWinters: 'Lissage exponentiel saisonnier',
+  SARIMAX_101_011_12: 'Modèle autorégressif saisonnier',
+  SARIMA: 'Modèle autorégressif saisonnier',
+};
+
+const MODEL_LABELS_EN = {
+  Naive_LastValue: 'Last known price (simple method)',
+  Seasonal_Ratio_Naive: 'Seasonal ratio (simple method)',
+  Seasonal_Naive_12m: 'Same month last year (simple method)',
+  Ridge_ARX: 'Regularized seasonal regression',
+  HGBR_NoWeather: 'Decision trees on price history',
+  HGBR_WithWeather: 'Decision trees (prices and weather)',
+  ETS_HoltWinters: 'Seasonal exponential smoothing',
+  SARIMAX_101_011_12: 'Seasonal autoregressive model',
+  SARIMA: 'Seasonal autoregressive model',
+};
+
+function buildCalendarMonths2019To2026() {
+  const dates = [];
+  for (let yr = 2019; yr <= 2026; yr++) {
+    const maxMo = yr === 2026 ? 9 : 12;
+    for (let mo = 1; mo <= maxMo; mo++) {
+      const mStr = String(mo).padStart(2, '0');
+      dates.push({
+        date: `${yr}-${mStr}-15`,
+        year_month: `${yr}-${mStr}`,
+      });
+    }
+  }
+  return dates;
+}
+
+const CALENDAR_93_MONTHS = buildCalendarMonths2019To2026();
+
+function buildPlainReliabilityNotes(relObj, accObj, horizon) {
+  const status = relObj.status;
+  const champId = accObj.model_used;
+  const baseId = relObj.best_validation_baseline || accObj.best_baseline_val;
+  const bestTestId = relObj.best_holdout_candidate;
+  const bestTestMae = relObj.best_holdout_candidate_mae;
+  const mae = accObj.mae;
+  const mape = accObj.mape;
+  const cov80 = relObj.holdout_coverage_80_pct ?? accObj.coverage_80;
+  const skill = relObj.skill_vs_best_baseline_test_pct ?? accObj.skill_vs_best_baseline_pct;
+  const nominal80 = 80;
+
+  const champFr = MODEL_LABELS_FR[champId] || champId;
+  const champEn = MODEL_LABELS_EN[champId] || champId;
+  const baseFr = MODEL_LABELS_FR[baseId] || baseId;
+  const baseEn = MODEL_LABELS_EN[baseId] || baseId;
+  const bestTestFr = MODEL_LABELS_FR[bestTestId] || bestTestId;
+  const bestTestEn = MODEL_LABELS_EN[bestTestId] || bestTestId;
+  const hFr = horizon === 1 ? '1 mois' : `${horizon} mois`;
+  const hEn = horizon === 1 ? '1 month' : `${horizon} months`;
+
+  if (status === 'baseline_retained_intervals_too_narrow') {
+    return {
+      note_fr: `Méthode retenue : ${champFr} (erreur moyenne de ${mae.toFixed(1)} XOF/kg en test, soit ${mape.toFixed(1)} %), mais la fourchette à ${nominal80} % est un peu trop étroite lors des variations rapides de prix (${cov80.toFixed(1)} % des prix observés en test tombent dans la fourchette au lieu de ${nominal80} %).`,
+      note_en: `Selected method: ${champEn} (average test error of ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%), but the ${nominal80}% interval is slightly too narrow during rapid price swings (${cov80.toFixed(1)}% of observed test prices fall inside the interval instead of ${nominal80}%).`,
+    };
+  }
+  if (status === 'intervals_too_narrow') {
+    return {
+      note_fr: `Méthode retenue : ${champFr} (erreur moyenne de ${mae.toFixed(1)} XOF/kg en test, soit ${mape.toFixed(1)} %), mais la fourchette à ${nominal80} % n'a couvert que ${cov80.toFixed(1)} % des prix observés en test (cible : ${nominal80} %).`,
+      note_en: `Selected method: ${champEn} (average test error of ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%), but the ${nominal80}% interval covered ${cov80.toFixed(1)}% of observed test prices (target: ${nominal80}%).`,
+    };
+  }
+  if (status === 'baseline_retained') {
+    if (champId === 'Naive_LastValue') {
+      return {
+        note_fr: `Méthode retenue : ${champFr}. À ${hFr}, aucune méthode statistique complexe ne fait mieux que le dernier prix connu (erreur moyenne en test : ${mae.toFixed(1)} XOF/kg, soit ${mape.toFixed(1)} % ; fourchette à ${nominal80} % fiable à ${cov80.toFixed(1)} %).`,
+        note_en: `Selected method: ${champEn}. At ${hEn}, no complex statistical model beats the last known price (average test error: ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%; ${nominal80}% interval well calibrated at ${cov80.toFixed(1)}%).`,
+      };
+    }
+    return {
+      note_fr: `Méthode retenue : ${champFr}, choisie car elle égale les modèles complexes (erreur moyenne en test : ${mae.toFixed(1)} XOF/kg, soit ${mape.toFixed(1)} % ; fourchette à ${nominal80} % fiable à ${cov80.toFixed(1)} %).`,
+      note_en: `Selected method: ${champEn}, retained because it matches complex models (average test error: ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%; ${nominal80}% interval well calibrated at ${cov80.toFixed(1)}%).`,
+    };
+  }
+  if (skill >= 0) {
+    return {
+      note_fr: `Méthode retenue : ${champFr}, avec des fourchettes fiables en test (erreur moyenne : ${mae.toFixed(1)} XOF/kg, soit ${mape.toFixed(1)} %, gain de +${skill.toFixed(1)} % par rapport à « ${baseFr} », fourchette à ${nominal80} % couvrant ${cov80.toFixed(1)} % des cas).`,
+      note_en: `Selected method: ${champEn}, with well-calibrated test intervals (average error: ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%, +${skill.toFixed(1)}% gain over '${baseEn}', ${nominal80}% interval covering ${cov80.toFixed(1)}% of cases).`,
+    };
+  }
+  return {
+    note_fr: `Méthode retenue : ${champFr}, sélectionnée sur la période d'entraînement avec une fourchette à ${nominal80} % fiable en test (${cov80.toFixed(1)} % des cas, erreur moyenne de ${mae.toFixed(1)} XOF/kg), bien que devancée sur les 12 mois de test par « ${bestTestFr} » (${bestTestMae.toFixed(1)} XOF/kg).`,
+    note_en: `Selected method: ${champEn}, chosen on the training period with a reliable ${nominal80}% test interval (${cov80.toFixed(1)}% coverage, average error ${mae.toFixed(1)} XOF/kg), though trailed on the 12 test months by '${bestTestEn}' (${bestTestMae.toFixed(1)} XOF/kg).`,
+  };
+}
 
 function parseCsv(csvText) {
   const lines = csvText.replace(/\r\n/g, '\n').trim().split('\n');
@@ -130,7 +233,7 @@ function validateForecastsExport(payload) {
   }
   const series = payload.series || [];
   if (series.length !== 111) {
-    throw new Error(`[prepare-data] Expected 111 Tier-1 series, found ${series.length}`);
+    throw new Error(`[prepare-data] Expected 111 well-tracked series, found ${series.length}`);
   }
   const marketsCov = payload.markets_coverage || [];
   if (marketsCov.length !== 51) {
@@ -177,6 +280,34 @@ function validateForecastsExport(payload) {
   }
 }
 
+function buildFull93MonthCalendarHistory(rawHistory) {
+  const obsByDate = new Map();
+  for (const pt of rawHistory) {
+    if (pt.date >= '2019-01-15' && typeof pt.price === 'number' && Number.isFinite(pt.price)) {
+      obsByDate.set(pt.date, pt);
+    }
+  }
+  return CALENDAR_93_MONTHS.map(({ date, year_month }) => {
+    const found = obsByDate.get(date);
+    if (found) {
+      return {
+        date,
+        year_month,
+        price: found.price,
+        is_observed: true,
+        is_outlier: Boolean(found.is_outlier_level || found.is_outlier_jump || found.is_outlier),
+      };
+    }
+    return {
+      date,
+      year_month,
+      price: null,
+      is_observed: false,
+      is_outlier: false,
+    };
+  });
+}
+
 function buildSplitDataFiles() {
   const forecastsPath = path.join(PUBLIC_DATA_DIR, 'forecasts.json');
   if (!fs.existsSync(forecastsPath)) {
@@ -184,6 +315,75 @@ function buildSplitDataFiles() {
   }
   const payload = JSON.parse(fs.readFileSync(forecastsPath, 'utf-8'));
   validateForecastsExport(payload);
+
+  // Sanitize plain-language labels and reliability notes inside payload (and persist back to forecasts.json)
+  let forecastsUpdated = false;
+  if (payload.products?.tomatoes?.label_fr === 'Tomate fraîche') {
+    payload.products.tomatoes.label_fr = 'Tomate';
+    forecastsUpdated = true;
+  }
+  for (const slug of ['maize_white', 'tomatoes', 'yam_white']) {
+    const prodMeta = payload.products[slug];
+    for (const h of [1, 2, 3]) {
+      const hKey = `h${h}`;
+      const relObj = prodMeta.reliability_by_horizon[hKey];
+      const accObj = prodMeta.backtest_accuracy.by_horizon_test[hKey];
+      const plainNotes = buildPlainReliabilityNotes(relObj, accObj, h);
+      if (relObj.note_fr !== plainNotes.note_fr || relObj.note_en !== plainNotes.note_en) {
+        relObj.note_fr = plainNotes.note_fr;
+        relObj.note_en = plainNotes.note_en;
+        accObj.reliability_note_fr = plainNotes.note_fr;
+        accObj.reliability_note_en = plainNotes.note_en;
+        if (accObj.reliability_detail) {
+          accObj.reliability_detail.note_fr = plainNotes.note_fr;
+          accObj.reliability_detail.note_en = plainNotes.note_en;
+        }
+        forecastsUpdated = true;
+      }
+    }
+  }
+  for (const s of payload.series) {
+    if (s.product_slug === 'tomatoes' && s.label_fr === 'Tomate fraîche') {
+      s.label_fr = 'Tomate';
+      forecastsUpdated = true;
+    }
+    const prodRel = payload.products[s.product_slug].reliability_by_horizon;
+    s.reliability_by_horizon = prodRel;
+    for (const fc of s.forecasts) {
+      const relH = prodRel[`h${fc.horizon_months}`];
+      if (fc.reliability_note_fr !== relH.note_fr || fc.reliability_note_en !== relH.note_en) {
+        fc.reliability_note_fr = relH.note_fr;
+        fc.reliability_note_en = relH.note_en;
+        forecastsUpdated = true;
+      }
+    }
+  }
+  for (const mEntry of payload.markets_coverage || []) {
+    for (const slug of ['maize_white', 'tomatoes', 'yam_white']) {
+      const pCov = mEntry.coverage_by_product?.[slug];
+      if (!pCov) continue;
+      const obsM = pCov.obs_months_2019_2026 ?? 0;
+      const isT1 = Boolean(pCov.is_forecasted);
+      const nextFr = isT1
+        ? `Marché bien suivi (${obsM}/93 relevés de prix entre 2019 et 2026, seuil d'au moins 80 mois sur 93) : prévisions actives avec fourchettes à 80 % et 90 %.`
+        : obsM === 0
+          ? 'Aucun relevé depuis 2019 pour ce produit dans ce marché : prévision désactivée conformément à la règle anti-invention de données.'
+          : `Suivi partiel (${obsM}/93 relevés de prix entre 2019 et 2026, seuil fixé à 80 mois sur 93) : historique affiché en mode exploration uniquement, sans prévision hasardeuse.`;
+      const nextEn = isT1
+        ? `Well-tracked market (${obsM}/93 price records between 2019 and 2026, threshold of at least 80 months out of 93): active forecasts with 80% and 90% intervals.`
+        : obsM === 0
+          ? 'Zero post-2019 price records for this product in this market: forecasting disabled per data integrity rules.'
+          : `Partial coverage (${obsM}/93 price records between 2019 and 2026 vs 80/93 threshold): historical series shown for exploration only, no forecast issued.`;
+      if (pCov.status_note_fr !== nextFr || pCov.status_note_en !== nextEn) {
+        pCov.status_note_fr = nextFr;
+        pCov.status_note_en = nextEn;
+        forecastsUpdated = true;
+      }
+    }
+  }
+  if (forecastsUpdated) {
+    fs.writeFileSync(forecastsPath, JSON.stringify(payload, null, 2), 'utf-8');
+  }
 
   // Load supplementary generated CSV tables from docs/tables/
   const seasRows = parseCsv(
@@ -265,7 +465,7 @@ function buildSplitDataFiles() {
     const commodity = prodMeta.commodity;
     const prodSeries = payload.series.filter((s) => s.product_slug === slug);
 
-    // Compute monthly Tier-1 median and mean across all Tier-1 markets for this product
+    // Compute monthly median and mean across all well-tracked markets for this product
     const byDatePrices = new Map();
     for (const s of prodSeries) {
       for (const pt of s.history) {
@@ -286,7 +486,7 @@ function buildSplitDataFiles() {
       };
     });
 
-    // Latest national snapshot across Tier-1 markets
+    // Latest snapshot across well-tracked markets
     const latestMarketPoints = prodSeries.map((s) => {
       const f1 = s.forecasts.find((f) => f.horizon_months === 1);
       const f3 = s.forecasts.find((f) => f.horizon_months === 3);
@@ -332,7 +532,7 @@ function buildSplitDataFiles() {
       }))
       .sort((a, b) => b.latitude - a.latitude);
 
-    // National seasonality from eda_seasonality_profile.csv
+    // Seasonality across well-tracked markets from eda_seasonality_profile.csv
     const natSeasRow = seasRows.find(
       (r) => r['Product'] === commodity && r['Agro-Ecological Zone'] === 'All Tier-1 (National)'
     );
@@ -340,8 +540,9 @@ function buildSplitDataFiles() {
     const troughParsed = parseMonthIndexCell(natSeasRow?.['Trough Month (Index)'] || '');
     const peakParsed = parseMonthIndexCell(natSeasRow?.['Peak Month (Index)'] || '');
     const spreadParsed = parseSpreadCell(natSeasRow?.['Peak-to-Trough Spread (Index pts / %)'] || '');
+    const peakToTroughRatio = round(peakParsed.index / troughParsed.index, 2);
 
-    // EDA summary row for Tier-1 Modeling Window
+    // EDA summary row for Modeling Window
     const edaRow = edaSumRows.find(
       (r) => r['Product'] === commodity && r['Regime / Scope'].startsWith('Tier-1 Modeling Window')
     );
@@ -351,7 +552,8 @@ function buildSplitDataFiles() {
     if (!dantokpaFull) {
       throw new Error(`[prepare-data] Missing Dantokpa series for ${slug}`);
     }
-    const dantokpaHistory2019 = dantokpaFull.history.filter((pt) => pt.date >= '2019-01-15');
+    // Build full 93-month calendar history (2019-01-15..2026-09-15) with explicit nulls on unobserved months
+    const dantokpaHistory2019 = buildFull93MonthCalendarHistory(dantokpaFull.history);
 
     homeProducts[slug] = {
       commodity,
@@ -372,6 +574,7 @@ function buildSplitDataFiles() {
         trough_index: troughParsed.index,
         peak_month_num: peakParsed.month_num,
         peak_index: peakParsed.index,
+        peak_to_trough_ratio: peakToTroughRatio,
         spread_pts: spreadParsed.spread_pts,
         spread_pct: spreadParsed.spread_pct,
         monthly_indices: monthCols.map((mc, idx) => ({
@@ -431,7 +634,10 @@ function buildSplitDataFiles() {
         })),
       })),
       national_median_series: nationalMedianSeries,
-      series: prodSeries,
+      series: prodSeries.map((s) => ({
+        ...s,
+        history_calendar_2019_2026: buildFull93MonthCalendarHistory(s.history),
+      })),
     };
 
     const prodOutPath = path.join(PUBLIC_DATA_DIR, `product-${slug}.json`);

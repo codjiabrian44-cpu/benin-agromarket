@@ -29,6 +29,12 @@ TOKENS: Dict[str, str] = {
     "muted": "#6F665A",
     "line": "#D9CDB8",
     "paper-white": "#FFFDF9",
+    "maize-step-1": "#FBF3D5",
+    "maize-step-5": "#7A5200",
+    "tomato-step-1": "#F9E5DC",
+    "tomato-step-5": "#6E240B",
+    "yam-step-1": "#E3EFE6",
+    "yam-step-5": "#16331E",
 }
 
 
@@ -96,6 +102,12 @@ def run_contrast_audit() -> Tuple[Path, Path]:
         ("maize", "ink", "Maize accent highlight on dark `ink` background", "Allowed (AAA on dark `ink` only)"),
         ("sand", "laterite", "Light `sand` text on solid `laterite` button/badge fill", "Allowed (AA Normal & Large)"),
         ("sand", "green", "Light `sand` text on solid `green` button/badge fill", "Allowed (AAA / AA Normal & Large)"),
+        ("ink", "maize-step-1", "Dot map Maize lightest step (`#FBF3D5`) with dark `ink` stroke/label", "Allowed (AAA)"),
+        ("paper-white", "maize-step-5", "Dot map Maize darkest step (`#7A5200`) against `paper-white` canvas", "Allowed (AAA)"),
+        ("ink", "tomato-step-1", "Dot map Tomato lightest step (`#F9E5DC`) with dark `ink` stroke/label", "Allowed (AAA)"),
+        ("paper-white", "tomato-step-5", "Dot map Tomato darkest step (`#6E240B`) against `paper-white` canvas", "Allowed (AAA)"),
+        ("ink", "yam-step-1", "Dot map Yam lightest step (`#E3EFE6`) with dark `ink` stroke/label", "Allowed (AAA)"),
+        ("paper-white", "yam-step-5", "Dot map Yam darkest step (`#16331E`) against `paper-white` canvas", "Allowed (AAA)"),
         (
             "maize",
             "sand",

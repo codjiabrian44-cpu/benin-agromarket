@@ -62,3 +62,27 @@ export function formatYearMonth(dateStr: string, dict: Dictionary): string {
   const mKey = String(parseInt(mo, 10)) as keyof typeof dict.monthsShort;
   return `${dict.monthsShort[mKey] ?? mo} ${yr}`;
 }
+
+export function formatModelName(modelId: string, dict: Dictionary): string {
+  const key = modelId as keyof typeof dict.models;
+  return dict.models[key] ?? modelId;
+}
+
+export function formatZoneName(zoneRaw: string, dict: Dictionary): string {
+  const key = zoneRaw as keyof typeof dict.zones;
+  return dict.zones[key] ?? zoneRaw;
+}
+
+export function formatComputedStoryProse(
+  count: number,
+  troughMonth: string,
+  peakMonth: string,
+  ratioFormatted: string,
+  dict: Dictionary
+): string {
+  return dict.home.stories.computedProseTemplate
+    .replace('{count}', String(count))
+    .replace('{troughMonth}', troughMonth)
+    .replace('{peakMonth}', peakMonth)
+    .replace('{ratio}', ratioFormatted);
+}

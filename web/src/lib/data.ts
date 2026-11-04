@@ -4,7 +4,8 @@ import type { ProductSlug } from '../i18n';
 export interface HistoryPoint {
   date: string;
   year_month: string;
-  price: number;
+  price: number | null;
+  is_observed?: boolean;
   is_outlier: boolean;
 }
 
@@ -116,6 +117,7 @@ export interface HomeProductData {
     trough_index: number;
     peak_month_num: number;
     peak_index: number;
+    peak_to_trough_ratio?: number;
     spread_pts: number;
     spread_pct: string;
     monthly_indices: Array<{ month_num: number; index: number }>;

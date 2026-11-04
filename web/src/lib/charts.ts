@@ -4,9 +4,39 @@
  */
 
 import { extent, max, min } from 'd3-array';
+import { interpolateRgb } from 'd3-interpolate';
 import { scaleLinear, scaleTime } from 'd3-scale';
 import { area, curveMonotoneX, line } from 'd3-shape';
+import type { ProductSlug } from '../i18n';
 import type { ForecastPoint, HistoryPoint, Tier1MarketMapItem } from './data';
+
+/**
+ * 5-step single-hue sequential ramps per product (`light = cheaper`, `dark = more expensive`),
+ * generated with `d3-interpolate` between the product's light tint, mid identity token, and deep shade.
+ */
+export const PRODUCT_RAMP_5: Record<ProductSlug, [string, string, string, string, string]> = {
+  maize_white: [
+    '#FBF3D5',
+    interpolateRgb('#FBF3D5', '#E3A81F')(0.55),
+    '#E3A81F',
+    interpolateRgb('#E3A81F', '#7A5200')(0.5),
+    '#7A5200',
+  ],
+  tomatoes: [
+    '#F9E5DC',
+    interpolateRgb('#F9E5DC', '#B5471F')(0.5),
+    '#B5471F',
+    interpolateRgb('#B5471F', '#6E240B')(0.5),
+    '#6E240B',
+  ],
+  yam_white: [
+    '#E3EFE6',
+    interpolateRgb('#E3EFE6', '#2F5D3A')(0.48),
+    '#2F5D3A',
+    interpolateRgb('#2F5D3A', '#16331E')(0.5),
+    '#16331E',
+  ],
+};
 
 export interface HeroChartGeometry {
   width: number;
@@ -21,6 +51,7 @@ export interface HeroChartGeometry {
   xTicks: Array<{ year: number; x: number }>;
   asOfX: number;
   forecastEndX: number;
+  unobservedCount: number;
   lastObsPoint: { x: number; y: number; price: number; date: string };
   forecastPoints: Array<{
     x: number;
@@ -39,17 +70,23 @@ export function buildHeroChartGeometry(
   history: HistoryPoint[],
   forecasts: ForecastPoint[],
   width = 760,
-  height = 360
+  height = 280
 ): HeroChartGeometry {
-  const margin = { top: 26, right: 52, bottom: 38, left: 54 };
+  const margin = { top: 22, right: 44, bottom: 30, left: 48 };
   const forecastZoneWidth = 108; // Dedicated 108px visual span for the 3-month forecast fan
   const parseDate = (dStr: string) => new Date(`${dStr}T00:00:00Z`);
 
   const histDates = history.map((d) => parseDate(d.date));
   const [minDate, maxHistDate] = extent(histDates) as [Date, Date];
 
+  const observedHistory = history.filter(
+    (d): d is HistoryPoint & { price: number } =>
+      d.is_observed !== false && typeof d.price === 'number' && Number.isFinite(d.price)
+  );
+  const unobservedCount = history.length - observedHistory.length;
+
   const allValues = [
-    ...history.map((d) => d.price),
+    ...observedHistory.map((d) => d.price),
     ...forecasts.flatMap((f) => [f.low_90, f.high_90, f.point_forecast]),
   ];
   const yMaxRaw = max(allValues) ?? 500;
@@ -71,12 +108,14 @@ export function buildHeroChartGeometry(
     .nice(5)
     .range([height - margin.bottom, margin.top]);
 
+  // Strictly break the SVG path whenever a calendar month is unobserved (`is_observed === false` or `price === null`)
   const histLineGen = line<HistoryPoint>()
+    .defined((d) => d.is_observed !== false && typeof d.price === 'number' && Number.isFinite(d.price))
     .x((d) => xHistScale(parseDate(d.date)))
-    .y((d) => yScale(d.price))
+    .y((d) => yScale(d.price as number))
     .curve(curveMonotoneX);
 
-  const lastObs = history[history.length - 1];
+  const lastObs = observedHistory[observedHistory.length - 1];
   const bridgePoints = [
     {
       h: 0,
@@ -140,6 +179,7 @@ export function buildHeroChartGeometry(
     xTicks,
     asOfX: Math.round(asOfX * 10) / 10,
     forecastEndX: Math.round(forecastEndX * 10) / 10,
+    unobservedCount,
     lastObsPoint: {
       x: Math.round(asOfX * 10) / 10,
       y: Math.round(yScale(lastObs.price) * 10) / 10,
@@ -162,9 +202,16 @@ export function buildHeroChartGeometry(
 
 export function buildSparklineGeometry(
   points: Array<{ date: string; median_price: number }>,
-  width = 280,
+  width = 300,
   height = 68
-): { linePath: string; areaPath: string; lastX: number; lastY: number; minVal: number; maxVal: number } {
+): {
+  linePath: string;
+  areaPath: string;
+  lastX: number;
+  lastY: number;
+  minVal: number;
+  maxVal: number;
+} {
   const padX = 6;
   const padY = 8;
   const vals = points.map((p) => p.median_price);
@@ -204,50 +251,142 @@ export function buildSparklineGeometry(
 export interface DotMapNode extends Tier1MarketMapItem {
   cx: number;
   cy: number;
-  tierBand: 'below' | 'near' | 'above';
+  stepIndex: 1 | 2 | 3 | 4 | 5;
+  fillHex: string;
+  isCheapest: boolean;
+  isPriciest: boolean;
+}
+
+export interface MapCallout {
+  node: DotMapNode;
+  labelX: number;
+  labelY: number;
+  anchor: 'start' | 'end';
+  leaderPath: string;
+}
+
+export function classifyMedianBracketStep(diffPct: number): 1 | 2 | 3 | 4 | 5 {
+  if (diffPct <= -15) return 1;
+  if (diffPct <= -5) return 2;
+  if (diffPct < 5) return 3;
+  if (diffPct < 15) return 4;
+  return 5;
 }
 
 export function buildBeninDotMapGeometry(
   markets: Tier1MarketMapItem[],
-  width = 420,
-  height = 490
+  slug: ProductSlug,
+  latBandLabels: { '6_5': string; '7_5': string; '9_5': string; '11_5': string },
+  width = 430,
+  height = 520
 ): {
   width: number;
   height: number;
   mapLeft: number;
   mapRight: number;
+  rampColors: [string, string, string, string, string];
   nodes: DotMapNode[];
+  cheapestCallout: MapCallout;
+  priciestCallout: MapCallout;
   latBands: Array<{ lat: number; y: number; label: string }>;
 } {
   // Benin geographic bounding box: Lat 6.15°N to 12.45°N, Lon 0.75°E to 3.88°E
-  // Reserve a clean left gutter (x = 10..118) for latitude zone labels so zero labels overlap market dots
-  const mapLeft = 124;
-  const mapRight = width - 24;
-  const padY = 28;
+  // Reserve a clean left gutter (x = 10..122) for latitude zone labels, top gutter (y = 8..34)
+  // and bottom callout gutter (y = 460..514) so callout labels never touch any market dot.
+  const mapLeft = 128;
+  const mapRight = width - 18;
+  const topPlotY = 42;
+  const bottomPlotY = height - 64; // 456px: all market dots fall strictly in y = [45..448]
   const xScale = scaleLinear().domain([0.72, 3.92]).range([mapLeft, mapRight]);
-  const yScale = scaleLinear().domain([6.15, 12.45]).range([height - padY, padY]);
+  const yScale = scaleLinear().domain([6.15, 12.45]).range([bottomPlotY, topPlotY]);
+  const rampColors = PRODUCT_RAMP_5[slug];
+
+  // Identify cheapest and most expensive market
+  const sortedByPrice = [...markets].sort((a, b) => a.last_observed_price - b.last_observed_price);
+  const cheapestName = sortedByPrice[0]?.market_name ?? '';
+  const priciestName = sortedByPrice[sortedByPrice.length - 1]?.market_name ?? '';
 
   const nodes: DotMapNode[] = markets.map((m) => {
-    const tierBand =
-      m.diff_vs_median_pct <= -10
-        ? 'below'
-        : m.diff_vs_median_pct >= 10
-          ? 'above'
-          : 'near';
+    const stepIndex = classifyMedianBracketStep(m.diff_vs_median_pct);
     return {
       ...m,
       cx: Math.round(xScale(m.longitude) * 10) / 10,
       cy: Math.round(yScale(m.latitude) * 10) / 10,
-      tierBand,
+      stepIndex,
+      fillHex: rampColors[stepIndex - 1],
+      isCheapest: m.market_name === cheapestName,
+      isPriciest: m.market_name === priciestName,
     };
   });
 
+  const cheapestNode = nodes.find((n) => n.isCheapest) ?? nodes[0];
+  const priciestNode = nodes.find((n) => n.isPriciest) ?? nodes[nodes.length - 1];
+
+  const makeSlotCallout = (
+    node: DotMapNode,
+    labelX: number,
+    labelY: number,
+    anchor: 'start' | 'end'
+  ): MapCallout => {
+    const lineEndX = anchor === 'end' ? labelX - 6 : labelX + 6;
+    const lineY = Math.round((labelY - 3.5) * 10) / 10;
+    const elbowX = Math.round(node.cx * 10) / 10;
+    return {
+      node,
+      labelX,
+      labelY,
+      anchor,
+      leaderPath: `M ${node.cx} ${node.cy} L ${elbowX} ${lineY} L ${lineEndX} ${lineY}`,
+    };
+  };
+
+  let cheapestCallout: MapCallout;
+  let priciestCallout: MapCallout;
+
+  const cheapInNorth = cheapestNode.cy < 260;
+  const priceInNorth = priciestNode.cy < 260;
+
+  if (cheapInNorth && !priceInNorth) {
+    cheapestCallout = makeSlotCallout(cheapestNode, mapRight, 22, 'end');
+    priciestCallout = makeSlotCallout(priciestNode, mapRight, height - 16, 'end');
+  } else if (!cheapInNorth && priceInNorth) {
+    priciestCallout = makeSlotCallout(priciestNode, mapRight, 22, 'end');
+    cheapestCallout = makeSlotCallout(cheapestNode, mapRight, height - 16, 'end');
+  } else if (cheapInNorth && priceInNorth) {
+    if (cheapestNode.cy <= priciestNode.cy) {
+      cheapestCallout = makeSlotCallout(cheapestNode, mapRight, 18, 'end');
+      priciestCallout = makeSlotCallout(priciestNode, mapRight, 34, 'end');
+    } else {
+      priciestCallout = makeSlotCallout(priciestNode, mapRight, 18, 'end');
+      cheapestCallout = makeSlotCallout(cheapestNode, mapRight, 34, 'end');
+    }
+  } else {
+    // Both in southern/central half: route both into the dedicated 64px bottom callout gutter (y = 480 and y = 504)
+    if (cheapestNode.cx <= priciestNode.cx) {
+      cheapestCallout = makeSlotCallout(cheapestNode, 14, height - 36, 'start');
+      priciestCallout = makeSlotCallout(priciestNode, mapRight, height - 12, 'end');
+    } else {
+      priciestCallout = makeSlotCallout(priciestNode, 14, height - 36, 'start');
+      cheapestCallout = makeSlotCallout(cheapestNode, mapRight, height - 12, 'end');
+    }
+  }
+
   const latBands = [
-    { lat: 6.5, y: Math.round(yScale(6.5) * 10) / 10, label: '6.5°N · Sud' },
-    { lat: 7.5, y: Math.round(yScale(7.5) * 10) / 10, label: '7.5°N · Sud/Centre' },
-    { lat: 9.5, y: Math.round(yScale(9.5) * 10) / 10, label: '9.5°N · Centre/Nord' },
-    { lat: 11.5, y: Math.round(yScale(11.5) * 10) / 10, label: '11.5°N · Nord' },
+    { lat: 6.5, y: Math.round(yScale(6.5) * 10) / 10, label: latBandLabels['6_5'] },
+    { lat: 7.5, y: Math.round(yScale(7.5) * 10) / 10, label: latBandLabels['7_5'] },
+    { lat: 9.5, y: Math.round(yScale(9.5) * 10) / 10, label: latBandLabels['9_5'] },
+    { lat: 11.5, y: Math.round(yScale(11.5) * 10) / 10, label: latBandLabels['11_5'] },
   ];
 
-  return { width, height, mapLeft, mapRight, nodes, latBands };
+  return {
+    width,
+    height,
+    mapLeft,
+    mapRight,
+    rampColors,
+    nodes,
+    cheapestCallout,
+    priciestCallout,
+    latBands,
+  };
 }
