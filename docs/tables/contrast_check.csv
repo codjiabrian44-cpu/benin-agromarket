@@ -1,0 +1,20 @@
+Pair ID,Foreground Token,Foreground Hex,FG Luminance,Background Token,Background Hex,BG Luminance,Contrast Ratio,WCAG AA Normal (>=4.5:1),WCAG AA Large/UI (>=3.0:1),Usage Role & Enforcement Verdict
+CLR-01,ink,#1E1B16,0.0112,sand,#F6F0E4,0.8751,15.12:1,PASS,PASS,Primary body & display text on primary page background — Allowed (AAA)
+CLR-02,ink,#1E1B16,0.0112,sand-2,#EDE3D0,0.7750,13.48:1,PASS,PASS,"Primary text on cards, callouts, and table headers — Allowed (AAA)"
+CLR-03,ink,#1E1B16,0.0112,paper-white,#FFFDF9,0.9835,16.89:1,PASS,PASS,Primary text on elevated chart/tooltip surface — Allowed (AAA)
+CLR-04,ink,#1E1B16,0.0112,line,#D9CDB8,0.6188,10.93:1,PASS,PASS,Primary text on subtle neutral badge/pill (#D9CDB8) — Allowed (AAA)
+CLR-05,muted,#6F665A,0.1362,sand,#F6F0E4,0.8751,4.97:1,PASS,PASS,Secondary/caption/axis text on sand background — Allowed (AA Normal & Large)
+CLR-06,muted,#6F665A,0.1362,sand-2,#EDE3D0,0.7750,4.43:1,Large/UI Only (>=3.0:1),PASS,Secondary text on sand-2 surface — Large/UI text >=18.67px bold (4.43:1 >= 3.0:1); use ink (13.48:1) for small body text on sand-2
+CLR-07,muted,#6F665A,0.1362,paper-white,#FFFDF9,0.9835,5.55:1,PASS,PASS,Secondary text inside chart tooltips/panels — Allowed (AA Normal & Large)
+CLR-08,laterite,#B5471F,0.1443,sand,#F6F0E4,0.8751,4.76:1,PASS,PASS,Tomatoes accent / links / badges on sand background — Allowed (AA Normal & Large)
+CLR-09,laterite,#B5471F,0.1443,sand-2,#EDE3D0,0.7750,4.25:1,Large/UI Only (>=3.0:1),PASS,Tomatoes accent on sand-2 surface — Large/UI/Graphical >=3.0:1 (4.25:1); use ink (13.48:1) or solid laterite fill with sand text (4.76:1) for small text
+CLR-10,green,#2F5D3A,0.0874,sand,#F6F0E4,0.8751,6.73:1,PASS,PASS,Yam (white) accent / calibrated badge text on sand — Allowed (AA Normal & Large)
+CLR-11,green,#2F5D3A,0.0874,sand-2,#EDE3D0,0.7750,6.00:1,PASS,PASS,Yam (white) accent / calibrated badge text on sand-2 — Allowed (AA Normal & Large)
+CLR-12,ink,#1E1B16,0.0112,maize,#E3A81F,0.4444,8.08:1,PASS,PASS,Text on Maize (#E3A81F) chip / badge fill (Brief rule: text on maize is ink) — Allowed (AAA — Mandatory rule for Maize)
+CLR-13,sand,#F6F0E4,0.8751,ink,#1E1B16,0.0112,15.12:1,PASS,PASS,Inverted footer / dark button text (sand on ink) — Allowed (AAA)
+CLR-14,sand-2,#EDE3D0,0.7750,ink,#1E1B16,0.0112,13.48:1,PASS,PASS,Inverted secondary text (sand-2 on ink) — Allowed (AAA)
+CLR-15,maize,#E3A81F,0.4444,ink,#1E1B16,0.0112,8.08:1,PASS,PASS,Maize accent highlight on dark ink background — Allowed (AAA on dark ink only)
+CLR-16,sand,#F6F0E4,0.8751,laterite,#B5471F,0.1443,4.76:1,PASS,PASS,Light sand text on solid laterite button/badge fill — Allowed (AA Normal & Large)
+CLR-17,sand,#F6F0E4,0.8751,green,#2F5D3A,0.0874,6.73:1,PASS,PASS,Light sand text on solid green button/badge fill — Allowed (AAA / AA Normal & Large)
+CLR-18,maize,#E3A81F,0.4444,sand,#F6F0E4,0.8751,1.87:1,BANNED (Expected Fail),BANNED (Expected Fail),BANNED: Maize yellow text on light sand background — BANNED by brief (1.87:1 fails AA — never used for text on light backgrounds)
+CLR-19,maize,#E3A81F,0.4444,sand-2,#EDE3D0,0.7750,1.67:1,BANNED (Expected Fail),BANNED (Expected Fail),BANNED: Maize yellow text on light sand-2 background — BANNED by brief (1.67:1 fails AA — never used for text on light backgrounds)

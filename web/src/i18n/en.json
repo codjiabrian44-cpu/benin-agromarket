@@ -1,0 +1,180 @@
+{
+  "lang": "en",
+  "localeCode": "en-GB",
+  "meta": {
+    "siteName": "Bénin AgroMarket",
+    "siteTagline": "Open staple food price observatory for Benin",
+    "homeTitle": "Bénin AgroMarket — Market prices, finally legible",
+    "homeDescription": "2007–2026 price history, seasonal patterns, and 3-month ahead forecasts with uncertainty intervals for white maize, tomato, and white yam across Benin's markets.",
+    "explorerTitle": "Explore market prices — Bénin AgroMarket",
+    "explorerDescription": "Explore historical price trajectories, monthly seasonal profiles, and spatial price spreads across Benin's Tier-1 staple markets.",
+    "forecastTitle": "3-month forecasts & intervals — Bénin AgroMarket",
+    "forecastDescription": "1-, 2-, and 3-month ahead retail price forecasts with 80% and 90% prediction intervals and holdout reliability diagnostics.",
+    "methodTitle": "Method, models & limits — Bénin AgroMarket",
+    "methodDescription": "Leakage-free rolling-origin evaluation protocol, baseline comparisons, NASA POWER weather ablation, and operational model limits.",
+    "notFoundTitle": "Page not found (404) — Bénin AgroMarket"
+  },
+  "nav": {
+    "skipToContent": "Skip to main content",
+    "home": "Overview",
+    "explorer": "Explore prices",
+    "forecast": "Forecasts",
+    "method": "Method & limits",
+    "switchLangLabel": "Français",
+    "switchLangAria": "Switch interface language to French (Version française)",
+    "primaryNavAria": "Primary navigation",
+    "asOfBadge": "As of: Sep 2026"
+  },
+  "products": {
+    "maize_white": {
+      "chip": "White maize",
+      "full": "White maize (dry grain)",
+      "short": "White maize",
+      "story": "Storable grain with strong local month-to-month persistence: short-run moves stay tight, while seasonal tension widens in the unimodal North ahead of the autumn harvest."
+    },
+    "tomatoes": {
+      "chip": "Tomato",
+      "full": "Fresh tomato",
+      "short": "Tomato",
+      "story": "Perishable horticultural crop subject to sharp seasonal swings: retail prices more than double between the September harvest trough and the May–June lean-season peak."
+    },
+    "yam_white": {
+      "chip": "White yam",
+      "full": "White yam (kokoro)",
+      "short": "White yam",
+      "story": "Foundational staple tuber of Central and Northern Benin: supply tension peaks in July before new-harvest tubers arrive between August and October."
+    }
+  },
+  "months": {
+    "1": "January",
+    "2": "February",
+    "3": "March",
+    "4": "April",
+    "5": "May",
+    "6": "June",
+    "7": "July",
+    "8": "August",
+    "9": "September",
+    "10": "October",
+    "11": "November",
+    "12": "December"
+  },
+  "monthsShort": {
+    "1": "Jan",
+    "2": "Feb",
+    "3": "Mar",
+    "4": "Apr",
+    "5": "May",
+    "6": "Jun",
+    "7": "Jul",
+    "8": "Aug",
+    "9": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dec"
+  },
+  "reliability": {
+    "calibrated": "Calibrated holdout intervals",
+    "baseline_retained": "Parsimonious baseline retained",
+    "intervals_too_narrow": "Holdout intervals narrower than nominal",
+    "baseline_retained_intervals_too_narrow": "Baseline retained · narrow intervals (h=3)"
+  },
+  "units": {
+    "xofPerKg": "XOF/kg",
+    "nominalRetailNotice": "Nominal retail prices in XOF/kg (West African CFA franc).",
+    "marketsCount": "Tier-1 markets",
+    "obsMonthsCount": "observed market-months"
+  },
+  "home": {
+    "hero": {
+      "kicker": "Benin Staple Food Market Observatory · WFP / ONASA / INStaD Data",
+      "title": "Market prices, finally legible.",
+      "subtitle": "Maize, tomato, yam: price history, seasonal cycles and 3-month forecasts across Benin's markets, with their honest limits.",
+      "ctaExplorer": "Explore prices",
+      "ctaForecast": "View forecasts",
+      "productSelectorLabel": "Commodity displayed in chart and map:",
+      "chartTitlePrefix": "Benchmark market: Dantokpa (Cotonou) —",
+      "chartSubtitle": "Observed monthly retail history (2019–2026) and 3-month ahead projection (Oct–Dec 2026) with 80% and 90% uncertainty bands.",
+      "legendObserved": "Observed price (retail, XOF/kg)",
+      "legendForecast": "Point forecast (h=1 to 3 months)",
+      "legendBand80": "80% prediction interval",
+      "legendBand90": "90% prediction interval",
+      "latestObservedLabel": "Last observed price (Sep 2026)",
+      "forecastH3Label": "3-month forecast (Dec 2026)",
+      "interval80Label": "80% interval (Dec 2026)",
+      "modelUsedLabel": "Selected model (h=3)",
+      "asOfLabel": "Data as-of date",
+      "reliabilityHeading": "Holdout reliability diagnostic (2025–2026):",
+      "tableToggle": "Show underlying chart data table (Dantokpa)",
+      "tableDate": "Period",
+      "tableStatus": "Status",
+      "tablePrice": "Price / Forecast (XOF/kg)",
+      "tableInterval80": "80% Interval",
+      "tableInterval90": "90% Interval",
+      "statusObserved": "Observed",
+      "statusForecast": "Forecast"
+    },
+    "stories": {
+      "title": "Three staples, three price dynamics",
+      "subtitle": "Each staple follows its own agronomic calendar and volatility regime. Every figure below is computed directly from the Tier-1 market series (2019–2026).",
+      "latestMedianLabel": "National median (Sep 2026)",
+      "dantokpaLatestLabel": "Dantokpa (Sep 2026)",
+      "seasonalPeakLabel": "Seasonal peak",
+      "seasonalTroughLabel": "Harvest trough",
+      "seasonalSpreadLabel": "Seasonal amplitude",
+      "sparklineCaption": "Monthly national Tier-1 median price over the last 36 months (XOF/kg)",
+      "indexUnit": "index",
+      "exploreProductCta": "Explore this commodity"
+    },
+    "mapSection": {
+      "title": "One kilogram, different market realities",
+      "subtitle": "Geographic position of Tier-1 markets for the selected staple (latitude / longitude). Dot color encodes how each market's latest observed price (Sep 2026) compares to the national median.",
+      "productFilterLabel": "Compare markets for:",
+      "legendBelow": "Below median (≤ −10%)",
+      "legendNear": "Near median (−10% to +10%)",
+      "legendAbove": "Above median (≥ +10%)",
+      "nationalMedianStat": "National Tier-1 median:",
+      "lowestMarketStat": "Lowest-priced market:",
+      "highestMarketStat": "Highest-priced market:",
+      "spreadRatioStat": "Max / min ratio:",
+      "selectedMarketHeading": "Selected market details",
+      "selectedMarketHint": "Hover or tap any market dot on the map to inspect its price and forecast.",
+      "departmentLabel": "Department",
+      "zoneLabel": "Agro-ecological zone",
+      "latestPriceLabel": "Observed price (Sep 2026)",
+      "diffVsMedianLabel": "Spread vs national median",
+      "forecastH3MapLabel": "Dec 2026 forecast (h=3)",
+      "holdoutMapeLabel": "Holdout MAPE (h=1..3)",
+      "tableAlternativeToggle": "Show accessible data table of all Tier-1 markets",
+      "colMarket": "Market",
+      "colDepartment": "Department",
+      "colZone": "Zone",
+      "colCoords": "Coordinates (Lat, Lon)",
+      "colLatestPrice": "Sep 2026 price (XOF/kg)",
+      "colDiffMedian": "Spread vs median",
+      "colForecastH3": "Dec 2026 forecast (80% interval)"
+    },
+    "forecastTeaser": {
+      "title": "What the 3-month forecasts say",
+      "subtitle": "Outlook for October to December 2026 (as of 15 September 2026). Statistical honesty is built in: wherever a simple baseline matches complex models on validation, the baseline is retained.",
+      "horizon1Label": "Oct 2026 (h=1)",
+      "horizon2Label": "Nov 2026 (h=2)",
+      "horizon3Label": "Dec 2026 (h=3)",
+      "modelLabel": "Model:",
+      "holdoutMaeLabel": "Holdout test MAE:",
+      "skillVsBaselineLabel": "Skill vs best baseline:",
+      "coverage80Label": "Holdout 80% coverage:",
+      "openForecastPageCta": "Open market forecast tool",
+      "openMethodPageCta": "Read evaluation protocol & model limits"
+    }
+  },
+  "footer": {
+    "attributionHeading": "Data sources & open licenses",
+    "wfpAttribution": "Historical price data sourced from the World Food Programme (WFP VAM) Global Food Prices Database for Benin via OCHA's Humanitarian Data Exchange (HDX) under CC BY-IGO 3.0 (primary agencies: ONASA, CT-SAGSA, INStaD, FAO). Agroclimatic variables: NASA Langley Research Center (LaRC) POWER MERRA-2. Macroeconomic context: FAOSTAT (CC BY 4.0).",
+    "unofficialNotice": "Independent analytical and educational portfolio project (unofficial): this site is not affiliated with WFP, ONASA, or INStaD. Statistical forecasts carry uncertainty and do not constitute guaranteed commercial advice.",
+    "asOfLabel": "Data as of:",
+    "asOfDateFormatted": "15 September 2026",
+    "githubLabel": "Source code & reproducible pipeline on GitHub",
+    "modelCardLabel": "Methodology & honest limits"
+  }
+}

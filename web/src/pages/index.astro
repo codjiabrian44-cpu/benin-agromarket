@@ -1,0 +1,19 @@
+---
+import HomePage from '../components/HomePage.astro';
+import { getDictionary, getLocalizedRoutes } from '../i18n';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const locale = 'fr';
+const dict = getDictionary(locale);
+const routes = getLocalizedRoutes(locale, import.meta.env.BASE_URL);
+---
+
+<BaseLayout
+  locale={locale}
+  title={dict.meta.homeTitle}
+  description={dict.meta.homeDescription}
+  currentNav="home"
+  switchLangHref={routes.switchLang}
+>
+  <HomePage locale={locale} />
+</BaseLayout>

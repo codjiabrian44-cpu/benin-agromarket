@@ -1,0 +1,160 @@
+---
+import { getDictionary, getLocalizedRoutes, type Locale } from '../i18n';
+import '../styles/global.css';
+
+export interface Props {
+  locale: Locale;
+  title: string;
+  description: string;
+  currentNav: 'home' | 'explorer' | 'forecast' | 'method' | '404';
+  switchLangHref?: string;
+}
+
+const { locale, title, description, currentNav, switchLangHref } = Astro.props;
+const dict = getDictionary(locale);
+const baseUrl = import.meta.env.BASE_URL;
+const cleanBase = baseUrl === '/' ? '' : baseUrl.replace(/\/$/, '');
+const routes = getLocalizedRoutes(locale, baseUrl);
+const targetSwitchHref = switchLangHref ?? routes.switchLang;
+
+const frauncesUrl = `${cleanBase}/fonts/fraunces-latin-wght-normal.woff2`;
+const instrumentUrl = `${cleanBase}/fonts/instrument-sans-latin-wght-normal.woff2`;
+
+const fontFaceCss = `
+@font-face {
+  font-family: 'Fraunces Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('${frauncesUrl}') format('woff2-variations');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Sans Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 700;
+  src: url('${instrumentUrl}') format('woff2-variations');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+`;
+---
+
+<!doctype html>
+<html lang={dict.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={`${cleanBase}/favicon.svg`} />
+    <link rel="preload" href={frauncesUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={instrumentUrl} as="font" type="font/woff2" crossorigin />
+    <style set:html={fontFaceCss}></style>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">{dict.nav.skipToContent}</a>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href={routes.home} class="brand-link">
+          <span class="brand-name">
+            <span class="brand-triband" aria-hidden="true">
+              <span class="swatch-maize"></span>
+              <span class="swatch-tomato"></span>
+              <span class="swatch-yam"></span>
+            </span>
+            {dict.meta.siteName}
+          </span>
+          <span class="brand-tagline">{dict.meta.siteTagline}</span>
+        </a>
+
+        <nav aria-label={dict.nav.primaryNavAria} class="primary-nav">
+          <ul class="nav-list">
+            <li>
+              <a
+                href={routes.home}
+                class="nav-link"
+                aria-current={currentNav === 'home' ? 'page' : undefined}
+              >
+                {dict.nav.home}
+              </a>
+            </li>
+            <li>
+              <a
+                href={routes.explorer}
+                class="nav-link"
+                aria-current={currentNav === 'explorer' ? 'page' : undefined}
+              >
+                {dict.nav.explorer}
+              </a>
+            </li>
+            <li>
+              <a
+                href={routes.forecast}
+                class="nav-link"
+                aria-current={currentNav === 'forecast' ? 'page' : undefined}
+              >
+                {dict.nav.forecast}
+              </a>
+            </li>
+            <li>
+              <a
+                href={routes.method}
+                class="nav-link"
+                aria-current={currentNav === 'method' ? 'page' : undefined}
+              >
+                {dict.nav.method}
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <a
+          href={targetSwitchHref}
+          class="lang-switch"
+          aria-label={dict.nav.switchLangAria}
+          lang={locale === 'fr' ? 'en' : 'fr'}
+        >
+          {dict.nav.switchLangLabel}
+        </a>
+      </div>
+    </header>
+
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <h2 class="footer-heading">{dict.footer.attributionHeading}</h2>
+          <p class="footer-text">{dict.footer.wfpAttribution}</p>
+          <p class="footer-text">{dict.footer.unofficialNotice}</p>
+        </div>
+        <div>
+          <ul class="footer-meta-list">
+            <li>
+              <strong>{dict.footer.asOfLabel}</strong>{' '}
+              <span class="tabular-nums">{dict.footer.asOfDateFormatted} (2026-09-15)</span>
+            </li>
+            <li>
+              <a href={routes.method} class="footer-link">
+                {dict.footer.modelCardLabel}
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://github.com/benin-agromarket/benin-agromarket"
+                class="footer-link"
+                rel="noopener noreferrer"
+              >
+                {dict.footer.githubLabel}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

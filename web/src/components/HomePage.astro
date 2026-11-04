@@ -1,0 +1,1569 @@
+---
+import {
+  formatDecimal,
+  formatInt,
+  formatSignedPct,
+  formatYearMonth,
+  getDictionary,
+  getLocalizedRoutes,
+  type Locale,
+  type ProductSlug,
+} from '../i18n';
+import {
+  buildBeninDotMapGeometry,
+  buildHeroChartGeometry,
+  buildSparklineGeometry,
+} from '../lib/charts';
+import { getValidatedHomeData } from '../lib/data';
+
+export interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const dict = getDictionary(locale);
+const routes = getLocalizedRoutes(locale, import.meta.env.BASE_URL);
+const homeData = getValidatedHomeData();
+
+const productOrder: ProductSlug[] = ['maize_white', 'tomatoes', 'yam_white'];
+
+// Pre-compute D3 SVG geometries for all 3 products at build time so switching is instantaneous
+// and zero chart libraries or heavy client bundles are shipped.
+const productViews = productOrder.map((slug) => {
+  const prod = homeData.products[slug];
+  const heroGeom = buildHeroChartGeometry(prod.dantokpa.history, prod.dantokpa.forecasts, 760, 360);
+  const sparkGeom = buildSparklineGeometry(prod.latest_national_stats.sparkline_36m, 300, 72);
+  const mapGeom = buildBeninDotMapGeometry(prod.tier1_markets_map, 420, 490);
+  const fcH1 = prod.dantokpa.forecasts.find((f) => f.horizon_months === 1)!;
+  const fcH2 = prod.dantokpa.forecasts.find((f) => f.horizon_months === 2)!;
+  const fcH3 = prod.dantokpa.forecasts.find((f) => f.horizon_months === 3)!;
+  const relH3 = prod.reliability_by_horizon.h3;
+  const testH3 = prod.backtest_accuracy.by_horizon_test.h3;
+
+  const peakMonthName =
+    dict.months[String(prod.seasonality.peak_month_num) as keyof typeof dict.months];
+  const troughMonthName =
+    dict.months[String(prod.seasonality.trough_month_num) as keyof typeof dict.months];
+
+  // Last 12 observed months + 3 forecast months for the accessible Dantokpa table drawer
+  const recentHistory12 = prod.dantokpa.history.slice(-12);
+
+  return {
+    slug,
+    prod,
+    heroGeom,
+    sparkGeom,
+    mapGeom,
+    fcH1,
+    fcH2,
+    fcH3,
+    relH3,
+    testH3,
+    peakMonthName,
+    troughMonthName,
+    recentHistory12,
+  };
+});
+---
+
+<!-- =======================================================================
+     1. HERO: Editorial Thesis + Product Chips + Dantokpa Chart & Forecast
+     ======================================================================= -->
+<section class="section-block hero-section" data-active-product="maize_white" id="hero-root">
+  <div class="container">
+    <div class="grid-12 hero-grid">
+      <!-- Left Column (Cols 1-5): Headline, Subtitle, Product Chips, CTAs -->
+      <div class="hero-copy-col">
+        <p class="hero-kicker">{dict.home.hero.kicker}</p>
+        <h1 class="hero-title">{dict.home.hero.title}</h1>
+        <p class="hero-subtitle">{dict.home.hero.subtitle}</p>
+
+        <div class="hero-selector-block">
+          <span class="selector-label" id="hero-product-selector-label">
+            {dict.home.hero.productSelectorLabel}
+          </span>
+          <div class="chip-group" role="group" aria-labelledby="hero-product-selector-label">
+            {
+              productOrder.map((slug, idx) => (
+                <button
+                  type="button"
+                  class="product-chip"
+                  data-product={slug}
+                  data-role="product-switch"
+                  aria-pressed={idx === 0 ? 'true' : 'false'}
+                >
+                  <span class="chip-swatch" aria-hidden="true" />
+                  <span>{dict.products[slug].chip}</span>
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <a href={routes.explorer} class="btn btn-primary">
+            {dict.home.hero.ctaExplorer}
+          </a>
+          <a href={routes.forecast} class="btn btn-secondary">
+            {dict.home.hero.ctaForecast}
+          </a>
+        </div>
+      </div>
+
+      <!-- Right Column (Cols 6-12): Dantokpa Market Price History + 3-Month Forecast -->
+      <div class="hero-chart-col">
+        {
+          productViews.map((view, idx) => {
+            const { slug, prod, heroGeom, fcH3, relH3, recentHistory12 } = view;
+            const isDefault = idx === 0;
+            const relLabel =
+              dict.reliability[relH3.status as keyof typeof dict.reliability] ?? relH3.status;
+            const relNote = locale === 'fr' ? relH3.note_fr : relH3.note_en;
+
+            return (
+              <article
+                class="ledger-card hero-chart-panel"
+                data-product-panel={slug}
+                hidden={!isDefault}
+                aria-label={`${dict.home.hero.chartTitlePrefix} ${dict.products[slug].full}`}
+              >
+                <header class="chart-card-header">
+                  <div>
+                    <div class="chart-title-row">
+                      <span class={`product-pill pill-${slug}`}>{dict.products[slug].chip}</span>
+                      <h2 class="chart-card-title">
+                        {dict.home.hero.chartTitlePrefix} {dict.products[slug].full}
+                      </h2>
+                    </div>
+                    <p class="chart-card-subtitle">{dict.home.hero.chartSubtitle}</p>
+                  </div>
+                  <p class="unit-badge tabular-nums">{dict.units.nominalRetailNotice}</p>
+                </header>
+
+                <!-- Key KPI Strip Above Chart -->
+                <div class="kpi-strip tabular-nums">
+                  <div class="kpi-cell">
+                    <span class="kpi-label">{dict.home.hero.latestObservedLabel}</span>
+                    <strong class="kpi-value">
+                      {formatDecimal(prod.dantokpa.last_observed_price, locale, 1)}{' '}
+                      <small>{dict.units.xofPerKg}</small>
+                    </strong>
+                  </div>
+                  <div class="kpi-cell">
+                    <span class="kpi-label">{dict.home.hero.forecastH3Label}</span>
+                    <strong class="kpi-value">
+                      {formatDecimal(fcH3.point_forecast, locale, 1)}{' '}
+                      <small>{dict.units.xofPerKg}</small>{' '}
+                      <span class="kpi-delta">
+                        ({formatSignedPct(fcH3.change_vs_last_pct, locale, 1)})
+                      </span>
+                    </strong>
+                  </div>
+                  <div class="kpi-cell">
+                    <span class="kpi-label">{dict.home.hero.interval80Label}</span>
+                    <strong class="kpi-value">
+                      [{formatInt(fcH3.low_80, locale)}, {formatInt(fcH3.high_80, locale)}]{' '}
+                      <small>{dict.units.xofPerKg}</small>
+                    </strong>
+                  </div>
+                  <div class="kpi-cell">
+                    <span class="kpi-label">{dict.home.hero.modelUsedLabel}</span>
+                    <strong class="kpi-value kpi-code">{fcH3.model_used}</strong>
+                  </div>
+                </div>
+
+                <!-- Custom D3 SVG Chart -->
+                <div class="svg-chart-wrap">
+                  <svg
+                    viewBox={`0 0 ${heroGeom.width} ${heroGeom.height}`}
+                    class="hero-svg"
+                    role="img"
+                    aria-label={`${dict.home.hero.chartTitlePrefix} ${dict.products[slug].full} (2019–2026)`}
+                  >
+                    <title>
+                      {dict.home.hero.chartTitlePrefix} {dict.products[slug].full} (
+                      {dict.units.xofPerKg})
+                    </title>
+
+                    <!-- Shaded 3-Month Forecast Zone Backdrop -->
+                    <rect
+                      x={heroGeom.asOfX}
+                      y={heroGeom.margin.top}
+                      width={heroGeom.forecastZoneWidth}
+                      height={heroGeom.height - heroGeom.margin.top - heroGeom.margin.bottom}
+                      class="forecast-zone-bg"
+                    />
+
+                    <!-- Horizontal Y Gridlines & Labels -->
+                    {heroGeom.yTicks.map((t) => (
+                      <g class="axis-tick">
+                        <line
+                          x1={heroGeom.margin.left}
+                          x2={heroGeom.width - heroGeom.margin.right}
+                          y1={t.y}
+                          y2={t.y}
+                          class="grid-line"
+                        />
+                        <text
+                          x={heroGeom.margin.left - 8}
+                          y={t.y + 4}
+                          text-anchor="end"
+                          class="axis-text tabular-nums"
+                        >
+                          {formatInt(t.value, locale)}
+                        </text>
+                      </g>
+                    ))}
+
+                    <!-- Vertical X Year Ticks -->
+                    {heroGeom.xTicks.map((xt) => (
+                      <g class="axis-tick">
+                        <line
+                          x1={xt.x}
+                          x2={xt.x}
+                          y1={heroGeom.height - heroGeom.margin.bottom}
+                          y2={heroGeom.height - heroGeom.margin.bottom + 5}
+                          class="tick-mark"
+                        />
+                        <text
+                          x={xt.x}
+                          y={heroGeom.height - 10}
+                          text-anchor="middle"
+                          class="axis-text tabular-nums"
+                        >
+                          {xt.year}
+                        </text>
+                      </g>
+                    ))}
+
+                    <!-- As-of vertical divider line (2026-09-15) -->
+                    <line
+                      x1={heroGeom.asOfX}
+                      x2={heroGeom.asOfX}
+                      y1={heroGeom.margin.top}
+                      y2={heroGeom.height - heroGeom.margin.bottom}
+                      class="asof-line"
+                    />
+                    <text
+                      x={heroGeom.asOfX - 6}
+                      y={heroGeom.margin.top + 13}
+                      text-anchor="end"
+                      class="asof-label tabular-nums"
+                    >
+                      2026-09
+                    </text>
+                    <text
+                      x={heroGeom.asOfX + heroGeom.forecastZoneWidth / 2}
+                      y={heroGeom.margin.top + 13}
+                      text-anchor="middle"
+                      class="forecast-zone-label tabular-nums"
+                    >
+                      +1..3m
+                    </text>
+
+                    <!-- 90% and 80% Forecast Uncertainty Fan Bands -->
+                    <path d={heroGeom.band90Path} class={`fan-band-90 band-${slug}`} />
+                    <path d={heroGeom.band80Path} class={`fan-band-80 band-${slug}`} />
+
+                    <!-- Historical Observed Trajectory (2019-01..2026-09) -->
+                    <path d={heroGeom.historyPath} class={`line-history stroke-${slug}`} />
+
+                    <!-- 3-Month Dashed Forecast Path (2026-10..2026-12) -->
+                    <path d={heroGeom.forecastPath} class={`line-forecast stroke-${slug}`} />
+
+                    <!-- Last Observed Anchor Dot -->
+                    <circle
+                      cx={heroGeom.lastObsPoint.x}
+                      cy={heroGeom.lastObsPoint.y}
+                      r="4.5"
+                      class={`dot-anchor fill-${slug}`}
+                    />
+
+                    <!-- Forecast Horizon Dots (h=1, 2, 3) -->
+                    {heroGeom.forecastPoints.map((fp) => (
+                      <circle
+                        cx={fp.x}
+                        cy={fp.y}
+                        r="3.5"
+                        class={`dot-forecast stroke-${slug}`}
+                      />
+                    ))}
+                  </svg>
+                </div>
+
+                <!-- Legend Row -->
+                <div class="chart-legend">
+                  <span class="legend-item">
+                    <span class={`legend-line-swatch stroke-bg-${slug}`} />
+                    {dict.home.hero.legendObserved}
+                  </span>
+                  <span class="legend-item">
+                    <span class={`legend-dash-swatch stroke-bg-${slug}`} />
+                    {dict.home.hero.legendForecast}
+                  </span>
+                  <span class="legend-item">
+                    <span class={`legend-band80-swatch band-bg-${slug}`} />
+                    {dict.home.hero.legendBand80}
+                  </span>
+                  <span class="legend-item">
+                    <span class={`legend-band90-swatch band-bg-${slug}`} />
+                    {dict.home.hero.legendBand90}
+                  </span>
+                </div>
+
+                <!-- Honesty & Reliability Strip -->
+                <div class="honesty-strip">
+                  <div class="honesty-strip-top">
+                    <span class="reliability-badge" data-status={relH3.status}>
+                      {relLabel}
+                    </span>
+                    <span class="asof-meta tabular-nums">
+                      {dict.home.hero.asOfLabel} : <strong>{ homeData.metadata.as_of_date }</strong>
+                    </span>
+                  </div>
+                  <p class="honesty-note">{relNote}</p>
+                </div>
+
+                <!-- Accessible Data Table Drawer -->
+                <details class="data-drawer">
+                  <summary>{dict.home.hero.tableToggle}</summary>
+                  <div class="table-scroll">
+                    <table class="ledger-table">
+                      <thead>
+                        <tr>
+                          <th>{dict.home.hero.tableDate}</th>
+                          <th>{dict.home.hero.tableStatus}</th>
+                          <th class="num">{dict.home.hero.tablePrice}</th>
+                          <th class="num">{dict.home.hero.tableInterval80}</th>
+                          <th class="num">{dict.home.hero.tableInterval90}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {recentHistory12.map((pt) => (
+                          <tr>
+                            <td>{formatYearMonth(pt.date, dict)}</td>
+                            <td>{dict.home.hero.statusObserved}</td>
+                            <td class="num">{formatDecimal(pt.price, locale, 1)}</td>
+                            <td class="num">—</td>
+                            <td class="num">—</td>
+                          </tr>
+                        ))}
+                        {prod.dantokpa.forecasts.map((fc) => (
+                          <tr class="forecast-row">
+                            <td>
+                              {formatYearMonth(fc.target_date, dict)} (h={fc.horizon_months})
+                            </td>
+                            <td>
+                              <strong>{dict.home.hero.statusForecast}</strong> ({fc.model_used})
+                            </td>
+                            <td class="num">
+                              <strong>{formatDecimal(fc.point_forecast, locale, 1)}</strong>
+                            </td>
+                            <td class="num">
+                              [{formatDecimal(fc.low_80, locale, 1)},{' '}
+                              {formatDecimal(fc.high_80, locale, 1)}]
+                            </td>
+                            <td class="num">
+                              [{formatDecimal(fc.low_90, locale, 1)},{' '}
+                              {formatDecimal(fc.high_90, locale, 1)}]
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </details>
+              </article>
+            );
+          })
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =======================================================================
+     2. SECTION: "Trois produits, trois histoires" (Product Cards & Sparklines)
+     ======================================================================= -->
+<section class="section-block" aria-labelledby="stories-heading">
+  <div class="container">
+    <header class="section-header">
+      <h2 class="section-title" id="stories-heading">{dict.home.stories.title}</h2>
+      <p class="section-subtitle">{dict.home.stories.subtitle}</p>
+    </header>
+
+    <div class="grid-12 stories-grid">
+      {
+        productViews.map(({ slug, prod, sparkGeom, peakMonthName, troughMonthName }) => (
+          <article class={`story-card card-accent-${slug}`}>
+            <header class="story-card-header">
+              <div class="story-card-title-row">
+                <span class={`product-pill pill-${slug}`}>{dict.products[slug].chip}</span>
+                <span class="story-market-count tabular-nums">
+                  {prod.tier1_markets_count} {dict.units.marketsCount} ·{' '}
+                  {formatInt(prod.observed_market_months, locale)} {dict.units.obsMonthsCount}
+                </span>
+              </div>
+              <h3 class="story-card-title">{dict.products[slug].full}</h3>
+              <p class="story-card-prose">{dict.products[slug].story}</p>
+            </header>
+
+            <!-- 36-Month National Median Sparkline (D3 SVG) -->
+            <div class="sparkline-box">
+              <div class="sparkline-meta tabular-nums">
+                <span>{dict.home.stories.sparklineCaption}</span>
+              </div>
+              <svg
+                viewBox="0 0 300 72"
+                class="sparkline-svg"
+                role="img"
+                aria-label={`${dict.home.stories.sparklineCaption} — ${dict.products[slug].full}`}
+              >
+                <path d={sparkGeom.areaPath} class={`spark-area band-${slug}`} />
+                <path d={sparkGeom.linePath} class={`spark-line stroke-${slug}`} />
+                <circle
+                  cx={sparkGeom.lastX}
+                  cy={sparkGeom.lastY}
+                  r="4"
+                  class={`dot-anchor fill-${slug}`}
+                />
+              </svg>
+            </div>
+
+            <!-- Computed Agronomic & Price Stats -->
+            <dl class="story-stats-grid tabular-nums">
+              <div class="story-stat-item">
+                <dt>{dict.home.stories.latestMedianLabel}</dt>
+                <dd>
+                  <strong>
+                    {formatDecimal(prod.latest_national_stats.median_price, locale, 1)}{' '}
+                    {dict.units.xofPerKg}
+                  </strong>
+                </dd>
+              </div>
+              <div class="story-stat-item">
+                <dt>{dict.home.stories.dantokpaLatestLabel}</dt>
+                <dd>
+                  <strong>
+                    {formatDecimal(prod.dantokpa.last_observed_price, locale, 1)}{' '}
+                    {dict.units.xofPerKg}
+                  </strong>
+                </dd>
+              </div>
+              <div class="story-stat-item">
+                <dt>{dict.home.stories.seasonalPeakLabel}</dt>
+                <dd>
+                  <strong>{peakMonthName}</strong> ({dict.home.stories.indexUnit}{' '}
+                  {formatDecimal(prod.seasonality.peak_index, locale, 1)})
+                </dd>
+              </div>
+              <div class="story-stat-item">
+                <dt>{dict.home.stories.seasonalTroughLabel}</dt>
+                <dd>
+                  <strong>{troughMonthName}</strong> ({dict.home.stories.indexUnit}{' '}
+                  {formatDecimal(prod.seasonality.trough_index, locale, 1)})
+                </dd>
+              </div>
+              <div class="story-stat-item story-stat-wide">
+                <dt>{dict.home.stories.seasonalSpreadLabel}</dt>
+                <dd>
+                  <strong>{prod.seasonality.spread_pct}</strong> (
+                  {formatDecimal(prod.seasonality.spread_pts, locale, 1)} pts · CV{' '}
+                  {prod.panel_cv_pct})
+                </dd>
+              </div>
+            </dl>
+
+            <footer class="story-card-footer">
+              <a href={`${routes.explorer}?product=${slug}`} class="story-link">
+                {dict.home.stories.exploreProductCta} ({dict.products[slug].chip})
+              </a>
+            </footer>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<!-- =======================================================================
+     3. SECTION: "Un même kilo, des prix différents" (Benin Tier-1 Dot Map)
+     ======================================================================= -->
+<section class="section-block" aria-labelledby="map-section-heading">
+  <div class="container">
+    <header class="section-header map-section-header">
+      <div>
+        <h2 class="section-title" id="map-section-heading">{dict.home.mapSection.title}</h2>
+        <p class="section-subtitle">{dict.home.mapSection.subtitle}</p>
+      </div>
+      <div>
+        <span class="selector-label" id="map-product-selector-label">
+          {dict.home.mapSection.productFilterLabel}
+        </span>
+        <div class="chip-group" role="group" aria-labelledby="map-product-selector-label">
+          {
+            productOrder.map((slug, idx) => (
+              <button
+                type="button"
+                class="product-chip"
+                data-product={slug}
+                data-role="product-switch"
+                aria-pressed={idx === 0 ? 'true' : 'false'}
+              >
+                <span class="chip-swatch" aria-hidden="true" />
+                <span>{dict.products[slug].chip}</span>
+              </button>
+            ))
+          }
+        </div>
+      </div>
+    </header>
+
+    {
+      productViews.map(({ slug, prod, mapGeom }, idx) => {
+        const isDefault = idx === 0;
+        const defaultMarket =
+          mapGeom.nodes.find((n) => n.market_name === 'Dantokpa') ?? mapGeom.nodes[0];
+
+        return (
+          <div class="map-product-panel" data-map-panel={slug} hidden={!isDefault}>
+            <div class="grid-12 map-layout-grid">
+              <!-- Dot Map Canvas (Cols 1-6) -->
+              <div class="map-canvas-col ledger-card">
+                <div class="map-legend-bar">
+                  <span class="map-legend-item">
+                    <span class="map-dot-swatch band-below" />
+                    {dict.home.mapSection.legendBelow}
+                  </span>
+                  <span class="map-legend-item">
+                    <span class="map-dot-swatch band-near" />
+                    {dict.home.mapSection.legendNear}
+                  </span>
+                  <span class="map-legend-item">
+                    <span class="map-dot-swatch band-above" />
+                    {dict.home.mapSection.legendAbove}
+                  </span>
+                </div>
+
+                <div class="dotmap-svg-wrap">
+                  <svg
+                    viewBox={`0 0 ${mapGeom.width} ${mapGeom.height}`}
+                    class="dotmap-svg"
+                    role="img"
+                    aria-label={`${dict.home.mapSection.title} — ${dict.products[slug].full}`}
+                  >
+                    <title>
+                      {dict.home.mapSection.title} — {dict.products[slug].full}
+                    </title>
+
+                    <!-- Latitude reference lines (no base map per brief; left gutter for labels) -->
+                    {mapGeom.latBands.map((lb) => (
+                      <g>
+                        <line
+                          x1={mapGeom.mapLeft}
+                          x2={mapGeom.mapRight}
+                          y1={lb.y}
+                          y2={lb.y}
+                          class="grid-line"
+                        />
+                        <text x="12" y={lb.y + 4} class="axis-text tabular-nums">
+                          {lb.label}
+                        </text>
+                      </g>
+                    ))}
+
+                    <!-- Market Dots positioned strictly by (longitude, latitude) -->
+                    {mapGeom.nodes.map((node) => {
+                      const isDantokpa = node.market_name === defaultMarket.market_name;
+                      return (
+                        <g
+                          class={`map-market-node tier-${node.tierBand}`}
+                          tabindex="0"
+                          role="button"
+                          aria-label={`${node.market_name} (${node.department}) : ${formatDecimal(node.last_observed_price, locale, 1)} ${dict.units.xofPerKg} (${formatSignedPct(node.diff_vs_median_pct, locale, 1)})`}
+                          data-market-node={slug}
+                          data-market-name={node.market_name}
+                          data-department={node.department}
+                          data-zone={node.agro_zone}
+                          data-price={formatDecimal(node.last_observed_price, locale, 1)}
+                          data-diff={formatSignedPct(node.diff_vs_median_pct, locale, 1)}
+                          data-h3={`${formatDecimal(node.h3_forecast, locale, 1)} [${formatInt(node.h3_low_80, locale)}, ${formatInt(node.h3_high_80, locale)}]`}
+                          data-mape={
+                            node.holdout_mape !== null
+                              ? `${formatDecimal(node.holdout_mape, locale, 1)} %`
+                              : '—'
+                          }
+                          data-active={isDantokpa ? 'true' : 'false'}
+                        >
+                          <circle cx={node.cx} cy={node.cy} r="12" class="map-hit-target" />
+                          <circle
+                            cx={node.cx}
+                            cy={node.cy}
+                            r={isDantokpa ? '7' : '5.5'}
+                            class={`map-dot band-${node.tierBand}`}
+                          />
+                        </g>
+                      );
+                    })}
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Spatial Summary & Interactive Market Inspector (Cols 7-12) -->
+              <div class="map-inspector-col">
+                <div class="ledger-card spatial-summary-card tabular-nums">
+                  <div class="spatial-kpi-grid">
+                    <div>
+                      <span class="kpi-label">{dict.home.mapSection.nationalMedianStat}</span>
+                      <strong class="kpi-value">
+                        {formatDecimal(prod.latest_national_stats.median_price, locale, 1)}{' '}
+                        {dict.units.xofPerKg}
+                      </strong>
+                    </div>
+                    <div>
+                      <span class="kpi-label">{dict.home.mapSection.spreadRatioStat}</span>
+                      <strong class="kpi-value">
+                        {formatDecimal(prod.latest_national_stats.max_min_ratio, locale, 2)}×
+                      </strong>
+                    </div>
+                    <div>
+                      <span class="kpi-label">{dict.home.mapSection.lowestMarketStat}</span>
+                      <strong class="kpi-value">
+                        {prod.latest_national_stats.min_market_name} (
+                        {formatDecimal(prod.latest_national_stats.min_price, locale, 1)}{' '}
+                        {dict.units.xofPerKg})
+                      </strong>
+                    </div>
+                    <div>
+                      <span class="kpi-label">{dict.home.mapSection.highestMarketStat}</span>
+                      <strong class="kpi-value">
+                        {prod.latest_national_stats.max_market_name} (
+                        {formatDecimal(prod.latest_national_stats.max_price, locale, 1)}{' '}
+                        {dict.units.xofPerKg})
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="ledger-card market-detail-card" data-market-inspector={slug}>
+                  <span class="kpi-label">{dict.home.mapSection.selectedMarketHeading}</span>
+                  <h3 class="inspector-market-title" data-field="name">
+                    {defaultMarket.market_name}
+                  </h3>
+                  <p class="inspector-hint">{dict.home.mapSection.selectedMarketHint}</p>
+
+                  <dl class="story-stats-grid tabular-nums">
+                    <div class="story-stat-item">
+                      <dt>{dict.home.mapSection.departmentLabel}</dt>
+                      <dd data-field="department">{defaultMarket.department}</dd>
+                    </div>
+                    <div class="story-stat-item">
+                      <dt>{dict.home.mapSection.zoneLabel}</dt>
+                      <dd data-field="zone">{defaultMarket.agro_zone}</dd>
+                    </div>
+                    <div class="story-stat-item">
+                      <dt>{dict.home.mapSection.latestPriceLabel}</dt>
+                      <dd>
+                        <strong data-field="price">
+                          {formatDecimal(defaultMarket.last_observed_price, locale, 1)}
+                        </strong>{' '}
+                        {dict.units.xofPerKg}
+                      </dd>
+                    </div>
+                    <div class="story-stat-item">
+                      <dt>{dict.home.mapSection.diffVsMedianLabel}</dt>
+                      <dd>
+                        <strong data-field="diff">
+                          {formatSignedPct(defaultMarket.diff_vs_median_pct, locale, 1)}
+                        </strong>
+                      </dd>
+                    </div>
+                    <div class="story-stat-item">
+                      <dt>{dict.home.mapSection.forecastH3MapLabel}</dt>
+                      <dd>
+                        <strong data-field="h3">
+                          {formatDecimal(defaultMarket.h3_forecast, locale, 1)} [
+                          {formatInt(defaultMarket.h3_low_80, locale)},{' '}
+                          {formatInt(defaultMarket.h3_high_80, locale)}]
+                        </strong>{' '}
+                        {dict.units.xofPerKg}
+                      </dd>
+                    </div>
+                    <div class="story-stat-item">
+                      <dt>{dict.home.mapSection.holdoutMapeLabel}</dt>
+                      <dd data-field="mape">
+                        {defaultMarket.holdout_mape !== null
+                          ? `${formatDecimal(defaultMarket.holdout_mape, locale, 1)} %`
+                          : '—'}
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+
+                <!-- Accessible Table Alternative for All Tier-1 Markets -->
+                <details class="data-drawer">
+                  <summary>
+                    {dict.home.mapSection.tableAlternativeToggle} ({prod.tier1_markets_count})
+                  </summary>
+                  <div class="table-scroll">
+                    <table class="ledger-table">
+                      <thead>
+                        <tr>
+                          <th>{dict.home.mapSection.colMarket}</th>
+                          <th>{dict.home.mapSection.colDepartment}</th>
+                          <th>{dict.home.mapSection.colZone}</th>
+                          <th class="num">{dict.home.mapSection.colCoords}</th>
+                          <th class="num">{dict.home.mapSection.colLatestPrice}</th>
+                          <th class="num">{dict.home.mapSection.colDiffMedian}</th>
+                          <th class="num">{dict.home.mapSection.colForecastH3}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {mapGeom.nodes.map((m) => (
+                          <tr>
+                            <td>
+                              <strong>{m.market_name}</strong>
+                            </td>
+                            <td>{m.department}</td>
+                            <td>{m.agro_zone}</td>
+                            <td class="num">
+                              {formatDecimal(m.latitude, locale, 2)}°N,{' '}
+                              {formatDecimal(m.longitude, locale, 2)}°E
+                            </td>
+                            <td class="num">{formatDecimal(m.last_observed_price, locale, 1)}</td>
+                            <td class="num">{formatSignedPct(m.diff_vs_median_pct, locale, 1)}</td>
+                            <td class="num">
+                              {formatDecimal(m.h3_forecast, locale, 1)} [
+                              {formatInt(m.h3_low_80, locale)}, {formatInt(m.h3_high_80, locale)}]
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </details>
+              </div>
+            </div>
+          </div>
+        );
+      })
+    }
+  </div>
+</section>
+
+<!-- =======================================================================
+     4. SECTION: "Ce que disent les prévisions" (Forecast & Reliability Teaser)
+     ======================================================================= -->
+<section class="section-block teaser-section" aria-labelledby="teaser-heading">
+  <div class="container">
+    <header class="section-header">
+      <h2 class="section-title" id="teaser-heading">{dict.home.forecastTeaser.title}</h2>
+      <p class="section-subtitle">{dict.home.forecastTeaser.subtitle}</p>
+    </header>
+
+    <div class="grid-12 stories-grid">
+      {
+        productViews.map(({ slug, prod, fcH1, fcH2, fcH3, relH3, testH3 }) => {
+          const relLabel =
+            dict.reliability[relH3.status as keyof typeof dict.reliability] ?? relH3.status;
+          const relNote = locale === 'fr' ? relH3.note_fr : relH3.note_en;
+
+          return (
+            <article class={`story-card card-accent-${slug}`}>
+              <header class="story-card-header">
+                <div class="story-card-title-row">
+                  <span class={`product-pill pill-${slug}`}>{dict.products[slug].chip}</span>
+                  <span class="reliability-badge" data-status={relH3.status}>
+                    {relLabel}
+                  </span>
+                </div>
+                <h3 class="story-card-title">
+                  Dantokpa · {dict.products[slug].full}
+                </h3>
+              </header>
+
+              <dl class="story-stats-grid tabular-nums">
+                <div class="story-stat-item">
+                  <dt>{dict.home.forecastTeaser.horizon1Label}</dt>
+                  <dd>
+                    <strong>
+                      {formatDecimal(fcH1.point_forecast, locale, 1)} {dict.units.xofPerKg}
+                    </strong>{' '}
+                    ({formatSignedPct(fcH1.change_vs_last_pct, locale, 1)})
+                  </dd>
+                </div>
+                <div class="story-stat-item">
+                  <dt>{dict.home.forecastTeaser.horizon2Label}</dt>
+                  <dd>
+                    <strong>
+                      {formatDecimal(fcH2.point_forecast, locale, 1)} {dict.units.xofPerKg}
+                    </strong>{' '}
+                    ({formatSignedPct(fcH2.change_vs_last_pct, locale, 1)})
+                  </dd>
+                </div>
+                <div class="story-stat-item story-stat-wide">
+                  <dt>{dict.home.forecastTeaser.horizon3Label}</dt>
+                  <dd>
+                    <strong>
+                      {formatDecimal(fcH3.point_forecast, locale, 1)} {dict.units.xofPerKg}
+                    </strong>{' '}
+                    · {dict.home.hero.legendBand80} [{formatInt(fcH3.low_80, locale)},{' '}
+                    {formatInt(fcH3.high_80, locale)}] {dict.units.xofPerKg}
+                  </dd>
+                </div>
+                <div class="story-stat-item">
+                  <dt>{dict.home.forecastTeaser.holdoutMaeLabel}</dt>
+                  <dd>
+                    <strong>
+                      {formatDecimal(testH3.mae, locale, 1)} {dict.units.xofPerKg}
+                    </strong>{' '}
+                    (MAPE {formatDecimal(testH3.mape, locale, 1)} %)
+                  </dd>
+                </div>
+                <div class="story-stat-item">
+                  <dt>{dict.home.forecastTeaser.skillVsBaselineLabel}</dt>
+                  <dd>
+                    <strong>{formatSignedPct(testH3.skill_vs_best_baseline_pct, locale, 1)}</strong>{' '}
+                    vs {testH3.best_baseline_val}
+                  </dd>
+                </div>
+              </dl>
+
+              <p class="teaser-note">{relNote}</p>
+
+              <footer class="story-card-footer">
+                <a href={`${routes.forecast}?product=${slug}`} class="story-link">
+                  {dict.home.forecastTeaser.openForecastPageCta}
+                </a>
+              </footer>
+            </article>
+          );
+        })
+      }
+    </div>
+
+    <div class="btn-row">
+      <a href={routes.forecast} class="btn btn-primary">
+        {dict.home.forecastTeaser.openForecastPageCta}
+      </a>
+      <a href={routes.method} class="btn btn-secondary">
+        {dict.home.forecastTeaser.openMethodPageCta}
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Minimal interactive controller for switching product tabs and inspecting market dots
+  // (No GSAP animation in Step 3.1 per brief: "static home page (no animation yet)")
+  const switchBtns = document.querySelectorAll<HTMLButtonElement>('[data-role="product-switch"]');
+  const heroPanels = document.querySelectorAll<HTMLElement>('[data-product-panel]');
+  const mapPanels = document.querySelectorAll<HTMLElement>('[data-map-panel]');
+
+  function setActiveProduct(slug: string) {
+    switchBtns.forEach((btn) => {
+      const isMatch = btn.dataset.product === slug;
+      btn.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
+    });
+    heroPanels.forEach((panel) => {
+      panel.hidden = panel.dataset.productPanel !== slug;
+    });
+    mapPanels.forEach((panel) => {
+      panel.hidden = panel.dataset.mapPanel !== slug;
+    });
+  }
+
+  switchBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const slug = btn.dataset.product;
+      if (slug) setActiveProduct(slug);
+    });
+  });
+
+  // Dot map hover / tap / keyboard focus inspector
+  const marketNodes = document.querySelectorAll<SVGGElement>('[data-market-node]');
+  marketNodes.forEach((node) => {
+    const activateNode = () => {
+      const slug = node.dataset.marketNode;
+      if (!slug) return;
+      const inspector = document.querySelector<HTMLElement>(`[data-market-inspector="${slug}"]`);
+      if (!inspector) return;
+
+      const siblingNodes = document.querySelectorAll<SVGGElement>(`[data-market-node="${slug}"]`);
+      siblingNodes.forEach((sib) => sib.setAttribute('data-active', 'false'));
+      node.setAttribute('data-active', 'true');
+
+      const setField = (field: string, value: string | undefined) => {
+        const el = inspector.querySelector<HTMLElement>(`[data-field="${field}"]`);
+        if (el && value) el.textContent = value;
+      };
+      setField('name', node.dataset.marketName);
+      setField('department', node.dataset.department);
+      setField('zone', node.dataset.zone);
+      setField('price', node.dataset.price);
+      setField('diff', node.dataset.diff);
+      setField('h3', node.dataset.h3);
+      setField('mape', node.dataset.mape);
+    };
+
+    node.addEventListener('mouseenter', activateNode);
+    node.addEventListener('focus', activateNode);
+    node.addEventListener('click', activateNode);
+  });
+</script>
+
+<style>
+  .hero-grid {
+    align-items: start;
+  }
+
+  .hero-copy-col {
+    grid-column: span 4;
+  }
+
+  .hero-chart-col {
+    grid-column: span 4;
+  }
+
+  @media (min-width: 900px) {
+    .hero-copy-col {
+      grid-column: 1 / span 5;
+      padding-right: var(--space-3);
+    }
+    .hero-chart-col {
+      grid-column: 6 / span 7;
+    }
+  }
+
+  .hero-kicker {
+    font-size: var(--text-xs);
+    font-weight: 650;
+    color: var(--color-laterite);
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  .hero-title {
+    font-size: var(--text-hero);
+    line-height: 1.04;
+    margin-bottom: var(--space-4);
+    letter-spacing: -0.03em;
+  }
+
+  .hero-subtitle {
+    font-size: var(--text-lg);
+    line-height: 1.48;
+    color: var(--color-ink);
+    margin: 0 0 var(--space-5) 0;
+  }
+
+  .hero-selector-block {
+    padding-block: var(--space-4);
+    border-top: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .selector-label {
+    display: block;
+    font-size: var(--text-xs);
+    font-weight: 650;
+    color: var(--color-muted);
+  }
+
+  /* Ledger Cards & Chart Panel */
+  .ledger-card {
+    background-color: var(--color-paper);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    padding: clamp(1rem, 2.2vw, 1.5rem);
+  }
+
+  .chart-card-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .chart-title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-1);
+  }
+
+  .chart-card-title {
+    font-size: var(--text-lg);
+    line-height: 1.2;
+  }
+
+  .chart-card-subtitle {
+    font-size: var(--text-xs);
+    color: var(--color-muted);
+    margin: 0;
+  }
+
+  .unit-badge {
+    font-size: var(--text-xs);
+    font-weight: 650;
+    background-color: var(--color-sand-2);
+    color: var(--color-ink);
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-sm);
+    margin: 0;
+  }
+
+  /* Product Pills (Maize uses ink text on maize yellow!) */
+  .product-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: 700;
+  }
+
+  .pill-maize_white {
+    background-color: var(--color-maize);
+    color: var(--color-ink);
+    border: 1px solid var(--color-ink);
+  }
+
+  .pill-tomatoes {
+    background-color: var(--color-laterite);
+    color: var(--color-sand);
+  }
+
+  .pill-yam_white {
+    background-color: var(--color-green);
+    color: var(--color-sand);
+  }
+
+  /* KPI Strip */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    padding: var(--space-3);
+    background-color: var(--color-sand);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+  }
+
+  @media (min-width: 640px) {
+    .kpi-strip {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .kpi-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .kpi-label {
+    font-size: 0.78rem;
+    color: var(--color-muted);
+    font-weight: 550;
+  }
+
+  .kpi-value {
+    font-size: var(--text-sm);
+    color: var(--color-ink);
+  }
+
+  .kpi-delta {
+    white-space: nowrap;
+    font-weight: 600;
+  }
+
+  .kpi-code {
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+  }
+
+  /* SVG Chart Styles */
+  .svg-chart-wrap {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .forecast-zone-bg {
+    fill: rgba(237, 227, 208, 0.45);
+  }
+
+  .forecast-zone-label {
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    font-weight: 700;
+    fill: var(--color-muted);
+  }
+
+  .hero-svg,
+  .sparkline-svg,
+  .dotmap-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .grid-line {
+    stroke: var(--color-line);
+    stroke-width: 1;
+    stroke-dasharray: 2 3;
+  }
+
+  .tick-mark {
+    stroke: var(--color-muted);
+    stroke-width: 1;
+  }
+
+  .axis-text {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    fill: var(--color-muted);
+  }
+
+  .asof-line {
+    stroke: var(--color-ink);
+    stroke-width: 1.25;
+    stroke-dasharray: 4 3;
+  }
+
+  .asof-label {
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    font-weight: 650;
+    fill: var(--color-ink);
+  }
+
+  .line-history {
+    fill: none;
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .line-forecast {
+    fill: none;
+    stroke-width: 2.6;
+    stroke-dasharray: 6 4;
+    stroke-linecap: round;
+  }
+
+  /* Product Stroke & Band Colors */
+  .stroke-maize_white {
+    stroke: var(--color-maize);
+  }
+  .stroke-tomatoes {
+    stroke: var(--color-laterite);
+  }
+  .stroke-yam_white {
+    stroke: var(--color-green);
+  }
+
+  .fill-maize_white {
+    fill: var(--color-maize);
+    stroke: var(--color-ink);
+    stroke-width: 1.5;
+  }
+  .fill-tomatoes {
+    fill: var(--color-laterite);
+    stroke: var(--color-paper);
+    stroke-width: 1.5;
+  }
+  .fill-yam_white {
+    fill: var(--color-green);
+    stroke: var(--color-paper);
+    stroke-width: 1.5;
+  }
+
+  .dot-forecast {
+    fill: var(--color-paper);
+    stroke-width: 2;
+  }
+
+  .fan-band-80.band-maize_white {
+    fill: rgba(227, 168, 31, 0.34);
+  }
+  .fan-band-90.band-maize_white {
+    fill: rgba(227, 168, 31, 0.17);
+  }
+
+  .fan-band-80.band-tomatoes {
+    fill: rgba(181, 71, 31, 0.28);
+  }
+  .fan-band-90.band-tomatoes {
+    fill: rgba(181, 71, 31, 0.14);
+  }
+
+  .fan-band-80.band-yam_white {
+    fill: rgba(47, 93, 58, 0.28);
+  }
+  .fan-band-90.band-yam_white {
+    fill: rgba(47, 93, 58, 0.14);
+  }
+
+  /* Chart Legend */
+  .chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-4);
+    margin-top: var(--space-3);
+    padding-top: var(--space-2);
+    font-size: var(--text-xs);
+    color: var(--color-ink);
+  }
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .legend-line-swatch {
+    width: 18px;
+    height: 3px;
+    display: inline-block;
+  }
+
+  .legend-dash-swatch {
+    width: 18px;
+    height: 0;
+    border-top: 3px dashed currentColor;
+    display: inline-block;
+  }
+
+  .legend-band80-swatch,
+  .legend-band90-swatch {
+    width: 14px;
+    height: 10px;
+    border-radius: 2px;
+    display: inline-block;
+    border: 1px solid rgba(30, 27, 22, 0.2);
+  }
+
+  .stroke-bg-maize_white {
+    background-color: var(--color-maize);
+    color: var(--color-maize);
+  }
+  .stroke-bg-tomatoes {
+    background-color: var(--color-laterite);
+    color: var(--color-laterite);
+  }
+  .stroke-bg-yam_white {
+    background-color: var(--color-green);
+    color: var(--color-green);
+  }
+
+  .band-bg-maize_white.legend-band80-swatch {
+    background-color: rgba(227, 168, 31, 0.45);
+  }
+  .band-bg-maize_white.legend-band90-swatch {
+    background-color: rgba(227, 168, 31, 0.2);
+  }
+  .band-bg-tomatoes.legend-band80-swatch {
+    background-color: rgba(181, 71, 31, 0.35);
+  }
+  .band-bg-tomatoes.legend-band90-swatch {
+    background-color: rgba(181, 71, 31, 0.16);
+  }
+  .band-bg-yam_white.legend-band80-swatch {
+    background-color: rgba(47, 93, 58, 0.35);
+  }
+  .band-bg-yam_white.legend-band90-swatch {
+    background-color: rgba(47, 93, 58, 0.16);
+  }
+
+  /* Honesty Strip */
+  .honesty-strip {
+    margin-top: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--color-sand);
+    border-left: 4px solid var(--color-ink);
+    border-radius: var(--radius-sm);
+  }
+
+  .honesty-strip-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+  }
+
+  .asof-meta {
+    font-size: var(--text-xs);
+    color: var(--color-ink);
+  }
+
+  .honesty-note {
+    font-size: var(--text-xs);
+    color: var(--color-ink);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* Section 2 & 4: Three Product Cards */
+  .stories-grid > .story-card {
+    grid-column: span 4;
+  }
+
+  @media (min-width: 900px) {
+    .stories-grid > .story-card {
+      grid-column: span 4;
+    }
+  }
+
+  .story-card {
+    background-color: var(--color-paper);
+    border: 1px solid var(--color-line);
+    border-top: 4px solid var(--color-ink);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .card-accent-maize_white {
+    border-top-color: var(--color-maize);
+  }
+  .card-accent-tomatoes {
+    border-top-color: var(--color-laterite);
+  }
+  .card-accent-yam_white {
+    border-top-color: var(--color-green);
+  }
+
+  .story-card-title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+  }
+
+  .story-market-count {
+    font-size: var(--text-xs);
+    color: var(--color-muted);
+  }
+
+  .story-card-title {
+    font-size: var(--text-xl);
+    line-height: 1.15;
+    margin-bottom: var(--space-2);
+  }
+
+  .story-card-prose {
+    font-size: var(--text-sm);
+    color: var(--color-ink);
+    margin: 0;
+  }
+
+  .sparkline-box {
+    background-color: var(--color-sand);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .sparkline-meta {
+    font-size: 0.76rem;
+    color: var(--color-muted);
+    margin-bottom: 4px;
+  }
+
+  .spark-line {
+    fill: none;
+    stroke-width: 2.2;
+  }
+
+  .spark-area.band-maize_white {
+    fill: rgba(227, 168, 31, 0.22);
+  }
+  .spark-area.band-tomatoes {
+    fill: rgba(181, 71, 31, 0.18);
+  }
+  .spark-area.band-yam_white {
+    fill: rgba(47, 93, 58, 0.18);
+  }
+
+  .story-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin: 0;
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .story-stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .story-stat-wide {
+    grid-column: span 2;
+  }
+
+  .story-stat-item dt {
+    font-size: 0.78rem;
+    color: var(--color-muted);
+  }
+
+  .story-stat-item dd {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-ink);
+  }
+
+  .story-card-footer {
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .story-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: var(--text-sm);
+    font-weight: 650;
+    color: var(--color-laterite);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .story-link:hover {
+    color: var(--color-ink);
+  }
+
+  /* Section 3: Dot Map Layout */
+  .map-section-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: var(--space-4);
+  }
+
+  .map-canvas-col {
+    grid-column: span 4;
+  }
+
+  .map-inspector-col {
+    grid-column: span 4;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 900px) {
+    .map-canvas-col {
+      grid-column: 1 / span 5;
+    }
+    .map-inspector-col {
+      grid-column: 6 / span 7;
+    }
+  }
+
+  .map-legend-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    font-size: var(--text-xs);
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .map-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .map-dot-swatch {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 1.5px solid var(--color-ink);
+  }
+
+  .map-dot-swatch.band-below,
+  .map-dot.band-below {
+    background-color: var(--color-green);
+    fill: var(--color-green);
+    stroke: var(--color-paper);
+    stroke-width: 1.5;
+  }
+
+  .map-dot-swatch.band-near,
+  .map-dot.band-near {
+    background-color: var(--color-maize);
+    fill: var(--color-maize);
+    stroke: var(--color-ink);
+    stroke-width: 1.5;
+  }
+
+  .map-dot-swatch.band-above,
+  .map-dot.band-above {
+    background-color: var(--color-laterite);
+    fill: var(--color-laterite);
+    stroke: var(--color-paper);
+    stroke-width: 1.5;
+  }
+
+  .map-hit-target {
+    fill: transparent;
+    cursor: pointer;
+  }
+
+  .map-market-node {
+    cursor: pointer;
+  }
+
+  .map-market-node[data-active='true'] .map-dot {
+    stroke: var(--color-ink);
+    stroke-width: 3;
+    r: 8;
+  }
+
+  .spatial-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .inspector-market-title {
+    font-size: var(--text-xl);
+    margin-block: var(--space-1);
+  }
+
+  .inspector-hint {
+    font-size: var(--text-xs);
+    color: var(--color-muted);
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  .teaser-note {
+    font-size: var(--text-xs);
+    color: var(--color-ink);
+    background-color: var(--color-sand);
+    padding: var(--space-3);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--color-ink);
+    margin: 0;
+  }
+</style>

@@ -10,4 +10,6 @@ data/processed/phase2_future_forecasts_all_models.csv
 data/processed/*.cache_meta.json
 docs/audit/before_recompute/phase2_backtest_predictions.csv
 .playwright-mcp/
-docs/audit/before_recompute/phase2_backtest_predictions.csv
+web/node_modules/
+web/dist/
+web/.astro/

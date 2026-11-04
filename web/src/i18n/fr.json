@@ -1,0 +1,180 @@
+{
+  "lang": "fr",
+  "localeCode": "fr-BJ",
+  "meta": {
+    "siteName": "Bénin AgroMarket",
+    "siteTagline": "Observatoire ouvert des prix vivriers au Bénin",
+    "homeTitle": "Bénin AgroMarket — Les prix du marché, enfin lisibles",
+    "homeDescription": "Historique 2007–2026, saisonnalité et prévisions à 3 mois avec intervalles d'incertitude pour le maïs blanc, la tomate et l'igname blanche sur les marchés du Bénin.",
+    "explorerTitle": "Explorer les prix — Bénin AgroMarket",
+    "explorerDescription": "Explorez les trajectoires historiques, les profils saisonniers et les écarts régionaux des prix vivriers sur les marchés Tier-1 du Bénin.",
+    "forecastTitle": "Prévisions à 3 mois & intervalles — Bénin AgroMarket",
+    "forecastDescription": "Prévisions mensuelles à 1, 2 et 3 mois avec intervalles de prévision à 80 % et 90 % et diagnostic de fiabilité sur holdout.",
+    "methodTitle": "Méthode, modèles & limites — Bénin AgroMarket",
+    "methodDescription": "Protocole d'évaluation sans fuite temporelle, comparaison aux références naïves, ablation climatique NASA POWER et limites opérationnelles.",
+    "notFoundTitle": "Page introuvable (404) — Bénin AgroMarket"
+  },
+  "nav": {
+    "skipToContent": "Aller au contenu principal",
+    "home": "Accueil",
+    "explorer": "Explorer les prix",
+    "forecast": "Prévisions",
+    "method": "Méthode & limites",
+    "switchLangLabel": "English",
+    "switchLangAria": "Passer l'interface en anglais (English version)",
+    "primaryNavAria": "Navigation principale",
+    "asOfBadge": "Arrêté : sept. 2026"
+  },
+  "products": {
+    "maize_white": {
+      "chip": "Maïs blanc",
+      "full": "Maïs blanc (grain sec)",
+      "short": "Maïs blanc",
+      "story": "Céréale stockable à forte persistance locale : les variations d'un mois sur l'autre restent contenues, mais l'écart saisonnier s'accentue dans le Nord unimodal avant la récolte d'automne."
+    },
+    "tomatoes": {
+      "chip": "Tomate",
+      "full": "Tomate fraîche",
+      "short": "Tomate",
+      "story": "Culture maraîchère périssable soumise à des bascules saisonnières abruptes : les prix doublent entre le creux de récolte de septembre et le pic de soudure de mai-juin."
+    },
+    "yam_white": {
+      "chip": "Igname blanche",
+      "full": "Igname blanche (kokoro)",
+      "short": "Igname blanche",
+      "story": "Tubercule vivrier structurant du Centre et du Nord : la tension culmine en juillet avant l'arrivée des nouvelles récoltes entre août et octobre."
+    }
+  },
+  "months": {
+    "1": "janvier",
+    "2": "février",
+    "3": "mars",
+    "4": "avril",
+    "5": "mai",
+    "6": "juin",
+    "7": "juillet",
+    "8": "août",
+    "9": "septembre",
+    "10": "octobre",
+    "11": "novembre",
+    "12": "décembre"
+  },
+  "monthsShort": {
+    "1": "janv.",
+    "2": "févr.",
+    "3": "mars",
+    "4": "avr.",
+    "5": "mai",
+    "6": "juin",
+    "7": "juil.",
+    "8": "août",
+    "9": "sept.",
+    "10": "oct.",
+    "11": "nov.",
+    "12": "déc."
+  },
+  "reliability": {
+    "calibrated": "Intervalles calibrés sur le holdout",
+    "baseline_retained": "Référence parcimonieuse retenue",
+    "intervals_too_narrow": "Intervalles trop étroits sur le holdout",
+    "baseline_retained_intervals_too_narrow": "Référence retenue · intervalles étroits (h=3)"
+  },
+  "units": {
+    "xofPerKg": "XOF/kg",
+    "nominalRetailNotice": "Prix nominaux de détail en XOF/kg (franc CFA).",
+    "marketsCount": "marchés Tier-1",
+    "obsMonthsCount": "mois-marchés observés"
+  },
+  "home": {
+    "hero": {
+      "kicker": "Observatoire des marchés vivriers du Bénin · Données PAM / ONASA / INStaD",
+      "title": "Les prix du marché, enfin lisibles.",
+      "subtitle": "Maïs, tomate, igname : l'historique, les saisons et des prévisions à 3 mois pour les marchés du Bénin, avec leurs limites.",
+      "ctaExplorer": "Explorer les prix",
+      "ctaForecast": "Voir les prévisions",
+      "productSelectorLabel": "Produit affiché dans le graphique et la carte :",
+      "chartTitlePrefix": "Marché de référence : Dantokpa (Cotonou) —",
+      "chartSubtitle": "Historique mensuel observé (2019–2026) et projection à 3 mois (oct.–déc. 2026) avec bandes d'incertitude à 80 % et 90 %.",
+      "legendObserved": "Prix observé (détail, XOF/kg)",
+      "legendForecast": "Prévision centrale (h=1 à 3 mois)",
+      "legendBand80": "Intervalle à 80 %",
+      "legendBand90": "Intervalle à 90 %",
+      "latestObservedLabel": "Dernier prix observé (sept. 2026)",
+      "forecastH3Label": "Prévision à 3 mois (déc. 2026)",
+      "interval80Label": "Intervalle 80 % (déc. 2026)",
+      "modelUsedLabel": "Modèle retenu (h=3)",
+      "asOfLabel": "Arrêté des données",
+      "reliabilityHeading": "Diagnostic de fiabilité (holdout 2025–2026) :",
+      "tableToggle": "Afficher le tableau de données du graphique (Dantokpa)",
+      "tableDate": "Période",
+      "tableStatus": "Statut",
+      "tablePrice": "Prix / Prévision (XOF/kg)",
+      "tableInterval80": "Intervalle 80 %",
+      "tableInterval90": "Intervalle 90 %",
+      "statusObserved": "Observé",
+      "statusForecast": "Prévision"
+    },
+    "stories": {
+      "title": "Trois produits, trois histoires",
+      "subtitle": "Chaque filière obéit à son propre calendrier agronomique et à sa propre volatilité. Toutes les valeurs ci-dessous sont calculées directement sur les séries Tier-1 (2019–2026).",
+      "latestMedianLabel": "Médiane nationale (sept. 2026)",
+      "dantokpaLatestLabel": "Dantokpa (sept. 2026)",
+      "seasonalPeakLabel": "Pic saisonnier",
+      "seasonalTroughLabel": "Creux de récolte",
+      "seasonalSpreadLabel": "Amplitude saisonnière",
+      "sparklineCaption": "Médiane mensuelle des marchés Tier-1 sur les 36 derniers mois (XOF/kg)",
+      "indexUnit": "indice",
+      "exploreProductCta": "Explorer cette filière"
+    },
+    "mapSection": {
+      "title": "Un même kilo, des prix différents",
+      "subtitle": "Position géographique des marchés Tier-1 pour le produit sélectionné (latitude / longitude). La couleur indique l'écart du dernier prix observé (sept. 2026) par rapport à la médiane nationale.",
+      "productFilterLabel": "Comparer les marchés pour :",
+      "legendBelow": "Sous la médiane (≤ −10 %)",
+      "legendNear": "Proche de la médiane (−10 % à +10 %)",
+      "legendAbove": "Au-dessus de la médiane (≥ +10 %)",
+      "nationalMedianStat": "Médiane nationale Tier-1 :",
+      "lowestMarketStat": "Marché le moins cher :",
+      "highestMarketStat": "Marché le plus cher :",
+      "spreadRatioStat": "Rapport max / min :",
+      "selectedMarketHeading": "Détail du marché sélectionné",
+      "selectedMarketHint": "Survolez ou touchez un point sur la carte pour inspecter un marché.",
+      "departmentLabel": "Département",
+      "zoneLabel": "Zone agro-écologique",
+      "latestPriceLabel": "Prix observé (sept. 2026)",
+      "diffVsMedianLabel": "Écart vs médiane nationale",
+      "forecastH3MapLabel": "Prévision déc. 2026 (h=3)",
+      "holdoutMapeLabel": "Erreur MAPE holdout (h=1..3)",
+      "tableAlternativeToggle": "Afficher le tableau accessible de tous les marchés Tier-1",
+      "colMarket": "Marché",
+      "colDepartment": "Département",
+      "colZone": "Zone",
+      "colCoords": "Coordonnées (Lat, Lon)",
+      "colLatestPrice": "Prix sept. 2026 (XOF/kg)",
+      "colDiffMedian": "Écart vs médiane",
+      "colForecastH3": "Prévision déc. 2026 (Intervalle 80 %)"
+    },
+    "forecastTeaser": {
+      "title": "Ce que disent les prévisions",
+      "subtitle": "Horizon octobre à décembre 2026 (arrêté au 15 septembre 2026). L'honnêteté statistique fait partie du produit : lorsqu'une référence simple égale les modèles complexes sur la validation, elle est conservée.",
+      "horizon1Label": "Oct. 2026 (h=1)",
+      "horizon2Label": "Nov. 2026 (h=2)",
+      "horizon3Label": "Déc. 2026 (h=3)",
+      "modelLabel": "Modèle :",
+      "holdoutMaeLabel": "MAE test holdout :",
+      "skillVsBaselineLabel": "Gain vs meilleure référence :",
+      "coverage80Label": "Couverture 80 % test :",
+      "openForecastPageCta": "Ouvrir l'outil de prévision par marché",
+      "openMethodPageCta": "Lire le protocole d'évaluation et les limites"
+    }
+  },
+  "footer": {
+    "attributionHeading": "Sources des données & licences ouvertes",
+    "wfpAttribution": "Données historiques de prix issues de la base des prix alimentaires du Programme Alimentaire Mondial (PAM / WFP VAM) pour le Bénin, distribuées via l'Échange de Données Humanitaires d'OCHA (HDX) sous licence CC BY-IGO 3.0 (sources primaires : ONASA, CT-SAGSA, INStaD, FAO). Variables agroclimatiques : NASA Langley Research Center (LaRC) POWER MERRA-2. Indicateurs macroéconomiques : FAOSTAT (CC BY 4.0).",
+    "unofficialNotice": "Projet indépendant à vocation analytique et pédagogique (non officiel) : ce site n'est affilié ni au PAM, ni à l'ONASA, ni à l'INStaD. Les prévisions statistiques comportent une marge d'incertitude et ne constituent pas un conseil commercial garanti.",
+    "asOfLabel": "Arrêté des données :",
+    "asOfDateFormatted": "15 septembre 2026",
+    "githubLabel": "Code source & protocole reproductible sur GitHub",
+    "modelCardLabel": "Documentation méthodologique (Méthode & limites)"
+  }
+}

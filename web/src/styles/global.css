@@ -1,0 +1,618 @@
+/* ==========================================================================
+   Bénin AgroMarket — Design Tokens & Editorial Layout System (Step 3.1)
+   Plain CSS with custom properties. Zero UI frameworks, zero Tailwind.
+   ========================================================================== */
+
+:root {
+  /* Core Palette Tokens (docs/PHASE3_BRIEF.md) */
+  --color-ink: #1E1B16;
+  --color-sand: #F6F0E4;
+  --color-sand-2: #EDE3D0;
+  --color-paper: #FFFDF9;
+  --color-laterite: #B5471F;
+  --color-maize: #E3A81F;
+  --color-green: #2F5D3A;
+  --color-muted: #6F665A;
+  --color-line: #D9CDB8;
+
+  /* Product Identity Tokens (used identically everywhere) */
+  --color-product-maize_white: var(--color-maize);
+  --color-product-tomatoes: var(--color-laterite);
+  --color-product-yam_white: var(--color-green);
+
+  /* Active product accent (updated dynamically when switching product chips) */
+  --active-product-color: var(--color-maize);
+  --active-product-stroke: #B8820A; /* High-contrast stroke partner for Maize on light paper */
+
+  /* Typography Families (self-hosted variable woff2) */
+  --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Instrument Sans Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Fluid Type Scale (clamp(), body >= 17px on mobile, tight display leading) */
+  --text-xs: clamp(0.8125rem, 0.79rem + 0.12vw, 0.875rem);
+  --text-sm: clamp(0.9375rem, 0.91rem + 0.15vw, 1rem);
+  --text-base: clamp(1.0625rem, 1.02rem + 0.22vw, 1.15rem); /* >= 17px on 390px mobile */
+  --text-lg: clamp(1.2rem, 1.12rem + 0.4vw, 1.375rem);
+  --text-xl: clamp(1.45rem, 1.3rem + 0.75vw, 1.85rem);
+  --text-2xl: clamp(1.85rem, 1.55rem + 1.4vw, 2.65rem);
+  --text-hero: clamp(2.35rem, 1.85rem + 2.4vw, 3.75rem);
+
+  /* Spacing & Grid Rhythm */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 6.5rem;
+
+  --container-max: 1320px;
+  --grid-gap: clamp(1rem, 1.6vw, 1.75rem);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--color-sand);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 100%;
+  line-height: 1.58;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-sand);
+  color: var(--color-ink);
+  font-size: var(--text-base);
+}
+
+main {
+  flex: 1;
+}
+
+/* Measure constraint: line length <= 70 characters */
+p,
+li,
+.prose-measure {
+  max-width: 66ch;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  color: var(--color-ink);
+  margin: 0;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Accessible Focus Ring (WCAG 2.1 AA/AAA) */
+:focus-visible {
+  outline: 3px solid var(--color-laterite);
+  outline-offset: 3px;
+}
+
+/* Skip Link */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--space-4);
+  z-index: 1000;
+  background-color: var(--color-ink);
+  color: var(--color-sand);
+  padding: var(--space-3) var(--space-5);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.skip-link:focus {
+  top: var(--space-3);
+}
+
+/* 12-Column Desktop / 4-Column Mobile Grid */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: clamp(1.125rem, 3.5vw, 2.75rem);
+}
+
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--grid-gap);
+}
+
+@media (min-width: 900px) {
+  .grid-12 {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+/* Site Header & Navigation */
+.site-header {
+  border-bottom: 1px solid var(--color-line);
+  background-color: var(--color-sand);
+}
+
+.header-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem var(--space-3);
+  padding-block: 0.5rem;
+}
+
+@media (min-width: 900px) {
+  .header-inner {
+    flex-wrap: nowrap;
+    padding-block: var(--space-3);
+  }
+}
+
+.brand-link {
+  order: 1;
+  display: inline-flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--color-ink);
+  min-height: 44px;
+  justify-content: center;
+}
+
+.brand-name {
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 1.05rem + 0.45vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.brand-triband {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.brand-triband span {
+  width: 6px;
+  height: 15px;
+  border-radius: 1px;
+}
+
+.brand-triband .swatch-maize {
+  background-color: var(--color-maize);
+}
+.brand-triband .swatch-tomato {
+  background-color: var(--color-laterite);
+}
+.brand-triband .swatch-yam {
+  background-color: var(--color-green);
+}
+
+.brand-tagline {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  line-height: 1.2;
+}
+
+@media (max-width: 640px) {
+  .brand-tagline {
+    display: none;
+  }
+}
+
+.primary-nav {
+  order: 3;
+  width: 100%;
+  border-top: 1px solid var(--color-line);
+  padding-top: 0.25rem;
+}
+
+@media (min-width: 900px) {
+  .primary-nav {
+    order: 2;
+    width: auto;
+    border-top: 0;
+    padding-top: 0;
+    margin-left: auto;
+  }
+}
+
+.nav-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.15rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (min-width: 640px) {
+  .nav-list {
+    justify-content: flex-start;
+    gap: 0.35rem;
+  }
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 0.38rem;
+  color: var(--color-ink);
+  text-decoration: none;
+  font-size: clamp(0.79rem, 0.75rem + 0.18vw, 0.95rem);
+  font-weight: 550;
+  white-space: nowrap;
+  border-radius: var(--radius-sm);
+  border-bottom: 2px solid transparent;
+}
+
+@media (min-width: 900px) {
+  .nav-link {
+    padding-inline: var(--space-3);
+  }
+}
+
+.nav-link:hover {
+  background-color: var(--color-sand-2);
+}
+
+.nav-link[aria-current='page'] {
+  font-weight: 700;
+  border-bottom-color: var(--color-laterite);
+  background-color: var(--color-sand-2);
+}
+
+.lang-switch {
+  order: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding-inline: var(--space-3);
+  border: 1px solid var(--color-ink);
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--color-ink);
+  font-size: var(--text-xs);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+@media (min-width: 900px) {
+  .lang-switch {
+    order: 3;
+  }
+}
+
+.lang-switch:hover {
+  background-color: var(--color-ink);
+  color: var(--color-sand);
+}
+
+/* Editorial Section Framing */
+.section-block {
+  padding-block: clamp(3rem, 6vw, 5.5rem);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.section-header {
+  margin-bottom: var(--space-6);
+}
+
+.section-title {
+  font-size: var(--text-2xl);
+  line-height: 1.08;
+  margin-bottom: var(--space-3);
+}
+
+.section-subtitle {
+  font-size: var(--text-base);
+  color: var(--color-muted);
+  margin: 0;
+  max-width: 65ch;
+}
+
+/* Buttons & Product Selector Chips (min 44px touch targets) */
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0.65rem 1.25rem;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 650;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 1.5px solid var(--color-ink);
+}
+
+.btn-primary {
+  background-color: var(--color-ink);
+  color: var(--color-sand);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-laterite);
+  border-color: var(--color-laterite);
+  color: var(--color-sand);
+}
+
+.btn-secondary {
+  background-color: var(--color-sand-2);
+  color: var(--color-ink);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-line);
+}
+
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.product-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 650;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-line);
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.product-chip .chip-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid rgba(30, 27, 22, 0.25);
+  flex-shrink: 0;
+}
+
+.product-chip[data-product='maize_white'] .chip-swatch {
+  background-color: var(--color-maize);
+}
+.product-chip[data-product='tomatoes'] .chip-swatch {
+  background-color: var(--color-laterite);
+}
+.product-chip[data-product='yam_white'] .chip-swatch {
+  background-color: var(--color-green);
+}
+
+/* Strict contrast enforcement:
+   - On Maize (#E3A81F), text is ALWAYS ink (#1E1B16) -> 8.08:1 AAA
+   - On Tomatoes (#B5471F), text is sand (#F6F0E4) -> 4.76:1 AA
+   - On Yam (#2F5D3A), text is sand (#F6F0E4) -> 6.73:1 AA */
+.product-chip[aria-pressed='true'][data-product='maize_white'] {
+  background-color: var(--color-maize);
+  color: var(--color-ink);
+  border-color: var(--color-ink);
+}
+.product-chip[aria-pressed='true'][data-product='maize_white'] .chip-swatch {
+  background-color: var(--color-ink);
+}
+
+.product-chip[aria-pressed='true'][data-product='tomatoes'] {
+  background-color: var(--color-laterite);
+  color: var(--color-sand);
+  border-color: var(--color-ink);
+}
+.product-chip[aria-pressed='true'][data-product='tomatoes'] .chip-swatch {
+  background-color: var(--color-sand);
+}
+
+.product-chip[aria-pressed='true'][data-product='yam_white'] {
+  background-color: var(--color-green);
+  color: var(--color-sand);
+  border-color: var(--color-ink);
+}
+.product-chip[aria-pressed='true'][data-product='yam_white'] .chip-swatch {
+  background-color: var(--color-sand);
+}
+
+/* Reliability Badges (Honesty is a feature) */
+.reliability-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-weight: 650;
+  border: 1px solid var(--color-line);
+}
+
+.reliability-badge[data-status='calibrated'] {
+  background-color: var(--color-green);
+  color: var(--color-sand);
+  border-color: var(--color-green);
+}
+
+.reliability-badge[data-status='baseline_retained'] {
+  background-color: var(--color-sand-2);
+  color: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+.reliability-badge[data-status='intervals_too_narrow'],
+.reliability-badge[data-status='baseline_retained_intervals_too_narrow'] {
+  background-color: var(--color-maize);
+  color: var(--color-ink); /* Text on maize is always ink */
+  border-color: var(--color-ink);
+}
+
+/* Accessible Details / Data Table Drawer */
+details.data-drawer {
+  margin-top: var(--space-4);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-paper);
+}
+
+details.data-drawer summary {
+  cursor: pointer;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-ink);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+details.data-drawer summary:hover {
+  background-color: var(--color-sand-2);
+}
+
+.table-scroll {
+  overflow-x: auto;
+  padding: 0 var(--space-4) var(--space-4);
+}
+
+table.ledger-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+table.ledger-table th,
+table.ledger-table td {
+  padding: 0.5rem 0.65rem;
+  border-bottom: 1px solid var(--color-line);
+  text-align: left;
+  color: var(--color-ink);
+}
+
+table.ledger-table th {
+  background-color: var(--color-sand-2);
+  font-weight: 700;
+}
+
+table.ledger-table td.num,
+table.ledger-table th.num {
+  text-align: right;
+}
+
+/* Footer */
+.site-footer {
+  background-color: var(--color-ink);
+  color: var(--color-sand);
+  padding-block: var(--space-7);
+  margin-top: auto;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+
+@media (min-width: 900px) {
+  .footer-grid {
+    grid-template-columns: 7fr 5fr;
+  }
+}
+
+.footer-heading {
+  font-family: var(--font-display);
+  color: var(--color-sand);
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-3);
+}
+
+.footer-text {
+  color: var(--color-sand-2);
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  margin: 0 0 var(--space-3) 0;
+  max-width: 68ch;
+}
+
+.footer-meta-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+}
+
+.footer-link {
+  color: var(--color-maize); /* Maize on dark ink = 8.08:1 AAA */
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.footer-link:hover {
+  color: var(--color-sand);
+}
