@@ -82,3 +82,13 @@ until the owner replies.
 
 ## Export contract
 - Every file exported for the web app must be checked by a validation script (src/evaluate/validate_export.py) that fails loudly on missing, zero or inconsistent fields. Run it as part of the pipeline.
+
+## Plain language in the UI
+- The audience is producers and traders. No internal identifiers or jargon in any visible string: no snake_case model names, no "Tier-1", "h=3", "MAPE", "holdout", "mois-marchés", no raw ISO dates such as 2026-09.
+- Every model name and technical term goes through the i18n dictionaries with a plain French and English label, and an optional one-sentence tooltip.
+- Never show English strings on a French page, or the reverse.
+
+## Claims in the UI
+- A sentence about agriculture, seasons or causes must either be computed from the data as a plain observation ("price lowest in September, highest in June") or cite a source recorded in docs/DATA.md. Otherwise remove it.
+- A label must say exactly what is computed. A statistic over the well-covered markets is never "national". A latitude band is not an agro-ecological zone.
+- Do not imply that WFP, ONASA or INStaD endorse this project. Credit the sources on the Method page and in the footer, not as a header tagline.
