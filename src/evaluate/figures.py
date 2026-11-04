@@ -588,7 +588,9 @@ def render_fig8_market_error_distribution(
         )
 
         # Dedicated right gutter for numeric labels (MAE / MAPE) so bars never collide with text
-        chart_x0 = px + 112
+        # and wide left label margin (132 px) so full market names (e.g. 'Ahidahomè (Porto-Novo)', 'Malanville (CBM)')
+        # render cleanly without any character truncation (L1 fix).
+        chart_x0 = px + 132
         gutter_x = px + col_w - 94
         chart_x1 = gutter_x - 8
         chart_w = chart_x1 - chart_x0
@@ -622,9 +624,11 @@ def render_fig8_market_error_distribution(
             ry = chart_y0 + (r_idx + 0.5) * row_step
             bw = (d["mae"] / x_max) * chart_w
             z_col = ZONE_COLORS.get(d["zone"], PALETTE["terracotta"])
+            mkt_full = str(d["market"])
+            lbl_fs = "9.2" if len(mkt_full) > 16 else "10"
 
             svg.append(
-                f'<text x="{chart_x0 - 6}" y="{ry + 3.5:.1f}" text-anchor="end" font-size="10" font-weight="600" fill="{PALETTE["ink"]}">{esc(d["market"][:15])}</text>'
+                f'<text x="{chart_x0 - 6}" y="{ry + 3.5:.1f}" text-anchor="end" font-size="{lbl_fs}" font-weight="600" fill="{PALETTE["ink"]}">{esc(mkt_full)}</text>'
             )
             svg.append(
                 f'<rect x="{chart_x0}" y="{ry - 5.5:.1f}" width="{max(bw, 2.0):.1f}" height="11" rx="2" fill="{z_col}" fill-opacity="0.88"/>'

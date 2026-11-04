@@ -1,0 +1,8 @@
+Check ID,Contract Rule Checked,Status,Verification Details
+CHK-01,Total Tier-1 series count and per-product breakdown,PASS,"Total=111 (expected 111): maize_white=49 (exp 49), tomatoes=43 (exp 43), yam_white=19 (exp 19)"
+CHK-02,"Markets coverage table alignment (51 markets, no tier 'None' with obs, exact obs match)",PASS,"Active markets=51 (exp 51), tier='None' with obs=0, mismatches vs coverage_by_market.csv=0, Tier-1 counts in markets_coverage={'maize_white': 49, 'tomatoes': 43, 'yam_white': 19}"
+CHK-03,Consistency of `is_forecasted` between `markets_coverage` and `series`,PASS,"Forecasted pairs in markets_coverage=111, unique series pairs=111, symmetric difference=0"
+CHK-04,"No NaN, null, non-positive, or empty forecast/backtest/history arrays",PASS,"Invalid/empty values=0 across 333 forecast pts (exp 333), 1322 holdout backtest pts, and 10044 historical pts"
+CHK-05,Prediction interval ordering (`0 < low_90 <= low_80 <= forecast <= high_80 <= high_90`),PASS,Ordering violations=0 across 1655 interval sets
+CHK-06,"Chronological and target date consistency (`as_of_date=2026-09-15`, `2026-10..2026-12`)",PASS,Date consistency violations=0 across 111 series
+CHK-07,"Per-(product, horizon) holdout `reliability` status and bilingual FR/EN notes",PASS,"Violations=0; 9 product-horizons: maize_white/h1=baseline_retained, maize_white/h2=calibrated, maize_white/h3=baseline_retained, tomatoes/h1=calibrated, tomatoes/h2=calibrated, tomatoes/h3=calibrated, yam_white/h1=calibrated, yam_white/h2=calibrated, yam_white/h3=baseline_retained_intervals_too_narrow"

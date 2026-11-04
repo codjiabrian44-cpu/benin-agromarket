@@ -1,0 +1,10 @@
+Product,Horizon,Champion (Before),Champion (After),Champion Status,Val MAE Before,Val MAE After,Delta Val MAE,Test MAE Before,Test MAE After,Delta Test MAE,Test RMSE Before,Test RMSE After,Delta Test RMSE,Test MAPE Before,Test MAPE After,Delta Test MAPE,Test 80% Cov Before,Test 80% Cov After,Delta 80% Cov
+Maize (white),h=1m,Naive_LastValue,Naive_LastValue,Unchanged,19.7742,19.7742,+0.0000,9.5631,9.5631,+0.0000,15.2197,15.2197,+0.0000,6.7671%,6.7671%,+0.0000 pp,84.39%,84.39%,+0.00 pp
+Maize (white),h=2m,HGBR_NoWeather,HGBR_NoWeather,Unchanged,30.0069,30.0069,+0.0000,21.3153,21.3153,+0.0000,26.5722,26.5722,+0.0000,16.1780%,16.1780%,+0.0000 pp,78.22%,78.22%,+0.00 pp
+Maize (white),h=3m,Seasonal_Ratio_Naive,Seasonal_Ratio_Naive,Unchanged,35.0536,35.0536,+0.0000,24.5686,24.5686,+0.0000,31.0294,31.0294,+0.0000,17.4977%,17.4977%,+0.0000 pp,78.90%,78.90%,+0.00 pp
+Tomatoes,h=1m,Ridge_ARX,Ridge_ARX,Unchanged,111.4367,111.4367,+0.0000,109.9051,109.9051,+0.0000,241.6881,241.6881,+0.0000,18.8287%,18.8287%,+0.0000 pp,84.99%,84.99%,+0.00 pp
+Tomatoes,h=2m,Ridge_ARX,Ridge_ARX,Unchanged,143.3762,143.3762,+0.0000,146.0200,146.0200,+0.0000,300.4008,300.4008,+0.0000,25.9723%,25.9723%,+0.0000 pp,84.60%,84.60%,+0.00 pp
+Tomatoes,h=3m,Ridge_ARX,Ridge_ARX,Unchanged,150.6990,150.6990,+0.0000,161.0991,161.0991,+0.0000,339.7356,339.7356,+0.0000,29.1362%,29.1362%,+0.0000 pp,85.38%,85.38%,+0.00 pp
+Yam (white),h=1m,HGBR_NoWeather,HGBR_NoWeather,Unchanged,43.8783,43.8783,+0.0000,39.9450,39.9450,+0.0000,68.2346,68.2346,+0.0000,9.2413%,9.2413%,+0.0000 pp,79.65%,79.65%,+0.00 pp
+Yam (white),h=2m,HGBR_NoWeather,HGBR_NoWeather,Unchanged,60.7560,60.7560,+0.0000,56.9668,56.9668,+0.0000,85.8772,85.8772,+0.0000,14.1533%,14.1533%,+0.0000 pp,78.32%,78.32%,+0.00 pp
+Yam (white),h=3m,Seasonal_Ratio_Naive,Seasonal_Ratio_Naive,Unchanged,73.2332,73.2332,+0.0000,74.0664,74.0664,+0.0000,104.8860,104.8860,+0.0000,19.4535%,19.4535%,+0.0000 pp,71.24%,71.24%,+0.00 pp

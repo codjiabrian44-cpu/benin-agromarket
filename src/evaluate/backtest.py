@@ -14,6 +14,7 @@ Implements the pre-registered Phase 2 evaluation protocol recorded in Decision 7
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -187,23 +188,228 @@ def compute_error_metrics(df_slice: pd.DataFrame) -> Dict[str, float]:
     }
 
 
+def _sha256_file(path: Path) -> str:
+    """Compute SHA-256 hex digest of a file."""
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def compute_pipeline_cache_fingerprint() -> Dict[str, Any]:
+    """Compute deterministic SHA-256 fingerprint of all code and input data dependencies.
+
+    Per AGENTS.md `## Protocol integrity`:
+    Cached artifacts (predictions, models) must store a hash of the code and data that
+    produced them. The pipeline must refuse to reuse a cache if the hash differs, instead
+    of relying on file timestamps.
+    """
+    code_rel_paths = [
+        "src/config.py",
+        "src/models/features.py",
+        "src/models/forecasters.py",
+        "src/evaluate/backtest.py",
+    ]
+    data_rel_paths = [
+        "data/processed/modeling_panel_2019_2026.csv",
+        "data/processed/prices_cleaned_all.csv",
+        "data/processed/markets_active.csv",
+        "docs/tables/coverage_by_market.csv",
+    ]
+    code_hashes = {rel: _sha256_file(PROJECT_ROOT / rel) for rel in code_rel_paths}
+    data_hashes = {rel: _sha256_file(PROJECT_ROOT / rel) for rel in data_rel_paths}
+
+    combined = hashlib.sha256()
+    for rel, digest in sorted({**code_hashes, **data_hashes}.items()):
+        combined.update(f"{rel}:{digest}\n".encode("utf-8"))
+    combined.update(f"random_seed:{RANDOM_SEED}\n".encode("utf-8"))
+
+    return {
+        "combined_sha256": combined.hexdigest(),
+        "random_seed": RANDOM_SEED,
+        "code_sha256": code_hashes,
+        "data_sha256": data_hashes,
+    }
+
+
+def _write_artifact_sidecar_hash(artifact_path: Path, fingerprint: Dict[str, Any]) -> Path:
+    """Write sidecar `.sha256.json` next to a cached artifact recording its hash and inputs."""
+    sidecar_path = artifact_path.with_name(artifact_path.name + ".sha256.json")
+    payload = {
+        "artifact_file": str(artifact_path.relative_to(PROJECT_ROOT)),
+        "artifact_sha256": _sha256_file(artifact_path),
+        "pipeline_combined_sha256": fingerprint["combined_sha256"],
+        "random_seed": fingerprint["random_seed"],
+        "code_sha256": fingerprint["code_sha256"],
+        "data_sha256": fingerprint["data_sha256"],
+    }
+    sidecar_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+    return sidecar_path
+
+
+def _verify_artifact_sidecar_hash(artifact_path: Path, expected_fingerprint: Dict[str, Any]) -> bool:
+    """Verify that `artifact_path` exists, has a sidecar `.sha256.json`, and matches both
+    the pipeline code/data fingerprint and the artifact's own SHA-256 content hash.
+    """
+    sidecar_path = artifact_path.with_name(artifact_path.name + ".sha256.json")
+    if not artifact_path.exists() or not sidecar_path.exists():
+        return False
+    try:
+        meta = json.loads(sidecar_path.read_text(encoding="utf-8"))
+    except Exception:
+        return False
+    if meta.get("pipeline_combined_sha256") != expected_fingerprint["combined_sha256"]:
+        return False
+    if meta.get("artifact_sha256") != _sha256_file(artifact_path):
+        return False
+    return True
+
+
+def compute_product_horizon_reliability(
+    commodity: str,
+    horizon: int,
+    champ_id: str,
+    best_base_id: str,
+    best_model_test_id: str,
+    champ_test_stats: Dict[str, float],
+    best_base_test_stats: Dict[str, float],
+    best_model_test_stats: Dict[str, float],
+    val_skill_vs_best_base: float = 0.0,
+) -> Dict[str, Any]:
+    """Compute holdout-derived `reliability` status and bilingual 1-sentence UI notes."""
+    cov80 = float(champ_test_stats["cov80"])
+    cov90 = float(champ_test_stats["cov90"])
+    mae = float(champ_test_stats["mae"])
+    mape = float(champ_test_stats["mape"])
+    base_mae = float(best_base_test_stats["mae"])
+    best_test_mae = float(best_model_test_stats["mae"])
+    skill_vs_best_base = (1.0 - mae / base_mae) * 100.0 if base_mae > 0 else 0.0
+    nominal_80 = 80
+
+    is_baseline_champ = champ_id in {"Naive_LastValue", "Seasonal_Naive_12m", "Seasonal_Ratio_Naive"}
+    intervals_narrow = (cov80 < 75.0) or (cov90 < 85.0)
+    worse_on_holdout = (mae - best_test_mae) > 0.5
+
+    if intervals_narrow and is_baseline_champ:
+        status = "baseline_retained_intervals_too_narrow"
+        note_fr = (
+            f"Référence saisonnière ({champ_id}) retenue par parcimonie (MAPE test {mape:.1f} %), "
+            f"mais les intervalles à {nominal_80} % sont trop étroits sur le holdout "
+            f"({cov80:.1f} % vs {nominal_80} % nominal) lors des transitions de récolte."
+        )
+        note_en = (
+            f"Seasonal baseline ({champ_id}) retained by parsimony (holdout MAPE {mape:.1f}%), "
+            f"but {nominal_80}% prediction intervals are too narrow on the holdout "
+            f"({cov80:.1f}% vs {nominal_80}% nominal) around harvest transitions."
+        )
+    elif intervals_narrow:
+        status = "intervals_too_narrow"
+        note_fr = (
+            f"Précision ponctuelle solide ({champ_id}, MAPE test {mape:.1f} %), mais la couverture "
+            f"empirique à {nominal_80} % ({cov80:.1f} %) est inférieure à la cible nominale de {nominal_80} %."
+        )
+        note_en = (
+            f"Solid point accuracy ({champ_id}, holdout MAPE {mape:.1f}%), but empirical {nominal_80}% interval "
+            f"coverage ({cov80:.1f}%) is below the {nominal_80}% nominal target."
+        )
+    elif is_baseline_champ:
+        status = "baseline_retained"
+        if champ_id == "Naive_LastValue":
+            note_fr = (
+                f"Référence de persistance locale ({champ_id}) retenue : aucun modèle complexe ne bat "
+                f"le dernier prix observé à h={horizon} mois (MAE test {mae:.1f} XOF/kg, MAPE {mape:.1f} %, "
+                f"couverture {nominal_80} % bien calibrée à {cov80:.1f} %)."
+            )
+            note_en = (
+                f"Local persistence baseline ({champ_id}) retained: no complex model beats the last "
+                f"observed price at h={horizon}m (holdout MAE {mae:.1f} XOF/kg, MAPE {mape:.1f}%, "
+                f"well-calibrated {nominal_80}% coverage at {cov80:.1f}%)."
+            )
+        else:
+            note_fr = (
+                f"Référence saisonnière causale ({champ_id}) retenue par parcimonie (MAE test {mae:.1f} XOF/kg, "
+                f"MAPE {mape:.1f} %, couverture {nominal_80} % calibrée à {cov80:.1f} %)."
+            )
+            note_en = (
+                f"Causal seasonal baseline ({champ_id}) retained by parsimony (holdout MAE {mae:.1f} XOF/kg, "
+                f"MAPE {mape:.1f}%, calibrated {nominal_80}% coverage at {cov80:.1f}%)."
+            )
+    else:
+        status = "calibrated"
+        if skill_vs_best_base >= 0.0:
+            note_fr = (
+                f"Modèle {champ_id} bien calibré sur le holdout (MAE {mae:.1f} XOF/kg, MAPE {mape:.1f} %, "
+                f"gain de {skill_vs_best_base:+.1f} % vs meilleure référence {best_base_id}, "
+                f"couverture {nominal_80} % à {cov80:.1f} %)."
+            )
+            note_en = (
+                f"Calibrated {champ_id} model on holdout (MAE {mae:.1f} XOF/kg, MAPE {mape:.1f}%, "
+                f"{skill_vs_best_base:+.1f}% skill vs best baseline {best_base_id}, "
+                f"{nominal_80}% interval coverage at {cov80:.1f}%)."
+            )
+        else:
+            note_fr = (
+                f"Modèle {champ_id} retenu sur validation ({val_skill_vs_best_base:+.1f} % vs {best_base_id}) "
+                f"avec intervalles bien calibrés sur le holdout (couverture {nominal_80} % à {cov80:.1f} %, "
+                f"MAE {mae:.1f} XOF/kg, MAPE {mape:.1f} %), mais devancé sur le holdout par "
+                f"{best_model_test_id} ({best_test_mae:.1f} XOF/kg)."
+            )
+            note_en = (
+                f"{champ_id} selected on validation ({val_skill_vs_best_base:+.1f}% vs {best_base_id}) "
+                f"with calibrated holdout intervals ({nominal_80}% coverage at {cov80:.1f}%, "
+                f"MAE {mae:.1f} XOF/kg, MAPE {mape:.1f}%), though trailed on the holdout by "
+                f"{best_model_test_id} ({best_test_mae:.1f} XOF/kg)."
+            )
+
+    return {
+        "status": status,
+        "is_calibrated_80": bool(cov80 >= 75.0),
+        "is_baseline_retained": bool(is_baseline_champ),
+        "did_worse_than_another_candidate_on_holdout": bool(worse_on_holdout),
+        "best_holdout_candidate": best_model_test_id,
+        "best_holdout_candidate_mae": round(best_test_mae, 2),
+        "best_validation_baseline": best_base_id,
+        "skill_vs_best_baseline_test_pct": round(skill_vs_best_base, 1),
+        "holdout_coverage_80_pct": round(cov80, 1),
+        "holdout_coverage_90_pct": round(cov90, 1),
+        "note_fr": note_fr,
+        "note_en": note_en,
+    }
+
+
 def run_full_evaluation_pipeline(force_recompute: bool = False) -> Dict[str, Any]:
     """Execute Phase 2 backtesting, champion selection, model saving, tables, and JSON export."""
     np.random.seed(RANDOM_SEED)
     panels = load_product_panels()
+    pipeline_fp = compute_pipeline_cache_fingerprint()
 
     pred_csv = PROCESSED_DATA_DIR / "phase2_backtest_predictions.csv"
     fut_csv = PROCESSED_DATA_DIR / "phase2_future_forecasts_all_models.csv"
     final_models_by_product: Dict[str, Dict[str, Dict[int, Any]]] = {}
 
-    if not force_recompute and pred_csv.exists() and fut_csv.exists():
-        print("[Phase 2] Loading rolling-origin predictions from data/processed/...")
+    cache_valid = (
+        not force_recompute
+        and _verify_artifact_sidecar_hash(pred_csv, pipeline_fp)
+        and _verify_artifact_sidecar_hash(fut_csv, pipeline_fp)
+    )
+
+    if cache_valid:
+        print(
+            f"[Phase 2] Hash-verified cache hit (combined_sha256={pipeline_fp['combined_sha256'][:12]}...). "
+            "Loading rolling-origin predictions from data/processed/..."
+        )
         df_eval = pd.read_csv(pred_csv, dtype={"market_id": str})
         df_future = pd.read_csv(fut_csv, dtype={"market_id": str})
         if not (MODELS_DIR / "model_registry.json").exists():
             for commodity, panel in panels.items():
                 final_models_by_product[commodity] = fit_final_models_only(panel)
     else:
+        if not force_recompute and (pred_csv.exists() or fut_csv.exists()):
+            print(
+                "[Phase 2] Refusing to reuse cached predictions (missing or mismatched code/data SHA-256 hash). "
+                "Recomputing from scratch..."
+            )
         all_eval_records: List[Dict[str, Any]] = []
         future_forecast_records: List[Dict[str, Any]] = []
 
@@ -300,10 +506,12 @@ def run_full_evaluation_pipeline(force_recompute: bool = False) -> Dict[str, Any
         df_eval = pd.DataFrame(all_eval_records)
         df_future = pd.DataFrame(future_forecast_records)
 
-        # Save full evaluation dataframe for figure generation
+        # Save full evaluation dataframe and sidecar code/data SHA-256 hashes
         PROCESSED_DATA_DIR.mkdir(parents=True, exist_ok=True)
         df_eval.to_csv(pred_csv, index=False)
         df_future.to_csv(fut_csv, index=False)
+        _write_artifact_sidecar_hash(pred_csv, pipeline_fp)
+        _write_artifact_sidecar_hash(fut_csv, pipeline_fp)
 
     # -------------------------------------------------------------------------
     # Champion Selection strictly on Validation MAE (`split == 'validation'`)
@@ -387,9 +595,12 @@ def run_full_evaluation_pipeline(force_recompute: bool = False) -> Dict[str, Any
             snaive_val_mae = val_metrics_by_m["Seasonal_Naive_12m"]["mae"]
             snaive_test_mae = test_metrics_by_m["Seasonal_Naive_12m"]["mae"]
             naive_test_mae = test_metrics_by_m["Naive_LastValue"]["mae"]
+            best_base_test_mae = test_metrics_by_m[best_base_id]["mae"]
             champ_val = val_metrics_by_m[champ_id]
             champ_test = test_metrics_by_m[champ_id]
 
+            val_skill_best_base = (1.0 - champ_val["mae"] / base_val_mae) * 100.0
+            test_skill_best_base = (1.0 - champ_test["mae"] / best_base_test_mae) * 100.0
             val_skill_snaive = (1.0 - champ_val["mae"] / snaive_val_mae) * 100.0
             test_skill_snaive = (1.0 - champ_test["mae"] / snaive_test_mae) * 100.0
             test_skill_naive = (1.0 - champ_test["mae"] / naive_test_mae) * 100.0
@@ -404,10 +615,13 @@ def run_full_evaluation_pipeline(force_recompute: bool = False) -> Dict[str, Any
                 f"{comp_val_mae:.1f}",
                 f"{val_metrics_by_m[best_comp_id]['mape']:.1f}%",
                 champ_id,
+                f"{val_skill_best_base:+.1f}%",
                 f"{val_skill_snaive:+.1f}%",
+                f"{best_base_test_mae:.1f}",
                 f"{champ_test['mae']:.1f}",
                 f"{champ_test['rmse']:.1f}",
                 f"{champ_test['mape']:.1f}%",
+                f"{test_skill_best_base:+.1f}%",
                 f"{test_skill_snaive:+.1f}%",
                 f"{test_skill_naive:+.1f}%",
                 f"{champ_test['cov80']:.1f}%",
@@ -415,13 +629,14 @@ def run_full_evaluation_pipeline(force_recompute: bool = False) -> Dict[str, Any
                 honesty_note,
             ])
 
-    # Save champion artifacts to `models/`
+    # Save champion artifacts to `models/` with code/data SHA-256 provenance
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
     registry_info: Dict[str, Any] = {
         "as_of_date": "2026-09-15",
         "random_seed": RANDOM_SEED,
         "validation_window": f"2022-01-15..{VALIDATION_END_DATE}",
         "holdout_test_window": f"{TEST_START_DATE}..2026-09-15",
+        "pipeline_cache_fingerprint": pipeline_fp,
         "champions": {},
     }
     for (commodity, h), champ_id in champions.items():
@@ -434,12 +649,17 @@ def run_full_evaluation_pipeline(force_recompute: bool = False) -> Dict[str, Any
                 "horizon": h,
                 "champion_model_id": champ_id,
                 "as_of_date": "2026-09-15",
+                "pipeline_combined_sha256": pipeline_fp["combined_sha256"],
                 "model_artifact": final_models_by_product[commodity][champ_id][h],
             }
             joblib.dump(artifact_obj, artifact_path)
+            _write_artifact_sidecar_hash(artifact_path, pipeline_fp)
+        elif artifact_path.exists():
+            _write_artifact_sidecar_hash(artifact_path, pipeline_fp)
         registry_info["champions"].setdefault(commodity, {})[f"h{h}"] = {
             "model_id": champ_id,
             "artifact_file": f"models/{artifact_path.name}",
+            "artifact_sha256": _sha256_file(artifact_path) if artifact_path.exists() else "",
         }
 
     (MODELS_DIR / "model_registry.json").write_text(
@@ -546,10 +766,13 @@ def run_full_evaluation_pipeline(force_recompute: bool = False) -> Dict[str, Any
             "Stat/ML Val MAE",
             "Stat/ML Val MAPE",
             "Selected Champion",
+            "Val Skill vs Best Baseline",
             "Val Skill vs SNaive12m",
+            "Best Baseline Test MAE",
             "Test MAE (XOF/kg)",
             "Test RMSE (XOF/kg)",
             "Test MAPE %",
+            "Test Skill vs Best Baseline",
             "Test Skill vs SNaive12m",
             "Test Skill vs Naive1m",
             "Test 80% PI Cov",
@@ -557,6 +780,91 @@ def run_full_evaluation_pipeline(force_recompute: bool = False) -> Dict[str, Any
             "Selection Rationale (Honesty Clause)",
         ],
         champion_selection_rows,
+    )
+
+    # -------------------------------------------------------------------------
+    # Table 2b: `phase2_holdout_rank_comparison.{csv,md}`
+    # -------------------------------------------------------------------------
+    rank_rows: List[List[Any]] = []
+    for commodity in sorted(panels.keys()):
+        for h in HORIZONS:
+            val_sub = main_df[
+                (main_df["commodity"] == commodity)
+                & (main_df["horizon"] == h)
+                & (main_df["split"] == "validation")
+            ]
+            test_sub = main_df[
+                (main_df["commodity"] == commodity)
+                & (main_df["horizon"] == h)
+                & (main_df["split"] == "test")
+            ]
+            val_m = {
+                m_id: compute_error_metrics(val_sub[val_sub["model_id"] == m_id])
+                for m_id in baseline_ids + complex_ids
+            }
+            test_m = {
+                m_id: compute_error_metrics(test_sub[test_sub["model_id"] == m_id])
+                for m_id in baseline_ids + complex_ids
+            }
+            champ_id = champions[(commodity, h)]
+            best_test_id = min(baseline_ids + complex_ids, key=lambda m: test_m[m]["mae"])
+            sorted_by_test = sorted(baseline_ids + complex_ids, key=lambda m: test_m[m]["mae"])
+            champ_test_rank = sorted_by_test.index(champ_id) + 1
+            better_on_test = [
+                f"{m} ({test_m[m]['mae']:.2f})"
+                for m in sorted_by_test
+                if test_m[m]["mae"] < test_m[champ_id]["mae"] - 1e-9
+            ]
+            mae_gap = test_m[champ_id]["mae"] - test_m[best_test_id]["mae"]
+            mape_gap = test_m[champ_id]["mape"] - test_m[best_test_id]["mape"]
+            status_str = (
+                "Rank #1 on Holdout (Best Candidate)"
+                if champ_id == best_test_id
+                else f"Rank #{champ_test_rank}/8 on Holdout (+{mae_gap:.2f} XOF/kg vs {best_test_id})"
+            )
+            rank_rows.append([
+                commodity,
+                f"h={h}m",
+                champ_id,
+                f"{val_m[champ_id]['mae']:.2f}",
+                f"{test_m[champ_id]['mae']:.2f}",
+                f"{test_m[champ_id]['mape']:.2f}%",
+                f"#{champ_test_rank} / 8",
+                best_test_id,
+                f"{val_m[best_test_id]['mae']:.2f}",
+                f"{test_m[best_test_id]['mae']:.2f}",
+                f"{test_m[best_test_id]['mape']:.2f}%",
+                f"{mae_gap:+.2f}",
+                f"{mape_gap:+.2f} pp",
+                ", ".join(better_on_test) if better_on_test else "None (Champion is #1 on Holdout)",
+                status_str,
+            ])
+
+    write_table_pair(
+        "phase2_holdout_rank_comparison",
+        "Phase 2 Holdout Rank Comparison: Selected Validation Champion vs Best Candidate on Holdout Test (`2025-10..2026-09`)",
+        [
+            "Documents plainly every `(Product, Horizon)` cell where the model selected strictly on the Validation Split (`2022-01..2025-09`) did worse on the frozen Holdout Test (`2025-10..2026-09`) than another candidate model.",
+            "Per `AGENTS.md` (`## Protocol integrity`), champion selection is never altered after inspecting the holdout test split.",
+        ],
+        [
+            "Product",
+            "Horizon",
+            "Selected Champion (Val)",
+            "Champion Val MAE",
+            "Champion Test MAE",
+            "Champion Test MAPE",
+            "Champion Test Rank",
+            "Best Candidate on Holdout",
+            "Best-on-Test Val MAE",
+            "Best-on-Test Holdout MAE",
+            "Best-on-Test Holdout MAPE",
+            "Holdout MAE Gap (Champ - Best)",
+            "Holdout MAPE Gap",
+            "All Candidates Beating Champion on Holdout",
+            "Holdout Comparison Verdict",
+        ],
+        rank_rows,
     )
 
     # -------------------------------------------------------------------------
@@ -1315,21 +1623,83 @@ def export_web_forecasts_json(
         )
 
         by_h_acc: Dict[str, Any] = {}
+        reliability_by_h: Dict[str, Any] = {}
+        baseline_ids = ["Naive_LastValue", "Seasonal_Naive_12m", "Seasonal_Ratio_Naive"]
+        all_main_ids = [m.model_id for m in MODEL_SPECS if m.is_main_candidate]
+
         for h_idx, h in enumerate(HORIZONS):
             st_h = compute_error_metrics(test_slices[h_idx])
             st_sh = compute_error_metrics(snaive_test_slices[h_idx])
             sk_h = (1.0 - st_h["mae"] / st_sh["mae"]) * 100.0 if st_sh["mae"] > 0 else 0.0
+
+            val_h_sub = main_df[
+                (main_df["commodity"] == commodity)
+                & (main_df["horizon"] == h)
+                & (main_df["split"] == "validation")
+            ]
+            test_h_sub = main_df[
+                (main_df["commodity"] == commodity)
+                & (main_df["horizon"] == h)
+                & (main_df["split"] == "test")
+            ]
+            val_base_maes = {
+                b_id: compute_error_metrics(val_h_sub[val_h_sub["model_id"] == b_id])["mae"]
+                for b_id in baseline_ids
+            }
+            best_base_id = min(baseline_ids, key=lambda b: val_base_maes[b])
+            champ_val_mae = compute_error_metrics(
+                val_h_sub[val_h_sub["model_id"] == champions[(commodity, h)]]
+            )["mae"]
+            val_skill_best_base_h = (
+                (1.0 - champ_val_mae / val_base_maes[best_base_id]) * 100.0
+                if val_base_maes[best_base_id] > 0
+                else 0.0
+            )
+            best_base_test_stats = compute_error_metrics(
+                test_h_sub[test_h_sub["model_id"] == best_base_id]
+            )
+            test_all_stats = {
+                m_id: compute_error_metrics(test_h_sub[test_h_sub["model_id"] == m_id])
+                for m_id in all_main_ids
+            }
+            best_model_test_id = min(all_main_ids, key=lambda m: test_all_stats[m]["mae"])
+            best_model_test_stats = test_all_stats[best_model_test_id]
+            sk_best_base_h = (
+                (1.0 - st_h["mae"] / best_base_test_stats["mae"]) * 100.0
+                if best_base_test_stats["mae"] > 0
+                else 0.0
+            )
+
+            rel_info = compute_product_horizon_reliability(
+                commodity=commodity,
+                horizon=h,
+                champ_id=champions[(commodity, h)],
+                best_base_id=best_base_id,
+                best_model_test_id=best_model_test_id,
+                champ_test_stats=st_h,
+                best_base_test_stats=best_base_test_stats,
+                best_model_test_stats=best_model_test_stats,
+                val_skill_vs_best_base=val_skill_best_base_h,
+            )
+            reliability_by_h[f"h{h}"] = rel_info
+
             by_h_acc[f"h{h}"] = {
                 "horizon_months": h,
                 "model_used": champions[(commodity, h)],
+                "best_baseline_val": best_base_id,
                 "n_eval": st_h["n"],
                 "mae": round(st_h["mae"], 2),
                 "rmse": round(st_h["rmse"], 2),
                 "mape": round(st_h["mape"], 2),
+                "skill_vs_best_baseline_pct": round(sk_best_base_h, 1),
                 "skill_vs_snaive_pct": round(sk_h, 1),
                 "coverage_80": round(st_h["cov80"], 1),
                 "coverage_90": round(st_h["cov90"], 1),
                 "mean_width_80": round(st_h["width80"], 1),
+                "reliability": rel_info["status"],
+                "reliability_note_fr": rel_info["note_fr"],
+                "reliability_note_en": rel_info["note_en"],
+                "reliability_detail": rel_info,
             }
 
         products_meta[slug] = {
@@ -1343,6 +1713,7 @@ def export_web_forecasts_json(
             "tier1_markets_count": len(panel.markets),
             "as_of_date": "2026-09-15",
             "champions_by_horizon": champ_by_h,
+            "reliability_by_horizon": reliability_by_h,
             "backtest_accuracy": {
                 "holdout_test_window": "2025-10-15..2026-09-15",
                 "validation_window": "2022-01-15..2025-09-15",
@@ -1368,31 +1739,48 @@ def export_web_forecasts_json(
         }
 
     # Build markets_coverage list across all 51 active markets so the UI can explain
-    # why non-Tier-1 markets do not have forecasts for a given commodity
-    cov_lookup: Dict[str, Dict[str, Any]] = {}
+    # why non-Tier-1 markets do not have forecasts for a given commodity.
+    # Fix C1: `docs/tables/coverage_by_market.csv` is in LONG format with columns:
+    # `Product`, `Market ID`, `Market`, `Obs (2019-26)`, `Tier (2019-26)`
+    cov_lookup_by_id: Dict[Tuple[str, str], Dict[str, Any]] = {}
+    cov_lookup_by_name: Dict[Tuple[str, str], Dict[str, Any]] = {}
     for _, r in df_cov_market.iterrows():
-        cov_lookup[str(r["Market"])] = r.to_dict()
+        prod_name = str(r["Product"]).strip()
+        mkt_id_str = str(r["Market ID"]).strip()
+        mkt_name_str = str(r["Market"]).strip()
+        row_dict = r.to_dict()
+        cov_lookup_by_id[(prod_name, mkt_id_str)] = row_dict
+        cov_lookup_by_name[(prod_name, mkt_name_str)] = row_dict
 
     markets_coverage_list: List[Dict[str, Any]] = []
     for _, m_row in df_markets_active.sort_values("market").iterrows():
-        mkt_name = str(m_row["market"])
+        mkt_id = str(m_row["market_id"]).strip()
+        mkt_name = str(m_row["market"]).strip()
         lat = float(m_row["latitude"])
         lon = float(m_row["longitude"])
-        c_info = cov_lookup.get(mkt_name, {})
 
         prod_status: Dict[str, Any] = {}
-        for slug, comm_col, tier_col in [
-            ("maize_white", "Maize (white) 2019-26 (m / %)", "Maize Tier"),
-            ("tomatoes", "Tomatoes 2019-26 (m / %)", "Tomato Tier"),
-            ("yam_white", "Yam (white) 2019-26 (m / %)", "Yam (white) Tier"),
+        for slug, comm_name in [
+            ("maize_white", "Maize (white)"),
+            ("tomatoes", "Tomatoes"),
+            ("yam_white", "Yam (white)"),
         ]:
-            raw_cell = str(c_info.get(comm_col, "0 / 93 (0.0%)"))
-            obs_m = int(raw_cell.split("/")[0].strip()) if "/" in raw_cell else 0
-            tier_str = str(c_info.get(tier_col, "None"))
+            c_info = cov_lookup_by_id.get(
+                (comm_name, mkt_id),
+                cov_lookup_by_name.get((comm_name, mkt_name), {}),
+            )
+            obs_m = int(c_info["Obs (2019-26)"]) if "Obs (2019-26)" in c_info else 0
+            tier_str = str(c_info.get("Tier (2019-26)", "None")).strip()
             is_t1 = tier_str.startswith("Tier-1")
             if is_t1:
-                reason_fr = "Marché Tier-1 (>= 80/93 mois observés en 2019–2026) : prévisions actives avec intervalles à 80 % et 90 %."
-                reason_en = "Tier-1 market (>= 80/93 observed months in 2019–2026): active forecasts with 80% and 90% intervals."
+                reason_fr = (
+                    f"Marché Tier-1 ({obs_m}/93 mois observés en 2019–2026, seuil >= 80/93) : "
+                    "prévisions actives avec intervalles à 80 % et 90 %."
+                )
+                reason_en = (
+                    f"Tier-1 market ({obs_m}/93 observed months in 2019–2026, threshold >= 80/93): "
+                    "active forecasts with 80% and 90% intervals."
+                )
             elif obs_m == 0:
                 reason_fr = "Aucune observation post-2019 pour ce produit dans ce marché : prévision désactivée conformément à la règle anti-invention de données."
                 reason_en = "Zero post-2019 observations for this product in this market: forecasting disabled per data integrity rules."
@@ -1411,7 +1799,7 @@ def export_web_forecasts_json(
             }
 
         markets_coverage_list.append({
-            "market_id": str(m_row["market_id"]),
+            "market_id": mkt_id,
             "market": mkt_name,
             "admin1": str(m_row["admin1"]),
             "admin2": str(m_row["admin2"]),
@@ -1483,6 +1871,7 @@ def export_web_forecasts_json(
                 last_obs_price = round(float(f_row["last_observed_price"]), 2)
                 p_f = round(float(f_row["pred_price"]), 2)
                 chg_pct = round((p_f / last_obs_price - 1.0) * 100.0, 1) if last_obs_price > 0 else 0.0
+                rel_h = products_meta[slug]["reliability_by_horizon"][f"h{h}"]
                 forecasts_points.append({
                     "horizon_months": h,
                     "target_date": str(f_row["target_date"]),
@@ -1494,6 +1883,9 @@ def export_web_forecasts_json(
                     "low_90": round(float(f_row["low_90"]), 2),
                     "high_90": round(float(f_row["high_90"]), 2),
                     "change_vs_last_pct": chg_pct,
+                    "reliability": rel_h["status"],
+                    "reliability_note_fr": rel_h["note_fr"],
+                    "reliability_note_en": rel_h["note_en"],
                 })
 
             obs_cnt_modern = int(np.sum(panel.is_observed[m_idx]))
@@ -1509,7 +1901,7 @@ def export_web_forecasts_json(
                 "latitude": float(panel.latitudes[m_idx]),
                 "longitude": float(panel.longitudes[m_idx]),
                 "agro_zone": panel.zones[m_idx],
-                "tier": "Tier-1",
+                "tier": "Tier-1 (>=80m)",
                 "is_forecasted": True,
                 "obs_months_2019_2026": obs_cnt_modern,
                 "completeness_2019_2026_pct": round(obs_cnt_modern / 93.0 * 100.0, 1),
@@ -1519,6 +1911,7 @@ def export_web_forecasts_json(
                 "model_used": {
                     f"h{h}": champions[(commodity, h)] for h in HORIZONS
                 },
+                "reliability_by_horizon": products_meta[slug]["reliability_by_horizon"],
                 "backtest_accuracy": market_accuracy_lookup[(commodity, mkt)],
                 "history": history_points,
                 "recent_backtest_h1": recent_bt_points,
@@ -1554,6 +1947,10 @@ def export_web_forecasts_json(
 
     out_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"[Phase 2] Exported {out_path} ({len(series_list)} Tier-1 series, {len(markets_coverage_list)} active markets).")
+
+    from src.evaluate.validate_export import validate_forecasts_export
+    validate_forecasts_export(export_path=out_path)
+
     return out_path
 
 

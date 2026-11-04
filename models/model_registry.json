@@ -3,47 +3,72 @@
   "random_seed": 42,
   "validation_window": "2022-01-15..2025-09-15",
   "holdout_test_window": "2025-10-15..2026-09-15",
+  "pipeline_cache_fingerprint": {
+    "combined_sha256": "94a12e77c4351f6f883ba569cdffeeef62861e0e3e0c7370b4ef41fd0c8e41ba",
+    "random_seed": 42,
+    "code_sha256": {
+      "src/config.py": "91d7b7620b8ddca6c824871ead622a2391ff88972368bad4d4e51497cf433eca",
+      "src/models/features.py": "4e07aa0a7993e8d5384faa08ea40877b9231708cfc37c07dac00c20d258ee8fe",
+      "src/models/forecasters.py": "ec99ae28a74904bbb97531893eb242718cb2a5bd7005db5dd39ac75d732d3d20",
+      "src/evaluate/backtest.py": "9e60609f0c5cb1a96e8556ef1dfd596e81ec45dc721788973b37c594ce4e0d89"
+    },
+    "data_sha256": {
+      "data/processed/modeling_panel_2019_2026.csv": "1a0f9f68b369ae788df7502f354d13ce14a960736f6e380c6d4f354cded76ee5",
+      "data/processed/prices_cleaned_all.csv": "dbee8c2490cc5a289760b7ded7a198e04f7300afa5c468f68100e9e1136c96f0",
+      "data/processed/markets_active.csv": "ab050592305593aa5711e55a40b1d1080507a5258b84f5d7fb3e37ffe4f8f197",
+      "docs/tables/coverage_by_market.csv": "c3862d76644ea6707cbdf29bb007beb13f2f00ef0d4b1654c71d9ad0c98cf804"
+    }
+  },
   "champions": {
     "Maize (white)": {
       "h1": {
         "model_id": "Naive_LastValue",
-        "artifact_file": "models/champion_maize_white_h1.joblib"
+        "artifact_file": "models/champion_maize_white_h1.joblib",
+        "artifact_sha256": "594844c7670868f2c20a892c80ff9f7bfe92bc4931bca95b2429af2fdc1e88fe"
       },
       "h2": {
         "model_id": "HGBR_NoWeather",
-        "artifact_file": "models/champion_maize_white_h2.joblib"
+        "artifact_file": "models/champion_maize_white_h2.joblib",
+        "artifact_sha256": "7f00ac928f3362662475358b7d011fd4dc0d908883fa5f21e21f334ad1a79c67"
       },
       "h3": {
         "model_id": "Seasonal_Ratio_Naive",
-        "artifact_file": "models/champion_maize_white_h3.joblib"
+        "artifact_file": "models/champion_maize_white_h3.joblib",
+        "artifact_sha256": "19f433a59657269269ab09419841da5094cf8ae2491472a6daf70eab37c74dc9"
       }
     },
     "Tomatoes": {
       "h1": {
         "model_id": "Ridge_ARX",
-        "artifact_file": "models/champion_tomatoes_h1.joblib"
+        "artifact_file": "models/champion_tomatoes_h1.joblib",
+        "artifact_sha256": "347df4dd840d38a64ca5b6fd0e6d995140ad0f65753b38e2b1e67fd2dac7fe41"
       },
       "h2": {
         "model_id": "Ridge_ARX",
-        "artifact_file": "models/champion_tomatoes_h2.joblib"
+        "artifact_file": "models/champion_tomatoes_h2.joblib",
+        "artifact_sha256": "21aa1955441e02a1d827112e345567dbde6e3a827100806726e647672eb3b8b8"
       },
       "h3": {
         "model_id": "Ridge_ARX",
-        "artifact_file": "models/champion_tomatoes_h3.joblib"
+        "artifact_file": "models/champion_tomatoes_h3.joblib",
+        "artifact_sha256": "95953b0ea4731e8012dcfde13721db06661dbdaf858932914854005a7ebd8032"
       }
     },
     "Yam (white)": {
       "h1": {
         "model_id": "HGBR_NoWeather",
-        "artifact_file": "models/champion_yam_white_h1.joblib"
+        "artifact_file": "models/champion_yam_white_h1.joblib",
+        "artifact_sha256": "a7d689e07371f5091f525abd3359c1ceb5f6aa5823a28cd7d51ba6de00d0534c"
       },
       "h2": {
         "model_id": "HGBR_NoWeather",
-        "artifact_file": "models/champion_yam_white_h2.joblib"
+        "artifact_file": "models/champion_yam_white_h2.joblib",
+        "artifact_sha256": "bdb23d5e86dd00ef02b9f1fd2226a9419fa11ae2d0991a6fa364a57876ded312"
       },
       "h3": {
         "model_id": "Seasonal_Ratio_Naive",
-        "artifact_file": "models/champion_yam_white_h3.joblib"
+        "artifact_file": "models/champion_yam_white_h3.joblib",
+        "artifact_sha256": "64e52c68947caa082709cd3cdbee4c8196e1eb5f270d5f7f66f5935c912b7998"
       }
     }
   }
