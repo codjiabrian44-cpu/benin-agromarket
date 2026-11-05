@@ -13,6 +13,7 @@ import type { ForecastPoint, HistoryPoint, Tier1MarketMapItem } from './data';
 /**
  * 5-step single-hue sequential ramps per product (`light = cheaper`, `dark = more expensive`),
  * generated with `d3-interpolate` between the product's light tint, mid identity token, and deep shade.
+ * On the dark `#1E1B16` map background, every dot carries a crisp `#F6F0E4` (`sand`, 15.12:1 AAA) stroke.
  */
 export const PRODUCT_RAMP_5: Record<ProductSlug, [string, string, string, string, string]> = {
   maize_white: [
@@ -38,6 +39,38 @@ export const PRODUCT_RAMP_5: Record<ProductSlug, [string, string, string, string
   ],
 };
 
+export interface HeroAnnotation {
+  x: number;
+  y: number;
+  labelX: number;
+  labelY: number;
+  anchor: 'start' | 'middle' | 'end';
+  leaderPath: string;
+}
+
+export interface HeroMorphData {
+  width: number;
+  height: number;
+  histX: number[];
+  histY: number[];
+  histDefined: boolean[];
+  fcX: number[];
+  fcPointY: number[];
+  fcLow80Y: number[];
+  fcHigh80Y: number[];
+  fcLow90Y: number[];
+  fcHigh90Y: number[];
+  historyPath: string;
+  forecastPath: string;
+  band80Path: string;
+  band90Path: string;
+  lastObsX: number;
+  lastObsY: number;
+  peakX: number;
+  peakY: number;
+  fcDots: Array<{ x: number; y: number }>;
+}
+
 export interface HeroChartGeometry {
   width: number;
   height: number;
@@ -52,7 +85,30 @@ export interface HeroChartGeometry {
   asOfX: number;
   forecastEndX: number;
   unobservedCount: number;
-  lastObsPoint: { x: number; y: number; price: number; date: string };
+  peakPoint: {
+    x: number;
+    y: number;
+    price: number;
+    date: string;
+    annotation: HeroAnnotation;
+  };
+  lastObsPoint: {
+    x: number;
+    y: number;
+    price: number;
+    date: string;
+    annotation: HeroAnnotation;
+  };
+  forecastAnnotation: {
+    x: number;
+    y: number;
+    labelX: number;
+    labelY: number;
+    bandLabelY: number;
+    fanLabelX: number;
+    fanLabelY: number;
+    leaderPath: string;
+  };
   forecastPoints: Array<{
     x: number;
     y: number;
@@ -64,16 +120,17 @@ export interface HeroChartGeometry {
     low80: number;
     high80: number;
   }>;
+  morphData: HeroMorphData;
 }
 
 export function buildHeroChartGeometry(
   history: HistoryPoint[],
   forecasts: ForecastPoint[],
-  width = 760,
-  height = 280
+  width = 820,
+  height = 340
 ): HeroChartGeometry {
-  const margin = { top: 22, right: 44, bottom: 30, left: 48 };
-  const forecastZoneWidth = 108; // Dedicated 108px visual span for the 3-month forecast fan
+  const margin = { top: 34, right: 26, bottom: 32, left: 48 };
+  const forecastZoneWidth = 148; // Generous 148px right-hand zone for 3-month forecast + direct curve labels
   const parseDate = (dStr: string) => new Date(`${dStr}T00:00:00Z`);
 
   const histDates = history.map((d) => parseDate(d.date));
@@ -90,7 +147,7 @@ export function buildHeroChartGeometry(
     ...forecasts.flatMap((f) => [f.low_90, f.high_90, f.point_forecast]),
   ];
   const yMaxRaw = max(allValues) ?? 500;
-  const yMax = Math.ceil((yMaxRaw * 1.08) / 50) * 50;
+  const yMax = Math.ceil((yMaxRaw * 1.14) / 50) * 50;
 
   const asOfX = width - margin.right - forecastZoneWidth;
   const forecastEndX = width - margin.right;
@@ -166,37 +223,180 @@ export function buildHeroChartGeometry(
     x: Math.round(xHistScale(new Date(`${yr}-01-15T00:00:00Z`)) * 10) / 10,
   }));
 
+  // Find historical peak point (highest observed price in 2019–2026)
+  let peakObs = observedHistory[0];
+  for (const pt of observedHistory) {
+    if (pt.price > peakObs.price) {
+      peakObs = pt;
+    }
+  }
+  const peakX = Math.round(xHistScale(parseDate(peakObs.date)) * 10) / 10;
+  const peakY = Math.round(yScale(peakObs.price) * 10) / 10;
+
+  // Collision-safe peak label placement
+  const peakNearRight = peakX > asOfX - 180;
+  const peakAnchor: 'start' | 'end' = peakNearRight ? 'end' : 'start';
+  const peakLabelX = peakNearRight ? Math.round((peakX - 12) * 10) / 10 : Math.round((peakX + 12) * 10) / 10;
+  const peakLabelY = Math.max(margin.top + 13, Math.round((peakY - 8) * 10) / 10);
+  const peakLeaderEndX = peakAnchor === 'end' ? peakLabelX + 4 : peakLabelX - 4;
+  const peakLeaderPath = `M ${peakX} ${peakY} L ${peakX} ${peakLabelY - 3} L ${peakLeaderEndX} ${peakLabelY - 3}`;
+
+  const lastObsX = Math.round(asOfX * 10) / 10;
+  const lastObsY = Math.round(yScale(lastObs.price) * 10) / 10;
+
+  const fcPts = forecasts.map((f) => ({
+    x: Math.round(xForecastScale(f.horizon_months) * 10) / 10,
+    y: Math.round(yScale(f.point_forecast) * 10) / 10,
+    yLow80: Math.round(yScale(f.low_80) * 10) / 10,
+    yHigh80: Math.round(yScale(f.high_80) * 10) / 10,
+    yLow90: Math.round(yScale(f.low_90) * 10) / 10,
+    yHigh90: Math.round(yScale(f.high_90) * 10) / 10,
+    horizon: f.horizon_months,
+    date: f.target_date,
+    price: f.point_forecast,
+    low80: f.low_80,
+    high80: f.high_80,
+  }));
+
+  const fcH3Pt = fcPts[fcPts.length - 1];
+
+  // Anchor "Dernier relevé" cleanly to the LEFT of `asOfX` so it never crosses the vertical dashed line
+  let lastObsLabelY = Math.round((lastObsY - 14) * 10) / 10;
+  if (Math.abs(peakX - lastObsX) < 165 && Math.abs(lastObsLabelY - peakLabelY) < 22) {
+    lastObsLabelY = Math.min(height - margin.bottom - 18, Math.round((lastObsY + 22) * 10) / 10);
+  }
+  lastObsLabelY = Math.max(margin.top + 28, Math.min(height - margin.bottom - 14, lastObsLabelY));
+  const lastObsLabelX = Math.round((lastObsX - 10) * 10) / 10;
+  const lastObsLeaderPath = `M ${lastObsX} ${lastObsY} L ${lastObsX - 5} ${lastObsLabelY - 3} L ${lastObsLabelX + 3} ${lastObsLabelY - 3}`;
+
+  // Place 3-month forecast direct annotation in the right-hand forecast zone above the upper 90% fan
+  const fcTopBandY = Math.min(fcH3Pt.yHigh90, fcH3Pt.y);
+  const fcLabelY = Math.max(margin.top + 26, Math.min(height - margin.bottom - 56, Math.round((fcTopBandY - 22) * 10) / 10));
+  const fcBandLabelY = Math.round((fcLabelY + 14) * 10) / 10;
+  const fcLabelX = Math.round((forecastEndX - 4) * 10) / 10;
+  const fcLeaderPath = `M ${fcH3Pt.x} ${fcH3Pt.y} L ${fcH3Pt.x} ${fcBandLabelY + 4}`;
+
+  // Place the fan band annotation cleanly below the lower 90% boundary
+  const fcBottomBandY = Math.max(fcH3Pt.yLow90, fcH3Pt.y);
+  const fanLabelY = Math.min(
+    height - margin.bottom - 8,
+    Math.max(fcBandLabelY + 28, Math.round((fcBottomBandY + 16) * 10) / 10)
+  );
+  const fanLabelX = Math.round((asOfX + forecastZoneWidth * 0.52) * 10) / 10;
+
+  // Build 93-point coordinate arrays for smooth 600ms client-side path morphing
+  const histX: number[] = [];
+  const histYRaw: Array<number | null> = [];
+  const histDefined: boolean[] = [];
+
+  for (const d of history) {
+    const xVal = Math.round(xHistScale(parseDate(d.date)) * 10) / 10;
+    histX.push(xVal);
+    if (d.is_observed !== false && typeof d.price === 'number' && Number.isFinite(d.price)) {
+      histYRaw.push(Math.round(yScale(d.price) * 10) / 10);
+      histDefined.push(true);
+    } else {
+      histYRaw.push(null);
+      histDefined.push(false);
+    }
+  }
+
+  // Fill null Y positions via linear interpolation ONLY for the intermediate morph frames
+  const histY: number[] = histYRaw.map((v, i) => {
+    if (v !== null) return v;
+    let prevIdx = i - 1;
+    while (prevIdx >= 0 && histYRaw[prevIdx] === null) prevIdx--;
+    let nextIdx = i + 1;
+    while (nextIdx < histYRaw.length && histYRaw[nextIdx] === null) nextIdx++;
+    const prevY = prevIdx >= 0 ? (histYRaw[prevIdx] as number) : lastObsY;
+    const nextY = nextIdx < histYRaw.length ? (histYRaw[nextIdx] as number) : prevY;
+    if (prevIdx >= 0 && nextIdx < histYRaw.length) {
+      const ratio = (i - prevIdx) / (nextIdx - prevIdx);
+      return Math.round((prevY + (nextY - prevY) * ratio) * 10) / 10;
+    }
+    return prevY;
+  });
+
+  const historyPath = histLineGen(history) ?? '';
+  const forecastPath = fcLineGen(bridgePoints) ?? '';
+  const band80Path = area80Gen(bridgePoints) ?? '';
+  const band90Path = area90Gen(bridgePoints) ?? '';
+
   return {
     width,
     height,
     margin,
     forecastZoneWidth,
-    historyPath: histLineGen(history) ?? '',
-    forecastPath: fcLineGen(bridgePoints) ?? '',
-    band80Path: area80Gen(bridgePoints) ?? '',
-    band90Path: area90Gen(bridgePoints) ?? '',
+    historyPath,
+    forecastPath,
+    band80Path,
+    band90Path,
     yTicks,
     xTicks,
-    asOfX: Math.round(asOfX * 10) / 10,
+    asOfX: lastObsX,
     forecastEndX: Math.round(forecastEndX * 10) / 10,
     unobservedCount,
+    peakPoint: {
+      x: peakX,
+      y: peakY,
+      price: peakObs.price,
+      date: peakObs.date,
+      annotation: {
+        x: peakX,
+        y: peakY,
+        labelX: peakLabelX,
+        labelY: peakLabelY,
+        anchor: peakAnchor,
+        leaderPath: peakLeaderPath,
+      },
+    },
     lastObsPoint: {
-      x: Math.round(asOfX * 10) / 10,
-      y: Math.round(yScale(lastObs.price) * 10) / 10,
+      x: lastObsX,
+      y: lastObsY,
       price: lastObs.price,
       date: lastObs.date,
+      annotation: {
+        x: lastObsX,
+        y: lastObsY,
+        labelX: lastObsLabelX,
+        labelY: lastObsLabelY,
+        anchor: 'end',
+        leaderPath: lastObsLeaderPath,
+      },
     },
-    forecastPoints: forecasts.map((f) => ({
-      x: Math.round(xForecastScale(f.horizon_months) * 10) / 10,
-      y: Math.round(yScale(f.point_forecast) * 10) / 10,
-      yLow80: Math.round(yScale(f.low_80) * 10) / 10,
-      yHigh80: Math.round(yScale(f.high_80) * 10) / 10,
-      horizon: f.horizon_months,
-      date: f.target_date,
-      price: f.point_forecast,
-      low80: f.low_80,
-      high80: f.high_80,
-    })),
+    forecastAnnotation: {
+      x: fcH3Pt.x,
+      y: fcH3Pt.y,
+      labelX: fcLabelX,
+      labelY: fcLabelY,
+      bandLabelY: fcBandLabelY,
+      fanLabelX,
+      fanLabelY,
+      leaderPath: fcLeaderPath,
+    },
+    forecastPoints: fcPts.map(({ yLow90: _l90, yHigh90: _h90, ...rest }) => rest),
+    morphData: {
+      width,
+      height,
+      histX,
+      histY,
+      histDefined,
+      fcX: bridgePoints.map((b) => Math.round(xForecastScale(b.h) * 10) / 10),
+      fcPointY: bridgePoints.map((b) => Math.round(yScale(b.point) * 10) / 10),
+      fcLow80Y: bridgePoints.map((b) => Math.round(yScale(b.low80) * 10) / 10),
+      fcHigh80Y: bridgePoints.map((b) => Math.round(yScale(b.high80) * 10) / 10),
+      fcLow90Y: bridgePoints.map((b) => Math.round(yScale(b.low90) * 10) / 10),
+      fcHigh90Y: bridgePoints.map((b) => Math.round(yScale(b.high90) * 10) / 10),
+      historyPath,
+      forecastPath,
+      band80Path,
+      band90Path,
+      lastObsX,
+      lastObsY,
+      peakX,
+      peakY,
+      fcDots: fcPts.map((p) => ({ x: p.x, y: p.y })),
+    },
   };
 }
 
@@ -251,6 +451,9 @@ export function buildSparklineGeometry(
 export interface DotMapNode extends Tier1MarketMapItem {
   cx: number;
   cy: number;
+  trueCx: number;
+  trueCy: number;
+  offsetPx: number;
   stepIndex: 1 | 2 | 3 | 4 | 5;
   fillHex: string;
   isCheapest: boolean;
@@ -273,17 +476,95 @@ export function classifyMedianBracketStep(diffPct: number): 1 | 2 | 3 | 4 | 5 {
   return 5;
 }
 
+/**
+ * Deterministic collision relaxation for the dense southern Benin cluster.
+ * Keeps every market dot strictly within `maxOffsetPx` (6.0 px) of its true projected `(trueCx, trueCy)`.
+ */
+function relaxSouthernClusterCollisions(
+  rawNodes: DotMapNode[],
+  minDist = 11.6,
+  maxOffsetPx = 6.0,
+  iterations = 45
+): DotMapNode[] {
+  const nodes = rawNodes.map((n) => ({ ...n }));
+  const count = nodes.length;
+
+  for (let iter = 0; iter < iterations; iter++) {
+    const damping = 0.55 * (1 - iter / (iterations * 1.25));
+    for (let i = 0; i < count; i++) {
+      for (let j = i + 1; j < count; j++) {
+        const a = nodes[i];
+        const b = nodes[j];
+        let dx = b.cx - a.cx;
+        let dy = b.cy - a.cy;
+        const dist = Math.hypot(dx, dy);
+        if (dist < minDist) {
+          if (dist < 0.001) {
+            const angle = ((i * 7 + j * 13) % 12) * (Math.PI / 6);
+            dx = Math.cos(angle);
+            dy = Math.sin(angle);
+          } else {
+            dx /= dist;
+            dy /= dist;
+          }
+          const push = (minDist - Math.max(dist, 0.001)) * 0.5 * damping;
+          a.cx -= dx * push;
+          a.cy -= dy * push;
+          b.cx += dx * push;
+          b.cy += dy * push;
+        }
+      }
+    }
+
+    // Clamp every dot strictly within `maxOffsetPx` (6.0 px) of its true geographic position
+    for (const n of nodes) {
+      const ox = n.cx - n.trueCx;
+      const oy = n.cy - n.trueCy;
+      const offset = Math.hypot(ox, oy);
+      if (offset > maxOffsetPx) {
+        const scale = (maxOffsetPx - 0.001) / offset;
+        n.cx = n.trueCx + ox * scale;
+        n.cy = n.trueCy + oy * scale;
+      }
+    }
+  }
+
+  return nodes.map((n) => {
+    const cx = Math.round(n.cx * 10) / 10;
+    const cy = Math.round(n.cy * 10) / 10;
+    const rawOffset = Math.hypot(cx - n.trueCx, cy - n.trueCy);
+    if (rawOffset > maxOffsetPx) {
+      const ratio = (maxOffsetPx - 0.05) / rawOffset;
+      const clampedCx = Math.round((n.trueCx + (cx - n.trueCx) * ratio) * 10) / 10;
+      const clampedCy = Math.round((n.trueCy + (cy - n.trueCy) * ratio) * 10) / 10;
+      return {
+        ...n,
+        cx: clampedCx,
+        cy: clampedCy,
+        offsetPx: Math.round(Math.hypot(clampedCx - n.trueCx, clampedCy - n.trueCy) * 100) / 100,
+      };
+    }
+    return {
+      ...n,
+      cx,
+      cy,
+      offsetPx: Math.round(rawOffset * 100) / 100,
+    };
+  });
+}
+
 export function buildBeninDotMapGeometry(
   markets: Tier1MarketMapItem[],
   slug: ProductSlug,
   latBandLabels: { '6_5': string; '7_5': string; '9_5': string; '11_5': string },
-  width = 430,
-  height = 520
+  width = 440,
+  height = 530
 ): {
   width: number;
   height: number;
   mapLeft: number;
   mapRight: number;
+  maxOffsetPx: number;
   rampColors: [string, string, string, string, string];
   nodes: DotMapNode[];
   cheapestCallout: MapCallout;
@@ -291,33 +572,43 @@ export function buildBeninDotMapGeometry(
   latBands: Array<{ lat: number; y: number; label: string }>;
 } {
   // Benin geographic bounding box: Lat 6.15°N to 12.45°N, Lon 0.75°E to 3.88°E
-  // Reserve a clean left gutter (x = 10..122) for latitude zone labels, top gutter (y = 8..34)
-  // and bottom callout gutter (y = 460..514) so callout labels never touch any market dot.
   const mapLeft = 128;
   const mapRight = width - 18;
-  const topPlotY = 42;
-  const bottomPlotY = height - 64; // 456px: all market dots fall strictly in y = [45..448]
+  const topPlotY = 38;
+  const bottomPlotY = height - 68;
   const xScale = scaleLinear().domain([0.72, 3.92]).range([mapLeft, mapRight]);
   const yScale = scaleLinear().domain([6.15, 12.45]).range([bottomPlotY, topPlotY]);
   const rampColors = PRODUCT_RAMP_5[slug];
 
-  // Identify cheapest and most expensive market
   const sortedByPrice = [...markets].sort((a, b) => a.last_observed_price - b.last_observed_price);
   const cheapestName = sortedByPrice[0]?.market_name ?? '';
   const priciestName = sortedByPrice[sortedByPrice.length - 1]?.market_name ?? '';
 
-  const nodes: DotMapNode[] = markets.map((m) => {
+  // Sort South-to-North (latitude ascending, tie-breaker longitude ascending) for progressive reveal
+  const sortedSouthToNorth = [...markets].sort(
+    (a, b) => a.latitude - b.latitude || a.longitude - b.longitude
+  );
+
+  const initialNodes: DotMapNode[] = sortedSouthToNorth.map((m) => {
     const stepIndex = classifyMedianBracketStep(m.diff_vs_median_pct);
+    const trueCx = Math.round(xScale(m.longitude) * 10) / 10;
+    const trueCy = Math.round(yScale(m.latitude) * 10) / 10;
     return {
       ...m,
-      cx: Math.round(xScale(m.longitude) * 10) / 10,
-      cy: Math.round(yScale(m.latitude) * 10) / 10,
+      cx: trueCx,
+      cy: trueCy,
+      trueCx,
+      trueCy,
+      offsetPx: 0,
       stepIndex,
       fillHex: rampColors[stepIndex - 1],
       isCheapest: m.market_name === cheapestName,
       isPriciest: m.market_name === priciestName,
     };
   });
+
+  const nodes = relaxSouthernClusterCollisions(initialNodes, 11.6, 6.0, 45);
+  const maxOffsetPx = max(nodes.map((n) => n.offsetPx)) ?? 0;
 
   const cheapestNode = nodes.find((n) => n.isCheapest) ?? nodes[0];
   const priciestNode = nodes.find((n) => n.isPriciest) ?? nodes[nodes.length - 1];
@@ -340,35 +631,16 @@ export function buildBeninDotMapGeometry(
     };
   };
 
+  // Route both extremum callouts into the bottom callout gutter (y = height - 38 and y = height - 14)
+  // so the upper map area remains 100% clear for the interactive floating tooltip
   let cheapestCallout: MapCallout;
   let priciestCallout: MapCallout;
-
-  const cheapInNorth = cheapestNode.cy < 260;
-  const priceInNorth = priciestNode.cy < 260;
-
-  if (cheapInNorth && !priceInNorth) {
-    cheapestCallout = makeSlotCallout(cheapestNode, mapRight, 22, 'end');
-    priciestCallout = makeSlotCallout(priciestNode, mapRight, height - 16, 'end');
-  } else if (!cheapInNorth && priceInNorth) {
-    priciestCallout = makeSlotCallout(priciestNode, mapRight, 22, 'end');
-    cheapestCallout = makeSlotCallout(cheapestNode, mapRight, height - 16, 'end');
-  } else if (cheapInNorth && priceInNorth) {
-    if (cheapestNode.cy <= priciestNode.cy) {
-      cheapestCallout = makeSlotCallout(cheapestNode, mapRight, 18, 'end');
-      priciestCallout = makeSlotCallout(priciestNode, mapRight, 34, 'end');
-    } else {
-      priciestCallout = makeSlotCallout(priciestNode, mapRight, 18, 'end');
-      cheapestCallout = makeSlotCallout(cheapestNode, mapRight, 34, 'end');
-    }
+  if (cheapestNode.cx <= priciestNode.cx) {
+    cheapestCallout = makeSlotCallout(cheapestNode, 12, height - 38, 'start');
+    priciestCallout = makeSlotCallout(priciestNode, mapRight, height - 14, 'end');
   } else {
-    // Both in southern/central half: route both into the dedicated 64px bottom callout gutter (y = 480 and y = 504)
-    if (cheapestNode.cx <= priciestNode.cx) {
-      cheapestCallout = makeSlotCallout(cheapestNode, 14, height - 36, 'start');
-      priciestCallout = makeSlotCallout(priciestNode, mapRight, height - 12, 'end');
-    } else {
-      priciestCallout = makeSlotCallout(priciestNode, 14, height - 36, 'start');
-      cheapestCallout = makeSlotCallout(cheapestNode, mapRight, height - 12, 'end');
-    }
+    priciestCallout = makeSlotCallout(priciestNode, 12, height - 38, 'start');
+    cheapestCallout = makeSlotCallout(cheapestNode, mapRight, height - 14, 'end');
   }
 
   const latBands = [
@@ -383,6 +655,7 @@ export function buildBeninDotMapGeometry(
     height,
     mapLeft,
     mapRight,
+    maxOffsetPx,
     rampColors,
     nodes,
     cheapestCallout,

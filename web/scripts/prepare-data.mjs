@@ -94,37 +94,37 @@ function buildPlainReliabilityNotes(relObj, accObj, horizon) {
 
   if (status === 'baseline_retained_intervals_too_narrow') {
     return {
-      note_fr: `Méthode retenue : ${champFr} (erreur moyenne de ${mae.toFixed(1)} XOF/kg en test, soit ${mape.toFixed(1)} %), mais la fourchette à ${nominal80} % est un peu trop étroite lors des variations rapides de prix (${cov80.toFixed(1)} % des prix observés en test tombent dans la fourchette au lieu de ${nominal80} %).`,
-      note_en: `Selected method: ${champEn} (average test error of ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%), but the ${nominal80}% interval is slightly too narrow during rapid price swings (${cov80.toFixed(1)}% of observed test prices fall inside the interval instead of ${nominal80}%).`,
+      note_fr: `Méthode retenue : ${champFr} (erreur moyenne de ${mae.toFixed(1)} XOF/kg en test, soit ${mape.toFixed(1)} %), mais la fourchette à ${nominal80} % a contenu ${cov80.toFixed(1)} % des prix observés en test (cible : ${nominal80} %, fourchette un peu étroite lors des variations rapides).`,
+      note_en: `Selected method: ${champEn} (average test error of ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%), while the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices in testing (target: ${nominal80}%, slightly narrow during rapid price swings).`,
     };
   }
   if (status === 'intervals_too_narrow') {
     return {
-      note_fr: `Méthode retenue : ${champFr} (erreur moyenne de ${mae.toFixed(1)} XOF/kg en test, soit ${mape.toFixed(1)} %), mais la fourchette à ${nominal80} % n'a couvert que ${cov80.toFixed(1)} % des prix observés en test (cible : ${nominal80} %).`,
-      note_en: `Selected method: ${champEn} (average test error of ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%), but the ${nominal80}% interval covered ${cov80.toFixed(1)}% of observed test prices (target: ${nominal80}%).`,
+      note_fr: `Méthode retenue : ${champFr} (erreur moyenne de ${mae.toFixed(1)} XOF/kg en test, soit ${mape.toFixed(1)} %), mais la fourchette à ${nominal80} % a contenu ${cov80.toFixed(1)} % des prix observés en test (cible : ${nominal80} %).`,
+      note_en: `Selected method: ${champEn} (average test error of ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%), while the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices in testing (target: ${nominal80}%).`,
     };
   }
   if (status === 'baseline_retained') {
     if (champId === 'Naive_LastValue') {
       return {
-        note_fr: `Méthode retenue : ${champFr}. À ${hFr}, aucune méthode statistique complexe ne fait mieux que le dernier prix connu (erreur moyenne en test : ${mae.toFixed(1)} XOF/kg, soit ${mape.toFixed(1)} % ; fourchette à ${nominal80} % fiable à ${cov80.toFixed(1)} %).`,
-        note_en: `Selected method: ${champEn}. At ${hEn}, no complex statistical model beats the last known price (average test error: ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%; ${nominal80}% interval well calibrated at ${cov80.toFixed(1)}%).`,
+        note_fr: `Méthode retenue : ${champFr}. À ${hFr}, aucune méthode statistique complexe ne fait mieux que le dernier prix connu (erreur moyenne en test : ${mae.toFixed(1)} XOF/kg, soit ${mape.toFixed(1)} % ; la fourchette à ${nominal80} % a contenu ${cov80.toFixed(1)} % des prix observés en test).`,
+        note_en: `Selected method: ${champEn}. At ${hEn}, no complex statistical model beats the last known price (average test error: ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%; the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices in testing).`,
       };
     }
     return {
-      note_fr: `Méthode retenue : ${champFr}, choisie car elle égale les modèles complexes (erreur moyenne en test : ${mae.toFixed(1)} XOF/kg, soit ${mape.toFixed(1)} % ; fourchette à ${nominal80} % fiable à ${cov80.toFixed(1)} %).`,
-      note_en: `Selected method: ${champEn}, retained because it matches complex models (average test error: ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%; ${nominal80}% interval well calibrated at ${cov80.toFixed(1)}%).`,
+      note_fr: `Méthode retenue : ${champFr}, choisie car elle égale les modèles complexes (erreur moyenne en test : ${mae.toFixed(1)} XOF/kg, soit ${mape.toFixed(1)} % ; la fourchette à ${nominal80} % a contenu ${cov80.toFixed(1)} % des prix observés en test).`,
+      note_en: `Selected method: ${champEn}, retained because it matches complex models (average test error: ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%; the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices in testing).`,
     };
   }
   if (skill >= 0) {
     return {
-      note_fr: `Méthode retenue : ${champFr}, avec des fourchettes fiables en test (erreur moyenne : ${mae.toFixed(1)} XOF/kg, soit ${mape.toFixed(1)} %, gain de +${skill.toFixed(1)} % par rapport à « ${baseFr} », fourchette à ${nominal80} % couvrant ${cov80.toFixed(1)} % des cas).`,
-      note_en: `Selected method: ${champEn}, with well-calibrated test intervals (average error: ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%, +${skill.toFixed(1)}% gain over '${baseEn}', ${nominal80}% interval covering ${cov80.toFixed(1)}% of cases).`,
+      note_fr: `Méthode retenue : ${champFr} (erreur moyenne : ${mae.toFixed(1)} XOF/kg, soit ${mape.toFixed(1)} %, gain de +${skill.toFixed(1)} % par rapport à « ${baseFr} » ; la fourchette à ${nominal80} % a contenu ${cov80.toFixed(1)} % des prix observés en test).`,
+      note_en: `Selected method: ${champEn} (average error: ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%, +${skill.toFixed(1)}% gain over '${baseEn}'; the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices in testing).`,
     };
   }
   return {
-    note_fr: `Méthode retenue : ${champFr}, sélectionnée sur la période d'entraînement avec une fourchette à ${nominal80} % fiable en test (${cov80.toFixed(1)} % des cas, erreur moyenne de ${mae.toFixed(1)} XOF/kg), bien que devancée sur les 12 mois de test par « ${bestTestFr} » (${bestTestMae.toFixed(1)} XOF/kg).`,
-    note_en: `Selected method: ${champEn}, chosen on the training period with a reliable ${nominal80}% test interval (${cov80.toFixed(1)}% coverage, average error ${mae.toFixed(1)} XOF/kg), though trailed on the 12 test months by '${bestTestEn}' (${bestTestMae.toFixed(1)} XOF/kg).`,
+    note_fr: `Méthode retenue : ${champFr}, sélectionnée sur la période d'entraînement (erreur moyenne de ${mae.toFixed(1)} XOF/kg, soit ${mape.toFixed(1)} % ; la fourchette à ${nominal80} % a contenu ${cov80.toFixed(1)} % des prix observés en test), bien que devancée sur les 12 mois de test par « ${bestTestFr} » (${bestTestMae.toFixed(1)} XOF/kg).`,
+    note_en: `Selected method: ${champEn}, chosen on the training period (average error ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%; the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices in testing), though trailed on the 12 test months by '${bestTestEn}' (${bestTestMae.toFixed(1)} XOF/kg).`,
   };
 }
 

@@ -35,6 +35,7 @@ TOKENS: Dict[str, str] = {
     "tomato-step-5": "#6E240B",
     "yam-step-1": "#E3EFE6",
     "yam-step-5": "#16331E",
+    "maize-understroke": "#8A5E00",
 }
 
 
@@ -108,6 +109,10 @@ def run_contrast_audit() -> Tuple[Path, Path]:
         ("paper-white", "tomato-step-5", "Dot map Tomato darkest step (`#6E240B`) against `paper-white` canvas", "Allowed (AAA)"),
         ("ink", "yam-step-1", "Dot map Yam lightest step (`#E3EFE6`) with dark `ink` stroke/label", "Allowed (AAA)"),
         ("paper-white", "yam-step-5", "Dot map Yam darkest step (`#16331E`) against `paper-white` canvas", "Allowed (AAA)"),
+        ("maize-understroke", "sand", "Maize curve understroke (`#8A5E00`) on unboxed `sand` Hero/Sparkline canvas", "Allowed (AA Normal & Graphical)"),
+        ("sand", "maize-step-5", "Dark-ink map dot `sand` stroke (`#F6F0E4`) against Maize step 5 (`#7A5200`)", "Allowed (AAA)"),
+        ("sand", "tomato-step-5", "Dark-ink map dot `sand` stroke (`#F6F0E4`) against Tomato step 5 (`#6E240B`)", "Allowed (AAA)"),
+        ("sand", "yam-step-5", "Dark-ink map dot `sand` stroke (`#F6F0E4`) against Yam step 5 (`#16331E`)", "Allowed (AAA)"),
         (
             "maize",
             "sand",

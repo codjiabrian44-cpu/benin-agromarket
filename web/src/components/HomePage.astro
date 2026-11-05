@@ -32,7 +32,7 @@ const productOrder: ProductSlug[] = ['maize_white', 'tomatoes', 'yam_white'];
 
 /**
  * Guarantee full 93-month calendar grid (`2019-01-15..2026-09-15`) with explicit `is_observed: false, price: null`
- * on unobserved months so `d3.line().defined()` always breaks across missing months (`2020-02`, `2021-07`, etc.).
+ * on unobserved months so `d3.line().defined()` always breaks across missing months (`2019-05..2019-12`, `2022-03`, etc.).
  */
 function ensureFull93MonthHistory(rawHistory: HistoryPoint[]): HistoryPoint[] {
   const byDate = new Map<string, HistoryPoint>();
@@ -72,15 +72,20 @@ function ensureFull93MonthHistory(rawHistory: HistoryPoint[]): HistoryPoint[] {
 }
 
 /**
- * Build a plain-language one-sentence reliability note free of internal model IDs or technical jargon.
+ * Build the one plain headline sentence for each "Méthode retenue" block
+ * and the detailed technical tooltip string.
  */
-function getPlainReliabilityNote(prod: HomeProductData, hKey: 'h1' | 'h2' | 'h3'): string {
+function getReliabilityHeadlineAndTooltip(
+  prod: HomeProductData,
+  hKey: 'h1' | 'h2' | 'h3'
+): { headline: string; detailedTooltip: string } {
   const relObj = prod.reliability_by_horizon[hKey];
   const accObj = prod.backtest_accuracy.by_horizon_test[hKey];
-  const h = accObj.horizon_months;
   const champLabel = formatModelName(accObj.model_used, dict);
-  const baseLabel = formatModelName(relObj.best_validation_baseline || accObj.best_baseline_val, dict);
-  const bestTestLabel = formatModelName(relObj.best_holdout_candidate, dict);
+  const baseLabel = formatModelName(
+    relObj.best_validation_baseline || accObj.best_baseline_val,
+    dict
+  );
   const maeStr = formatDecimal(accObj.mae, locale, 1);
   const mapeStr = formatDecimal(accObj.mape, locale, 1);
   const cov80Str = formatDecimal(relObj.holdout_coverage_80_pct ?? accObj.coverage_80, locale, 1);
@@ -89,50 +94,25 @@ function getPlainReliabilityNote(prod: HomeProductData, hKey: 'h1' | 'h2' | 'h3'
     locale,
     1
   );
-  const bestTestMaeStr = formatDecimal(relObj.best_holdout_candidate_mae, locale, 1);
+
+  const headline = dict.home.hero.headlineReliabilityTemplate
+    .replace('{mape}', mapeStr)
+    .replace('{cov80}', cov80Str);
 
   if (locale === 'fr') {
-    if (relObj.status === 'baseline_retained_intervals_too_narrow') {
-      return `Méthode retenue : ${champLabel} (erreur moyenne de ${maeStr} XOF/kg en test, soit ${mapeStr} %), mais la fourchette à 80 % est un peu étroite lors des variations rapides de prix (${cov80Str} % des prix observés en test tombent dans la fourchette au lieu de 80 %).`;
-    }
-    if (relObj.status === 'intervals_too_narrow') {
-      return `Méthode retenue : ${champLabel} (erreur moyenne de ${maeStr} XOF/kg en test, soit ${mapeStr} %), mais la fourchette à 80 % n'a couvert que ${cov80Str} % des prix observés en test (cible : 80 %).`;
-    }
-    if (relObj.status === 'baseline_retained') {
-      if (accObj.model_used === 'Naive_LastValue') {
-        return `Méthode retenue : ${champLabel}. À ${h} mois, aucune méthode complexe ne fait mieux que le dernier prix connu (erreur moyenne en test : ${maeStr} XOF/kg, soit ${mapeStr} % ; fourchette à 80 % fiable à ${cov80Str} %).`;
-      }
-      return `Méthode retenue : ${champLabel}, choisie car elle égale les modèles complexes (erreur moyenne en test : ${maeStr} XOF/kg, soit ${mapeStr} % ; fourchette à 80 % fiable à ${cov80Str} %).`;
-    }
-    if ((relObj.skill_vs_best_baseline_test_pct ?? accObj.skill_vs_best_baseline_pct) >= 0) {
-      return `Méthode retenue : ${champLabel}, avec des fourchettes fiables en test (erreur moyenne : ${maeStr} XOF/kg, soit ${mapeStr} %, gain de ${skillStr} face à « ${baseLabel} », fourchette à 80 % couvrant ${cov80Str} % des cas).`;
-    }
-    return `Méthode retenue : ${champLabel}, sélectionnée à l'entraînement avec une fourchette à 80 % fiable en test (${cov80Str} % des cas, erreur moyenne de ${maeStr} XOF/kg, soit ${mapeStr} %), bien que devancée sur les 12 mois de test par « ${bestTestLabel} » (${bestTestMaeStr} XOF/kg).`;
+    const detailedTooltip = `Méthode retenue : ${champLabel}. Erreur moyenne sur les 12 mois de test (oct. 2025 – sept. 2026) : ${maeStr} XOF/kg (${mapeStr} %) ; écart face à la méthode simple « ${baseLabel} » : ${skillStr} ; la fourchette à 80 % a contenu ${cov80Str} % des prix observés en test.`;
+    return { headline, detailedTooltip };
   }
 
-  if (relObj.status === 'baseline_retained_intervals_too_narrow') {
-    return `Selected method: ${champLabel} (average test error of ${maeStr} XOF/kg, or ${mapeStr}%), but the 80% interval is slightly narrow during rapid price swings (${cov80Str}% of observed test prices fall inside the interval instead of 80%).`;
-  }
-  if (relObj.status === 'intervals_too_narrow') {
-    return `Selected method: ${champLabel} (average test error of ${maeStr} XOF/kg, or ${mapeStr}%), but the 80% interval covered ${cov80Str}% of observed test prices (target: 80%).`;
-  }
-  if (relObj.status === 'baseline_retained') {
-    if (accObj.model_used === 'Naive_LastValue') {
-      return `Selected method: ${champLabel}. At ${h} month${h > 1 ? 's' : ''}, no complex model beats the last known price (average test error: ${maeStr} XOF/kg, or ${mapeStr}%; 80% interval calibrated at ${cov80Str}%).`;
-    }
-    return `Selected method: ${champLabel}, retained because it matches complex models (average test error: ${maeStr} XOF/kg, or ${mapeStr}%; 80% interval calibrated at ${cov80Str}%).`;
-  }
-  if ((relObj.skill_vs_best_baseline_test_pct ?? accObj.skill_vs_best_baseline_pct) >= 0) {
-    return `Selected method: ${champLabel}, with calibrated test intervals (average error: ${maeStr} XOF/kg, or ${mapeStr}%, ${skillStr} gain over "${baseLabel}", 80% interval covering ${cov80Str}% of cases).`;
-  }
-  return `Selected method: ${champLabel}, chosen in training with a reliable 80% test interval (${cov80Str}% coverage, average error ${maeStr} XOF/kg, or ${mapeStr}%), though trailed on the 12 test months by "${bestTestLabel}" (${bestTestMaeStr} XOF/kg).`;
+  const detailedTooltip = `Selected method: ${champLabel}. Average error across the 12 test months (Oct 2025 – Sep 2026): ${maeStr} XOF/kg (${mapeStr}%); gain vs simple method "${baseLabel}": ${skillStr}; the 80% interval contained ${cov80Str}% of observed prices in testing.`;
+  return { headline, detailedTooltip };
 }
 
 // Pre-compute D3 SVG geometries for all 3 products at build time
 const productViews = productOrder.map((slug) => {
   const prod = homeData.products[slug];
   const fullHistory93 = ensureFull93MonthHistory(prod.dantokpa.history);
-  const heroGeom = buildHeroChartGeometry(fullHistory93, prod.dantokpa.forecasts, 760, 280);
+  const heroGeom = buildHeroChartGeometry(fullHistory93, prod.dantokpa.forecasts, 820, 336);
   const sparkGeom = buildSparklineGeometry(prod.latest_national_stats.sparkline_36m, 300, 68);
   const mapGeom = buildBeninDotMapGeometry(
     prod.tier1_markets_map,
@@ -167,7 +147,8 @@ const productViews = productOrder.map((slug) => {
 
   // Last 12 calendar months + 3 forecast months for the accessible Dantokpa table drawer
   const recentHistory12 = fullHistory93.slice(-12);
-  const plainNoteH3 = getPlainReliabilityNote(prod, 'h3');
+  const { headline: headlineH3, detailedTooltip: detailedTooltipH3 } =
+    getReliabilityHeadlineAndTooltip(prod, 'h3');
 
   return {
     slug,
@@ -187,18 +168,44 @@ const productViews = productOrder.map((slug) => {
     peakToTroughRatio,
     computedStoryProse,
     recentHistory12,
-    plainNoteH3,
+    headlineH3,
+    detailedTooltipH3,
   };
 });
+
+// Serialize compact morph geometry for the 600ms Hero product switch animation
+const heroMorphMap = Object.fromEntries(
+  productViews.map(({ slug, heroGeom }) => [
+    slug,
+    {
+      x93: heroGeom.morphData.x93,
+      y93: heroGeom.morphData.y93,
+      def93: heroGeom.morphData.def93,
+      fcBridge: heroGeom.morphData.fcBridge,
+      historyPath: heroGeom.historyPath,
+      forecastPath: heroGeom.forecastPath,
+      band80Path: heroGeom.band80Path,
+      band90Path: heroGeom.band90Path,
+      peak: { x: heroGeom.peakPoint.x, y: heroGeom.peakPoint.y },
+      lastObs: { x: heroGeom.lastObsPoint.x, y: heroGeom.lastObsPoint.y },
+      fcDots: heroGeom.forecastPoints.map((fp) => ({ x: fp.x, y: fp.y })),
+    },
+  ])
+);
 ---
 
 <!-- =======================================================================
-     1. HERO: Editorial Thesis + Product Chips + Dantokpa Chart & 4 Key Figures
+     1. HERO: Editorial Thesis (4 cols) + Unboxed Large Dantokpa Chart (8 cols)
      ======================================================================= -->
-<section class="section-block hero-section" data-active-product="maize_white" id="hero-root">
+<section
+  class="section-block hero-section"
+  data-active-product="maize_white"
+  data-hero-morph={JSON.stringify(heroMorphMap)}
+  id="hero-root"
+>
   <div class="container">
     <div class="grid-12 hero-grid">
-      <!-- Left Column (Cols 1-5): Headline, Subtitle, Product Chips, CTAs -->
+      <!-- Left Column (Cols 1-4 on Desktop): Headline, Subtitle, Product Chips, CTAs -->
       <div class="hero-copy-col">
         <p class="hero-kicker">{dict.home.hero.kicker}</p>
         <h1 class="hero-title">{dict.home.hero.title}</h1>
@@ -236,19 +243,31 @@ const productViews = productOrder.map((slug) => {
         </div>
       </div>
 
-      <!-- Right Column (Cols 6-12): Dantokpa Market Price History + 3-Month Forecast -->
+      <!-- Right Column (Cols 5-12 on Desktop): Unboxed Large Dantokpa Chart Directly on Sand -->
       <div class="hero-chart-col">
         {
           productViews.map((view, idx) => {
-            const { slug, prod, heroGeom, fcH3, relH3, recentHistory12, plainNoteH3 } = view;
+            const {
+              slug,
+              prod,
+              heroGeom,
+              fcH3,
+              relH3,
+              recentHistory12,
+              headlineH3,
+              detailedTooltipH3,
+            } = view;
             const isDefault = idx === 0;
             const relLabel =
               dict.reliability[relH3.status as keyof typeof dict.reliability] ?? relH3.status;
             const modelH3Plain = formatModelName(fcH3.model_used, dict);
+            const peakDateShort = formatYearMonth(heroGeom.peakPoint.date, dict);
+            const lastObsDateShort = formatYearMonth(heroGeom.lastObsPoint.date, dict);
+            const fc3DateShort = formatYearMonth(fcH3.target_date, dict);
 
             return (
               <article
-                class="ledger-card hero-chart-panel"
+                class="hero-chart-panel"
                 data-product-panel={slug}
                 hidden={!isDefault}
                 aria-label={`${dict.home.hero.chartTitlePrefix} ${dict.products[slug].full}`}
@@ -263,10 +282,12 @@ const productViews = productOrder.map((slug) => {
                     </div>
                     <p class="chart-card-subtitle">{dict.home.hero.chartSubtitle}</p>
                   </div>
-                  <p class="unit-badge tabular-nums">{dict.units.nominalRetailNotice}</p>
+                  <div class="chart-header-meta">
+                    <span class="unit-badge tabular-nums">{dict.units.nominalRetailNotice}</span>
+                  </div>
                 </header>
 
-                <!-- Custom D3 SVG Chart (viewBox="0 0 760 280" so chart + 4 KPIs fit above 900px fold) -->
+                <!-- Large Unboxed D3 SVG Chart (viewBox="0 0 820 336") Directly on Sand -->
                 <div class="svg-chart-wrap">
                   <svg
                     viewBox={`0 0 ${heroGeom.width} ${heroGeom.height}`}
@@ -293,7 +314,7 @@ const productViews = productOrder.map((slug) => {
                       <g class="axis-tick">
                         <line
                           x1={heroGeom.margin.left}
-                          x2={heroGeom.width - heroGeom.margin.right}
+                          x2={heroGeom.forecastEndX}
                           y1={t.y}
                           y2={t.y}
                           class="grid-line"
@@ -340,7 +361,7 @@ const productViews = productOrder.map((slug) => {
                     />
                     <text
                       x={heroGeom.asOfX - 6}
-                      y={heroGeom.margin.top + 12}
+                      y={heroGeom.margin.top + 11}
                       text-anchor="end"
                       class="asof-label tabular-nums"
                     >
@@ -348,78 +369,148 @@ const productViews = productOrder.map((slug) => {
                     </text>
                     <text
                       x={heroGeom.asOfX + heroGeom.forecastZoneWidth / 2}
-                      y={heroGeom.margin.top + 12}
+                      y={heroGeom.margin.top + 11}
                       text-anchor="middle"
                       class="forecast-zone-label tabular-nums"
                     >
                       {dict.home.hero.chartHorizonMarker}
                     </text>
 
-                    <!-- 90% and 80% Forecast Uncertainty Fan Bands -->
-                    <path d={heroGeom.band90Path} class={`fan-band-90 band-${slug}`} />
-                    <path d={heroGeom.band80Path} class={`fan-band-80 band-${slug}`} />
+                    <!-- Forecast Uncertainty Bands & Dashed Forecast Trajectory Group -->
+                    <g class="hero-forecast-group" data-asof-x={heroGeom.asOfX}>
+                      <path d={heroGeom.band90Path} class={`fan-band-90 band-${slug}`} />
+                      <path d={heroGeom.band80Path} class={`fan-band-80 band-${slug}`} />
+                      {slug === 'maize_white' && (
+                        <path d={heroGeom.forecastPath} class="line-forecast-casing" />
+                      )}
+                      <path d={heroGeom.forecastPath} class={`line-forecast stroke-${slug}`} />
+                    </g>
 
                     <!-- Historical Observed Trajectory (breaks at unobserved months via d3.line().defined()) -->
+                    {slug === 'maize_white' && (
+                      <path d={heroGeom.historyPath} class="line-history-casing" />
+                    )}
                     <path d={heroGeom.historyPath} class={`line-history stroke-${slug}`} />
 
-                    <!-- 3-Month Dashed Forecast Path (oct.–déc. 2026) -->
-                    <path d={heroGeom.forecastPath} class={`line-forecast stroke-${slug}`} />
+                    <!-- 1. Direct Annotation: Historical Observed Peak -->
+                    <g class="hero-annotation hero-peak-annotation">
+                      <line
+                        x1={heroGeom.peakPoint.x}
+                        y1={heroGeom.peakPoint.y - 4}
+                        x2={heroGeom.peakPoint.x}
+                        y2={heroGeom.peakPoint.labelY + 4}
+                        class="annotation-leader"
+                      />
+                      <circle
+                        cx={heroGeom.peakPoint.x}
+                        cy={heroGeom.peakPoint.y}
+                        r="4"
+                        class={`dot-peak fill-${slug}`}
+                      />
+                      <text
+                        x={heroGeom.peakPoint.labelX}
+                        y={heroGeom.peakPoint.labelY}
+                        text-anchor={heroGeom.peakPoint.anchor}
+                        class="curve-annotation-text tabular-nums"
+                      >
+                        {dict.home.hero.peakLabelPrefix}{' '}
+                        {formatInt(heroGeom.peakPoint.price, locale)} {dict.units.xofPerKg} (
+                        {peakDateShort})
+                      </text>
+                    </g>
 
-                    <!-- Last Observed Anchor Dot -->
-                    <circle
-                      cx={heroGeom.lastObsPoint.x}
-                      cy={heroGeom.lastObsPoint.y}
-                      r="4.5"
-                      class={`dot-anchor fill-${slug}`}
-                    />
+                    <!-- 2. Direct Annotation: Last Observed Anchor Point (sept. 2026) -->
+                    <g class="hero-annotation hero-anchor-annotation">
+                      <line
+                        x1={heroGeom.lastObsPoint.x}
+                        y1={heroGeom.lastObsPoint.y + 4}
+                        x2={heroGeom.lastObsPoint.labelX + 3}
+                        y2={heroGeom.lastObsPoint.labelY - 9}
+                        class="annotation-leader"
+                      />
+                      <circle
+                        cx={heroGeom.lastObsPoint.x}
+                        cy={heroGeom.lastObsPoint.y}
+                        r="4.5"
+                        class={`dot-anchor fill-${slug}`}
+                      />
+                      <text
+                        x={heroGeom.lastObsPoint.labelX}
+                        y={heroGeom.lastObsPoint.labelY}
+                        text-anchor="end"
+                        class="curve-annotation-text tabular-nums"
+                      >
+                        {lastObsDateShort} · {formatDecimal(heroGeom.lastObsPoint.price, locale, 0)}{' '}
+                        {dict.units.xofPerKg}
+                      </text>
+                    </g>
 
                     <!-- Forecast Horizon Dots (1, 2, 3 months) -->
-                    {heroGeom.forecastPoints.map((fp) => (
-                      <circle
-                        cx={fp.x}
-                        cy={fp.y}
-                        r="3.5"
-                        class={`dot-forecast stroke-${slug}`}
+                    <g class="hero-forecast-dots">
+                      {heroGeom.forecastPoints.map((fp) => (
+                        <circle
+                          cx={fp.x}
+                          cy={fp.y}
+                          r="3.5"
+                          class={`dot-forecast stroke-${slug}`}
+                        />
+                      ))}
+                    </g>
+
+                    <!-- 3. Direct Annotations: 80%/90% Fan Band & 3-Month Forecast Endpoint -->
+                    <g class="hero-annotation hero-forecast-annotations">
+                      <line
+                        x1={heroGeom.bandLabelPos.tickX1}
+                        y1={heroGeom.bandLabelPos.tickY1}
+                        x2={heroGeom.bandLabelPos.tickX2}
+                        y2={heroGeom.bandLabelPos.labelY - 3}
+                        class="annotation-leader"
                       />
-                    ))}
+                      <text
+                        x={heroGeom.bandLabelPos.labelX}
+                        y={heroGeom.bandLabelPos.labelY}
+                        text-anchor="start"
+                        class="curve-annotation-sub tabular-nums"
+                      >
+                        {dict.home.hero.bandDirectLabel}
+                      </text>
+                      <text
+                        x={heroGeom.forecastEndLabelPos.x}
+                        y={heroGeom.forecastEndLabelPos.yLine1}
+                        text-anchor="start"
+                        class="curve-annotation-text tabular-nums"
+                      >
+                        {fc3DateShort} · {formatDecimal(fcH3.point_forecast, locale, 1)}{' '}
+                        {dict.units.xofPerKg}
+                      </text>
+                      <text
+                        x={heroGeom.forecastEndLabelPos.x}
+                        y={heroGeom.forecastEndLabelPos.yLine2}
+                        text-anchor="start"
+                        class="curve-annotation-sub tabular-nums"
+                      >
+                        [{formatInt(fcH3.low_80, locale)}–{formatInt(fcH3.high_80, locale)}{' '}
+                        {dict.units.xofPerKg}]
+                      </text>
+                    </g>
                   </svg>
                 </div>
 
-                <!-- Legend Row -->
-                <div class="chart-legend">
-                  <span class="legend-item">
-                    <span class={`legend-line-swatch stroke-bg-${slug}`} />
-                    {dict.home.hero.legendObserved}
-                  </span>
-                  <span class="legend-item">
-                    <span class={`legend-dash-swatch stroke-bg-${slug}`} />
-                    {dict.home.hero.legendForecast}
-                  </span>
-                  <span class="legend-item">
-                    <span class={`legend-band80-swatch band-bg-${slug}`} />
-                    {dict.home.hero.legendBand80}
-                  </span>
-                  <span class="legend-item">
-                    <span class={`legend-band90-swatch band-bg-${slug}`} />
-                    {dict.home.hero.legendBand90}
-                  </span>
-                </div>
-
-                <!-- Compact 4-Column Key Figures Row UNDER the SVG Chart -->
+                <!-- Minimal Typographic 4-Column Key Indicators Row (Fraunces Display + Thin Rules) -->
                 <div class="kpi-strip tabular-nums">
                   <div class="kpi-cell">
                     <span class="kpi-label">{dict.home.hero.latestObservedLabel}</span>
-                    <strong class="kpi-value nowrap">
+                    <strong class="kpi-value kpi-display-num nowrap">
                       {formatDecimal(prod.dantokpa.last_observed_price, locale, 1)}{' '}
-                      <small class="nowrap">{dict.units.xofPerKg}</small>
+                      <small class="kpi-unit nowrap">{dict.units.xofPerKg}</small>
                     </strong>
                   </div>
                   <div class="kpi-cell">
                     <span class="kpi-label">{dict.home.hero.forecastH3Label}</span>
-                    <strong class="kpi-value">
+                    <strong class="kpi-value kpi-display-num">
                       <span class="nowrap">
                         {formatDecimal(fcH3.point_forecast, locale, 1)}{' '}
-                        <small class="nowrap">{dict.units.xofPerKg}</small>
+                        <small class="kpi-unit nowrap">{dict.units.xofPerKg}</small>
                       </span>{' '}
                       <span class="kpi-delta nowrap">
                         ({formatSignedPct(fcH3.change_vs_last_pct, locale, 1)})
@@ -428,9 +519,9 @@ const productViews = productOrder.map((slug) => {
                   </div>
                   <div class="kpi-cell">
                     <span class="kpi-label">{dict.home.hero.interval80Label}</span>
-                    <strong class="kpi-value nowrap">
+                    <strong class="kpi-value kpi-display-num nowrap">
                       [{formatInt(fcH3.low_80, locale)}, {formatInt(fcH3.high_80, locale)}]{' '}
-                      <small class="nowrap">{dict.units.xofPerKg}</small>
+                      <small class="kpi-unit nowrap">{dict.units.xofPerKg}</small>
                     </strong>
                   </div>
                   <div class="kpi-cell">
@@ -439,18 +530,22 @@ const productViews = productOrder.map((slug) => {
                   </div>
                 </div>
 
-                <!-- Honesty & Reliability Strip -->
+                <!-- Minimal Honesty & Reliability Line: Editorial Status Tag + One Plain Headline Sentence + Details Tooltip -->
                 <div class="honesty-strip">
-                  <div class="honesty-strip-top">
-                    <span class="reliability-badge" data-status={relH3.status}>
-                      {relLabel}
-                    </span>
-                    <span class="asof-meta tabular-nums">
-                      {dict.home.hero.asOfLabel} :{' '}
-                      <strong>{dict.home.hero.asOfDateFormatted}</strong>
-                    </span>
-                  </div>
-                  <p class="honesty-note">{plainNoteH3}</p>
+                  <span class="reliability-badge" data-status={relH3.status}>
+                    {relLabel}
+                  </span>
+                  <p class="honesty-note">
+                    {headlineH3}{' '}
+                    <button
+                      type="button"
+                      class="details-tooltip-trigger"
+                      title={detailedTooltipH3}
+                      aria-label={`${dict.home.hero.detailsTriggerLabel} : ${detailedTooltipH3}`}
+                    >
+                      {dict.home.hero.detailsTriggerLabel}
+                    </button>
+                  </p>
                 </div>
 
                 <!-- Accessible Data Table Drawer -->
@@ -530,11 +625,11 @@ const productViews = productOrder.map((slug) => {
 </section>
 
 <!-- =======================================================================
-     2. SECTION: "Trois produits, trois histoires" (Aligned Product Cards)
+     2. SECTION: "Trois produits, trois histoires" (Open Editorial Columns + Sparkline Draw)
      ======================================================================= -->
-<section class="section-block" aria-labelledby="stories-heading">
+<section class="section-block stories-section" aria-labelledby="stories-heading">
   <div class="container">
-    <header class="section-header">
+    <header class="section-header" data-reveal="fade-up">
       <h2 class="section-title" id="stories-heading">{dict.home.stories.title}</h2>
       <p class="section-subtitle">{dict.home.stories.subtitle}</p>
     </header>
@@ -543,7 +638,7 @@ const productViews = productOrder.map((slug) => {
       {
         productViews.map(
           ({ slug, prod, sparkGeom, peakMonthName, troughMonthName, computedStoryProse }) => (
-            <article class={`story-card card-accent-${slug}`}>
+            <article class={`story-card card-accent-${slug}`} data-reveal="fade-up">
               <header class="story-card-header">
                 <div class="story-card-title-row">
                   <span class={`product-pill pill-${slug}`}>{dict.products[slug].chip}</span>
@@ -559,7 +654,7 @@ const productViews = productOrder.map((slug) => {
                 <p class="story-card-prose">{computedStoryProse}</p>
               </header>
 
-              <!-- 36-Month Tracked-Market Median Sparkline (D3 SVG) with Independent Vertical Scale Note -->
+              <!-- Unboxed 36-Month Tracked-Market Median Sparkline (D3 SVG) -->
               <div class="sparkline-box">
                 <div class="sparkline-meta tabular-nums">
                   <span>{dict.home.stories.sparklineCaption}</span>
@@ -575,6 +670,9 @@ const productViews = productOrder.map((slug) => {
                   aria-label={`${dict.home.stories.sparklineCaption} — ${dict.products[slug].full}`}
                 >
                   <path d={sparkGeom.areaPath} class={`spark-area band-${slug}`} />
+                  {slug === 'maize_white' && (
+                    <path d={sparkGeom.linePath} class="spark-line-casing" />
+                  )}
                   <path d={sparkGeom.linePath} class={`spark-line stroke-${slug}`} />
                   <circle
                     cx={sparkGeom.lastX}
@@ -586,23 +684,23 @@ const productViews = productOrder.map((slug) => {
                 <p class="sparkline-scale-note">{dict.home.stories.sparklineScaleNote}</p>
               </div>
 
-              <!-- Data-Computed Seasonal & Price Stats -->
+              <!-- Data-Computed Seasonal & Price Stats with Large Typographic Figures -->
               <dl class="story-stats-grid tabular-nums">
                 <div class="story-stat-item">
                   <dt>{dict.home.stories.latestMedianLabel}</dt>
                   <dd>
-                    <strong class="nowrap">
+                    <strong class="stat-display-num nowrap">
                       {formatDecimal(prod.latest_national_stats.median_price, locale, 1)}{' '}
-                      {dict.units.xofPerKg}
+                      <small>{dict.units.xofPerKg}</small>
                     </strong>
                   </dd>
                 </div>
                 <div class="story-stat-item">
                   <dt>{dict.home.stories.dantokpaLatestLabel}</dt>
                   <dd>
-                    <strong class="nowrap">
+                    <strong class="stat-display-num nowrap">
                       {formatDecimal(prod.dantokpa.last_observed_price, locale, 1)}{' '}
-                      {dict.units.xofPerKg}
+                      <small>{dict.units.xofPerKg}</small>
                     </strong>
                   </dd>
                 </div>
@@ -640,7 +738,7 @@ const productViews = productOrder.map((slug) => {
 
               <footer class="story-card-footer">
                 <a href={`${routes.explorer}?product=${slug}`} class="story-link">
-                  {dict.home.stories.exploreProductCta} ({dict.products[slug].chip})
+                  {dict.products[slug].exploreHistoryCta}
                 </a>
               </footer>
             </article>
@@ -652,17 +750,19 @@ const productViews = productOrder.map((slug) => {
 </section>
 
 <!-- =======================================================================
-     3. SECTION: "Un même kilo, des prix différents" (5-Step Single-Hue Dot Map)
+     3. SECTION: "Un même kilo, des prix différents" (Full-Bleed Dark Ink Section)
      ======================================================================= -->
-<section class="section-block" aria-labelledby="map-section-heading">
+<section class="section-block map-section-dark" id="map-section-root" aria-labelledby="map-section-heading">
   <div class="container">
-    <header class="section-header map-section-header">
+    <header class="section-header map-section-header" data-reveal="fade-up">
       <div>
-        <h2 class="section-title" id="map-section-heading">{dict.home.mapSection.title}</h2>
-        <p class="section-subtitle">{dict.home.mapSection.subtitle}</p>
+        <h2 class="section-title map-dark-title" id="map-section-heading">
+          {dict.home.mapSection.title}
+        </h2>
+        <p class="section-subtitle map-dark-subtitle">{dict.home.mapSection.subtitle}</p>
       </div>
       <div>
-        <span class="selector-label" id="map-product-selector-label">
+        <span class="selector-label map-dark-label" id="map-product-selector-label">
           {dict.home.mapSection.productFilterLabel}
         </span>
         <div class="chip-group" role="group" aria-labelledby="map-product-selector-label">
@@ -670,7 +770,7 @@ const productViews = productOrder.map((slug) => {
             productOrder.map((slug, idx) => (
               <button
                 type="button"
-                class="product-chip"
+                class="product-chip map-dark-chip"
                 data-product={slug}
                 data-role="product-switch"
                 aria-pressed={idx === 0 ? 'true' : 'false'}
@@ -689,6 +789,7 @@ const productViews = productOrder.map((slug) => {
         const isDefault = idx === 0;
         const defaultMarket =
           mapGeom.nodes.find((n) => n.market_name === 'Dantokpa') ?? mapGeom.nodes[0];
+        const defaultCoords = `${formatDecimal(defaultMarket.latitude, locale, 2)}°N, ${formatDecimal(defaultMarket.longitude, locale, 2)}°E`;
         const stepLabels = [
           dict.home.mapSection.step1Label,
           dict.home.mapSection.step2Label,
@@ -700,8 +801,8 @@ const productViews = productOrder.map((slug) => {
         return (
           <div class="map-product-panel" data-map-panel={slug} hidden={!isDefault}>
             <div class="grid-12 map-layout-grid">
-              <!-- Dot Map Canvas (Cols 1-5) -->
-              <div class="map-canvas-col ledger-card">
+              <!-- Dot Map Canvas (Cols 1-5) Directly on Dark Ink -->
+              <div class="map-canvas-col">
                 <div class="map-legend-block">
                   <p class="map-ramp-explanation">{dict.home.mapSection.rampExplanation}</p>
                   <div class="map-legend-bar tabular-nums">
@@ -718,7 +819,7 @@ const productViews = productOrder.map((slug) => {
                   </div>
                 </div>
 
-                <div class="dotmap-svg-wrap">
+                <div class="dotmap-svg-wrap" data-map-wrap={slug}>
                   <svg
                     viewBox={`0 0 ${mapGeom.width} ${mapGeom.height}`}
                     class="dotmap-svg"
@@ -737,28 +838,32 @@ const productViews = productOrder.map((slug) => {
                           x2={mapGeom.mapRight}
                           y1={lb.y}
                           y2={lb.y}
-                          class="grid-line"
+                          class="map-grid-line"
                         />
-                        <text x="10" y={lb.y + 4} class="axis-text tabular-nums">
+                        <text x="10" y={lb.y + 4} class="map-axis-text tabular-nums">
                           {lb.label}
                         </text>
                       </g>
                     ))}
 
-                    <!-- Market Dots positioned strictly by (longitude, latitude) with 5-step single-hue product fill -->
+                    <!-- Market Dots ordered South-to-North with <=6px collision relaxation & crisp sand stroke -->
                     {mapGeom.nodes.map((node) => {
                       const isDantokpa = node.market_name === defaultMarket.market_name;
                       const zonePlain = formatZoneName(node.agro_zone, dict);
+                      const coordsFormatted = `${formatDecimal(node.latitude, locale, 2)}°N, ${formatDecimal(node.longitude, locale, 2)}°E`;
                       return (
                         <g
                           class="map-market-node"
                           tabindex="0"
                           role="button"
-                          aria-label={`${node.market_name} (${node.department}, ${zonePlain}) : ${formatDecimal(node.last_observed_price, locale, 1)} ${dict.units.xofPerKg} (${formatSignedPct(node.diff_vs_median_pct, locale, 1)})`}
+                          aria-label={`${node.market_name} (${node.department}, ${zonePlain}, ${coordsFormatted}) : ${formatDecimal(node.last_observed_price, locale, 1)} ${dict.units.xofPerKg} (${formatSignedPct(node.diff_vs_median_pct, locale, 1)})`}
                           data-market-node={slug}
                           data-market-name={node.market_name}
                           data-department={node.department}
                           data-zone={zonePlain}
+                          data-coords={coordsFormatted}
+                          data-cx={node.cx}
+                          data-cy={node.cy}
                           data-price={formatDecimal(node.last_observed_price, locale, 1)}
                           data-diff={formatSignedPct(node.diff_vs_median_pct, locale, 1)}
                           data-h3={`${formatDecimal(node.h3_forecast, locale, 1)} [${formatInt(node.h3_low_80, locale)}, ${formatInt(node.h3_high_80, locale)}]`}
@@ -799,12 +904,12 @@ const productViews = productOrder.map((slug) => {
                       },
                     ].map(({ callout, prefix }) => (
                       <g class="map-extremum-callout" pointer-events="none">
-                        <path d={callout.leaderPath} class="callout-leader" />
+                        <path d={callout.leaderPath} class="callout-leader-dark" />
                         <text
                           x={callout.labelX}
                           y={callout.labelY}
                           text-anchor={callout.anchor}
-                          class="callout-text tabular-nums"
+                          class="callout-text-dark tabular-nums"
                         >
                           {prefix} {callout.node.market_name} (
                           {formatInt(callout.node.last_observed_price, locale)}{' '}
@@ -813,29 +918,78 @@ const productViews = productOrder.map((slug) => {
                       </g>
                     ))}
                   </svg>
+
+                  <!-- Floating Interactive Tooltip on Map Canvas (Hover, Tap, Keyboard Focus) -->
+                  <div
+                    class="map-floating-tooltip tabular-nums"
+                    data-map-tooltip={slug}
+                    role="status"
+                    aria-live="polite"
+                    hidden
+                  >
+                    <div class="tooltip-top-row">
+                      <strong class="tooltip-market-name" data-tt-field="name">
+                        {defaultMarket.market_name}
+                      </strong>
+                      <span class="tooltip-coords" data-tt-field="coords">
+                        {defaultCoords}
+                      </span>
+                    </div>
+                    <p class="tooltip-region" data-tt-field="meta">
+                      {defaultMarket.department} · {formatZoneName(defaultMarket.agro_zone, dict)}
+                    </p>
+                    <div class="tooltip-metrics">
+                      <div>
+                        <span class="tooltip-label">{dict.home.mapSection.latestPriceLabel} :</span>{' '}
+                        <strong data-tt-field="price">
+                          {formatDecimal(defaultMarket.last_observed_price, locale, 1)}
+                        </strong>{' '}
+                        {dict.units.xofPerKg} (<span data-tt-field="diff">
+                          {formatSignedPct(defaultMarket.diff_vs_median_pct, locale, 1)}
+                        </span>)
+                      </div>
+                      <div>
+                        <span class="tooltip-label">
+                          {dict.home.mapSection.forecastH3MapLabel} :
+                        </span>{' '}
+                        <strong data-tt-field="h3">
+                          {formatDecimal(defaultMarket.h3_forecast, locale, 1)} [
+                          {formatInt(defaultMarket.h3_low_80, locale)},{' '}
+                          {formatInt(defaultMarket.h3_high_80, locale)}]
+                        </strong>{' '}
+                        {dict.units.xofPerKg}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <!-- Spatial Summary & Interactive Market Inspector (Cols 6-12) -->
+              <!-- Spatial Summary & Interactive Market Inspector (Cols 6-12) Directly on Dark Ink -->
               <div class="map-inspector-col">
-                <div class="ledger-card spatial-summary-card tabular-nums">
+                <div class="spatial-summary-block tabular-nums" data-reveal="fade-up">
                   <div class="spatial-kpi-grid">
                     <div class="spatial-kpi-cell">
-                      <span class="kpi-label">{dict.home.mapSection.nationalMedianStat}</span>
-                      <strong class="kpi-value nowrap">
+                      <span class="kpi-label map-dark-label">
+                        {dict.home.mapSection.nationalMedianStat}
+                      </span>
+                      <strong class="spatial-display-num nowrap">
                         {formatDecimal(prod.latest_national_stats.median_price, locale, 1)}{' '}
                         <small class="nowrap">{dict.units.xofPerKg}</small>
                       </strong>
                     </div>
                     <div class="spatial-kpi-cell">
-                      <span class="kpi-label">{dict.home.mapSection.spreadRatioStat}</span>
-                      <strong class="kpi-value nowrap">
+                      <span class="kpi-label map-dark-label">
+                        {dict.home.mapSection.spreadRatioStat}
+                      </span>
+                      <strong class="spatial-display-num nowrap">
                         {formatDecimal(prod.latest_national_stats.max_min_ratio, locale, 2)}×
                       </strong>
                     </div>
                     <div class="spatial-kpi-cell">
-                      <span class="kpi-label">{dict.home.mapSection.lowestMarketStat}</span>
-                      <strong class="kpi-value">
+                      <span class="kpi-label map-dark-label">
+                        {dict.home.mapSection.lowestMarketStat}
+                      </span>
+                      <strong class="spatial-sub-num">
                         {prod.latest_national_stats.min_market_name}{' '}
                         <span class="nowrap">
                           ({formatDecimal(prod.latest_national_stats.min_price, locale, 1)}{' '}
@@ -844,8 +998,10 @@ const productViews = productOrder.map((slug) => {
                       </strong>
                     </div>
                     <div class="spatial-kpi-cell">
-                      <span class="kpi-label">{dict.home.mapSection.highestMarketStat}</span>
-                      <strong class="kpi-value">
+                      <span class="kpi-label map-dark-label">
+                        {dict.home.mapSection.highestMarketStat}
+                      </span>
+                      <strong class="spatial-sub-num">
                         {prod.latest_national_stats.max_market_name}{' '}
                         <span class="nowrap">
                           ({formatDecimal(prod.latest_national_stats.max_price, locale, 1)}{' '}
@@ -857,14 +1013,27 @@ const productViews = productOrder.map((slug) => {
                   <p class="spatial-month-note">{dict.home.mapSection.latestMonthOnlyNote}</p>
                 </div>
 
-                <div class="ledger-card market-detail-card" data-market-inspector={slug}>
-                  <span class="kpi-label">{dict.home.mapSection.selectedMarketHeading}</span>
-                  <h3 class="inspector-market-title" data-field="name">
-                    {defaultMarket.market_name}
-                  </h3>
+                <div
+                  class={`market-detail-block card-accent-${slug}`}
+                  data-market-inspector={slug}
+                  data-reveal="fade-up"
+                >
+                  <div class="inspector-header-row">
+                    <div>
+                      <span class="kpi-label map-dark-label">
+                        {dict.home.mapSection.selectedMarketHeading}
+                      </span>
+                      <h3 class="inspector-market-title" data-field="name">
+                        {defaultMarket.market_name}
+                      </h3>
+                    </div>
+                    <span class="inspector-coords-pill tabular-nums" data-field="coords">
+                      {defaultCoords}
+                    </span>
+                  </div>
                   <p class="inspector-hint">{dict.home.mapSection.selectedMarketHint}</p>
 
-                  <dl class="story-stats-grid tabular-nums">
+                  <dl class="story-stats-grid map-dark-stats-grid tabular-nums">
                     <div class="story-stat-item">
                       <dt>{dict.home.mapSection.departmentLabel}</dt>
                       <dd data-field="department">{defaultMarket.department}</dd>
@@ -876,7 +1045,7 @@ const productViews = productOrder.map((slug) => {
                     <div class="story-stat-item">
                       <dt>{dict.home.mapSection.latestPriceLabel}</dt>
                       <dd class="nowrap">
-                        <strong data-field="price">
+                        <strong class="stat-display-num-dark" data-field="price">
                           {formatDecimal(defaultMarket.last_observed_price, locale, 1)}
                         </strong>{' '}
                         {dict.units.xofPerKg}
@@ -885,12 +1054,12 @@ const productViews = productOrder.map((slug) => {
                     <div class="story-stat-item">
                       <dt>{dict.home.mapSection.diffVsMedianLabel}</dt>
                       <dd>
-                        <strong data-field="diff">
+                        <strong class="stat-display-num-dark" data-field="diff">
                           {formatSignedPct(defaultMarket.diff_vs_median_pct, locale, 1)}
                         </strong>
                       </dd>
                     </div>
-                    <div class="story-stat-item">
+                    <div class="story-stat-item story-stat-wide-mobile">
                       <dt>{dict.home.mapSection.forecastH3MapLabel}</dt>
                       <dd class="nowrap">
                         <strong data-field="h3">
@@ -901,7 +1070,7 @@ const productViews = productOrder.map((slug) => {
                         <span class="nowrap">{dict.units.xofPerKg}</span>
                       </dd>
                     </div>
-                    <div class="story-stat-item">
+                    <div class="story-stat-item story-stat-wide-mobile">
                       <dt>
                         <span class="tooltip-term" title={dict.units.testErrorTooltip}>
                           {dict.home.mapSection.holdoutMapeLabel}
@@ -916,13 +1085,13 @@ const productViews = productOrder.map((slug) => {
                   </dl>
                 </div>
 
-                <!-- Accessible Table Alternative for All Well-Tracked Markets -->
-                <details class="data-drawer">
+                <!-- Accessible Table Alternative for All Well-Tracked Markets (Dark Ink Theme) -->
+                <details class="data-drawer map-dark-drawer">
                   <summary>
                     {dict.home.mapSection.tableAlternativeToggle} ({prod.tier1_markets_count})
                   </summary>
                   <div class="table-scroll">
-                    <table class="ledger-table">
+                    <table class="ledger-table map-dark-table">
                       <thead>
                         <tr>
                           <th>{dict.home.mapSection.colMarket}</th>
@@ -972,11 +1141,11 @@ const productViews = productOrder.map((slug) => {
 </section>
 
 <!-- =======================================================================
-     4. SECTION: "Ce que disent les prévisions" (Aligned Forecast Teaser Cards)
+     4. SECTION: "Ce que disent les prévisions" (Open Editorial Columns + One Plain Headline Sentence)
      ======================================================================= -->
 <section class="section-block teaser-section" aria-labelledby="teaser-heading">
   <div class="container">
-    <header class="section-header">
+    <header class="section-header" data-reveal="fade-up">
       <h2 class="section-title" id="teaser-heading">{dict.home.forecastTeaser.title}</h2>
       <p class="section-subtitle">{dict.home.forecastTeaser.subtitle}</p>
     </header>
@@ -984,16 +1153,27 @@ const productViews = productOrder.map((slug) => {
     <div class="grid-12 stories-grid teaser-subgrid">
       {
         productViews.map(
-          ({ slug, fcH1, fcH2, fcH3, relH1, relH2, relH3, testH3, plainNoteH3 }) => {
+          ({
+            slug,
+            fcH1,
+            fcH2,
+            fcH3,
+            relH1,
+            relH2,
+            relH3,
+            headlineH3,
+            detailedTooltipH3,
+          }) => {
             const relLabelH1 =
               dict.reliability[relH1.status as keyof typeof dict.reliability] ?? relH1.status;
             const relLabelH2 =
               dict.reliability[relH2.status as keyof typeof dict.reliability] ?? relH2.status;
             const relLabelH3 =
               dict.reliability[relH3.status as keyof typeof dict.reliability] ?? relH3.status;
+            const modelH3Plain = formatModelName(fcH3.model_used, dict);
 
             return (
-              <article class={`story-card card-accent-${slug}`}>
+              <article class={`story-card card-accent-${slug}`} data-reveal="fade-up">
                 <header class="story-card-header">
                   <div class="story-card-title-row">
                     <span class={`product-pill pill-${slug}`}>{dict.products[slug].chip}</span>
@@ -1010,8 +1190,9 @@ const productViews = productOrder.map((slug) => {
                   <div class="story-stat-item">
                     <dt>{dict.home.forecastTeaser.horizon1Label}</dt>
                     <dd>
-                      <strong class="nowrap">
-                        {formatDecimal(fcH1.point_forecast, locale, 1)} {dict.units.xofPerKg}
+                      <strong class="stat-display-num nowrap">
+                        {formatDecimal(fcH1.point_forecast, locale, 1)}{' '}
+                        <small>{dict.units.xofPerKg}</small>
                       </strong>{' '}
                       <span class="nowrap">
                         ({formatSignedPct(fcH1.change_vs_last_pct, locale, 1)})
@@ -1022,8 +1203,9 @@ const productViews = productOrder.map((slug) => {
                   <div class="story-stat-item">
                     <dt>{dict.home.forecastTeaser.horizon2Label}</dt>
                     <dd>
-                      <strong class="nowrap">
-                        {formatDecimal(fcH2.point_forecast, locale, 1)} {dict.units.xofPerKg}
+                      <strong class="stat-display-num nowrap">
+                        {formatDecimal(fcH2.point_forecast, locale, 1)}{' '}
+                        <small>{dict.units.xofPerKg}</small>
                       </strong>{' '}
                       <span class="nowrap">
                         ({formatSignedPct(fcH2.change_vs_last_pct, locale, 1)})
@@ -1034,8 +1216,9 @@ const productViews = productOrder.map((slug) => {
                   <div class="story-stat-item story-stat-wide">
                     <dt>{dict.home.forecastTeaser.horizon3Label}</dt>
                     <dd>
-                      <strong class="nowrap">
-                        {formatDecimal(fcH3.point_forecast, locale, 1)} {dict.units.xofPerKg}
+                      <strong class="stat-display-num nowrap">
+                        {formatDecimal(fcH3.point_forecast, locale, 1)}{' '}
+                        <small>{dict.units.xofPerKg}</small>
                       </strong>{' '}
                       · {dict.home.hero.legendBand80}{' '}
                       <span class="nowrap">
@@ -1045,35 +1228,30 @@ const productViews = productOrder.map((slug) => {
                       <span class="horizon-rel-tag">{relLabelH3}</span>
                     </dd>
                   </div>
-                  <div class="story-stat-item">
-                    <dt>
-                      <span class="tooltip-term" title={dict.units.testErrorTooltip}>
-                        {dict.home.forecastTeaser.holdoutMaeLabel}
-                      </span>
-                    </dt>
+                  <div class="story-stat-item story-stat-wide">
+                    <dt>{dict.home.forecastTeaser.modelLabel}</dt>
                     <dd>
-                      <strong class="nowrap">
-                        {formatDecimal(testH3.mae, locale, 1)} {dict.units.xofPerKg}
-                      </strong>{' '}
-                      <span class="nowrap">({formatDecimal(testH3.mape, locale, 1)} %)</span>
-                    </dd>
-                  </div>
-                  <div class="story-stat-item">
-                    <dt>{dict.home.forecastTeaser.skillVsBaselineLabel}</dt>
-                    <dd>
-                      <strong>
-                        {formatSignedPct(testH3.skill_vs_best_baseline_pct, locale, 1)}
-                      </strong>{' '}
-                      ({formatModelName(testH3.best_baseline_val, dict)})
+                      <strong>{modelH3Plain}</strong>
                     </dd>
                   </div>
                 </dl>
 
-                <p class="teaser-note">{plainNoteH3}</p>
+                <!-- One Plain Headline Sentence + Accessible Test Details Tooltip Trigger -->
+                <p class="teaser-note">
+                  {headlineH3}{' '}
+                  <button
+                    type="button"
+                    class="details-tooltip-trigger"
+                    title={detailedTooltipH3}
+                    aria-label={`${dict.home.hero.detailsTriggerLabel} : ${detailedTooltipH3}`}
+                  >
+                    {dict.home.hero.detailsTriggerLabel}
+                  </button>
+                </p>
 
                 <footer class="story-card-footer">
                   <a href={`${routes.forecast}?product=${slug}`} class="story-link">
-                    {dict.home.forecastTeaser.openForecastPageCta}
+                    {dict.products[slug].forecastCta}
                   </a>
                 </footer>
               </article>
@@ -1095,23 +1273,253 @@ const productViews = productOrder.map((slug) => {
 </section>
 
 <script>
-  // Minimal interactive controller for switching product tabs and inspecting market dots
-  // (No GSAP animation in Step 3.1 per brief: "static home page (no animation yet)")
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  interface MorphProductEntry {
+    x93: number[];
+    y93: number[];
+    def93: number[];
+    fcBridge: Array<{
+      x: number;
+      y: number;
+      l80: number;
+      h80: number;
+      l90: number;
+      h90: number;
+    }>;
+    historyPath: string;
+    forecastPath: string;
+    band80Path: string;
+    band90Path: string;
+    peak: { x: number; y: number };
+    lastObs: { x: number; y: number };
+    fcDots: Array<{ x: number; y: number }>;
+  }
+
+  const heroRoot = document.getElementById('hero-root');
+  const morphMap: Record<string, MorphProductEntry> = heroRoot?.dataset.heroMorph
+    ? JSON.parse(heroRoot.dataset.heroMorph)
+    : {};
+
   const switchBtns = document.querySelectorAll<HTMLButtonElement>('[data-role="product-switch"]');
   const heroPanels = document.querySelectorAll<HTMLElement>('[data-product-panel]');
   const mapPanels = document.querySelectorAll<HTMLElement>('[data-map-panel]');
 
-  function setActiveProduct(slug: string) {
+  let currentProduct = heroRoot?.dataset.activeProduct || 'maize_white';
+  let activeMorphTween: gsap.core.Tween | null = null;
+
+  const isReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function buildInterpolatedHistoryPath(
+    xArr: number[],
+    fromY: number[],
+    toY: number[],
+    defArr: number[],
+    t: number
+  ): string {
+    let d = '';
+    let inSubpath = false;
+    for (let i = 0; i < xArr.length; i++) {
+      if (!defArr[i]) {
+        inSubpath = false;
+        continue;
+      }
+      const x = xArr[i];
+      const y = Math.round((fromY[i] + (toY[i] - fromY[i]) * t) * 10) / 10;
+      if (!inSubpath) {
+        d += `M${x},${y}`;
+        inSubpath = true;
+      } else {
+        d += `L${x},${y}`;
+      }
+    }
+    return d;
+  }
+
+  function buildInterpolatedForecastPaths(
+    fromFc: MorphProductEntry['fcBridge'],
+    toFc: MorphProductEntry['fcBridge'],
+    t: number
+  ): { fcLine: string; b80: string; b90: string } {
+    const pts = toFc.map((pt, idx) => {
+      const f = fromFc[idx] ?? pt;
+      const lerp = (a: number, b: number) => Math.round((a + (b - a) * t) * 10) / 10;
+      return {
+        x: pt.x,
+        y: lerp(f.y, pt.y),
+        l80: lerp(f.l80, pt.l80),
+        h80: lerp(f.h80, pt.h80),
+        l90: lerp(f.l90, pt.l90),
+        h90: lerp(f.h90, pt.h90),
+      };
+    });
+
+    const fcLine = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`).join('');
+    const b80Top = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.h80}`).join('');
+    const b80Bot = [...pts]
+      .reverse()
+      .map((p) => `L${p.x},${p.l80}`)
+      .join('');
+    const b90Top = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.h90}`).join('');
+    const b90Bot = [...pts]
+      .reverse()
+      .map((p) => `L${p.x},${p.l90}`)
+      .join('');
+
+    return {
+      fcLine,
+      b80: `${b80Top}${b80Bot}Z`,
+      b90: `${b90Top}${b90Bot}Z`,
+    };
+  }
+
+  function setActiveProduct(nextSlug: string) {
+    if (nextSlug === currentProduct) return;
+    const prevSlug = currentProduct;
+    currentProduct = nextSlug;
+    if (heroRoot) heroRoot.dataset.activeProduct = nextSlug;
+
     switchBtns.forEach((btn) => {
-      const isMatch = btn.dataset.product === slug;
+      const isMatch = btn.dataset.product === nextSlug;
       btn.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
     });
+
     heroPanels.forEach((panel) => {
-      panel.hidden = panel.dataset.productPanel !== slug;
+      panel.hidden = panel.dataset.productPanel !== nextSlug;
     });
     mapPanels.forEach((panel) => {
-      panel.hidden = panel.dataset.mapPanel !== slug;
+      panel.hidden = panel.dataset.mapPanel !== nextSlug;
     });
+
+    if (activeMorphTween) {
+      activeMorphTween.kill();
+      activeMorphTween = null;
+    }
+
+    const nextPanel = document.querySelector<HTMLElement>(`[data-product-panel="${nextSlug}"]`);
+    const fromGeom = morphMap[prevSlug];
+    const toGeom = morphMap[nextSlug];
+
+    if (!nextPanel || !fromGeom || !toGeom || isReducedMotion()) {
+      return;
+    }
+
+    const histPaths = nextPanel.querySelectorAll<SVGPathElement>(
+      '.line-history, .line-history-casing'
+    );
+    const fcPaths = nextPanel.querySelectorAll<SVGPathElement>(
+      '.line-forecast, .line-forecast-casing'
+    );
+    const band80El = nextPanel.querySelector<SVGPathElement>('.fan-band-80');
+    const band90El = nextPanel.querySelector<SVGPathElement>('.fan-band-90');
+    const fcGroup = nextPanel.querySelector<SVGGElement>('.hero-forecast-group');
+    const peakDot = nextPanel.querySelector<SVGCircleElement>('.dot-peak');
+    const anchorDot = nextPanel.querySelector<SVGCircleElement>('.dot-anchor');
+    const fcDots = nextPanel.querySelectorAll<SVGCircleElement>('.dot-forecast');
+    const annotations = nextPanel.querySelectorAll<SVGGElement>('.hero-annotation');
+    const kpiCells = nextPanel.querySelectorAll<HTMLElement>('.kpi-cell, .honesty-strip');
+
+    // Ensure stroke-dashoffset from initial draw is cleared on the target panel
+    histPaths.forEach((p) => {
+      p.style.strokeDasharray = 'none';
+      p.style.strokeDashoffset = '0';
+    });
+    if (fcGroup) {
+      gsap.set(fcGroup, { opacity: 1, scaleX: 1, clearProps: 'transform' });
+    }
+
+    // Morph path coordinates over 600ms (0.6s) and snap to exact D3 curves on completion
+    const state = { t: 0 };
+    activeMorphTween = gsap.to(state, {
+      t: 1,
+      duration: 0.6,
+      ease: 'power2.inOut',
+      onUpdate: () => {
+        const dHist = buildInterpolatedHistoryPath(
+          toGeom.x93,
+          fromGeom.y93,
+          toGeom.y93,
+          toGeom.def93,
+          state.t
+        );
+        histPaths.forEach((p) => p.setAttribute('d', dHist));
+
+        const { fcLine, b80, b90 } = buildInterpolatedForecastPaths(
+          fromGeom.fcBridge,
+          toGeom.fcBridge,
+          state.t
+        );
+        fcPaths.forEach((p) => p.setAttribute('d', fcLine));
+        if (band80El) band80El.setAttribute('d', b80);
+        if (band90El) band90El.setAttribute('d', b90);
+      },
+      onComplete: () => {
+        histPaths.forEach((p) => p.setAttribute('d', toGeom.historyPath));
+        fcPaths.forEach((p) => p.setAttribute('d', toGeom.forecastPath));
+        if (band80El) band80El.setAttribute('d', toGeom.band80Path);
+        if (band90El) band90El.setAttribute('d', toGeom.band90Path);
+        activeMorphTween = null;
+      },
+    });
+
+    // Smoothly translate dots from previous product coordinates to target coordinates
+    if (peakDot) {
+      gsap.fromTo(
+        peakDot,
+        { x: fromGeom.peak.x - toGeom.peak.x, y: fromGeom.peak.y - toGeom.peak.y },
+        { x: 0, y: 0, duration: 0.6, ease: 'power2.inOut' }
+      );
+    }
+    if (anchorDot) {
+      gsap.fromTo(
+        anchorDot,
+        { x: fromGeom.lastObs.x - toGeom.lastObs.x, y: fromGeom.lastObs.y - toGeom.lastObs.y },
+        { x: 0, y: 0, duration: 0.6, ease: 'power2.inOut' }
+      );
+    }
+    fcDots.forEach((dot, i) => {
+      const fDot = fromGeom.fcDots[i];
+      const tDot = toGeom.fcDots[i];
+      if (fDot && tDot) {
+        gsap.fromTo(
+          dot,
+          { x: fDot.x - tDot.x, y: fDot.y - tDot.y, opacity: 1 },
+          { x: 0, y: 0, opacity: 1, duration: 0.6, ease: 'power2.inOut' }
+        );
+      }
+    });
+
+    gsap.fromTo(
+      annotations,
+      { opacity: 0, y: 6 },
+      { opacity: 1, y: 0, duration: 0.42, stagger: 0.05, ease: 'power2.out', overwrite: true }
+    );
+    gsap.fromTo(
+      kpiCells,
+      { opacity: 0, y: 6 },
+      { opacity: 1, y: 0, duration: 0.38, stagger: 0.04, ease: 'power2.out', overwrite: true }
+    );
+
+    // Also stagger South-to-North dots on the newly revealed map panel if visible
+    const activeMapPanel = document.querySelector<HTMLElement>(`[data-map-panel="${nextSlug}"]`);
+    if (activeMapPanel) {
+      const mapDots = activeMapPanel.querySelectorAll<SVGGElement>('.map-market-node');
+      gsap.fromTo(
+        mapDots,
+        { opacity: 0, scale: 0.4, transformOrigin: '50% 50%' },
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.35,
+          stagger: { amount: 0.35, from: 'start' },
+          ease: 'power2.out',
+          overwrite: true,
+        }
+      );
+    }
   }
 
   switchBtns.forEach((btn) => {
@@ -1121,42 +1529,357 @@ const productViews = productOrder.map((slug) => {
     });
   });
 
-  // Dot map hover / tap / keyboard focus inspector
+  // Dot map hover / tap / keyboard focus inspector + floating canvas tooltip
   const marketNodes = document.querySelectorAll<SVGGElement>('[data-market-node]');
   marketNodes.forEach((node) => {
-    const activateNode = () => {
+    const activateNode = (showFloatingTooltip: boolean) => {
       const slug = node.dataset.marketNode;
       if (!slug) return;
       const inspector = document.querySelector<HTMLElement>(`[data-market-inspector="${slug}"]`);
-      if (!inspector) return;
+      const mapWrap = document.querySelector<HTMLElement>(`[data-map-wrap="${slug}"]`);
+      const tooltip = document.querySelector<HTMLElement>(`[data-map-tooltip="${slug}"]`);
 
       const siblingNodes = document.querySelectorAll<SVGGElement>(`[data-market-node="${slug}"]`);
       siblingNodes.forEach((sib) => sib.setAttribute('data-active', 'false'));
       node.setAttribute('data-active', 'true');
 
-      const setField = (field: string, value: string | undefined) => {
-        const el = inspector.querySelector<HTMLElement>(`[data-field="${field}"]`);
-        if (el && value) el.textContent = value;
-      };
-      setField('name', node.dataset.marketName);
-      setField('department', node.dataset.department);
-      setField('zone', node.dataset.zone);
-      setField('price', node.dataset.price);
-      setField('diff', node.dataset.diff);
-      setField('h3', node.dataset.h3);
-      setField('mape', node.dataset.mape);
+      if (inspector) {
+        const setField = (field: string, value: string | undefined) => {
+          const el = inspector.querySelector<HTMLElement>(`[data-field="${field}"]`);
+          if (el && value) el.textContent = value;
+        };
+        setField('name', node.dataset.marketName);
+        setField('department', node.dataset.department);
+        setField('zone', node.dataset.zone);
+        setField('coords', node.dataset.coords);
+        setField('price', node.dataset.price);
+        setField('diff', node.dataset.diff);
+        setField('h3', node.dataset.h3);
+        setField('mape', node.dataset.mape);
+      }
+
+      if (tooltip && mapWrap && showFloatingTooltip) {
+        const setTt = (field: string, value: string | undefined) => {
+          const el = tooltip.querySelector<HTMLElement>(`[data-tt-field="${field}"]`);
+          if (el && value) el.textContent = value;
+        };
+        setTt('name', node.dataset.marketName);
+        setTt('coords', node.dataset.coords);
+        setTt('meta', `${node.dataset.department ?? ''} · ${node.dataset.zone ?? ''}`);
+        setTt('price', node.dataset.price);
+        setTt('diff', node.dataset.diff);
+        setTt('h3', node.dataset.h3);
+
+        tooltip.hidden = false;
+        const cx = parseFloat(node.dataset.cx || '215');
+        const cy = parseFloat(node.dataset.cy || '260');
+        const wrapRect = mapWrap.getBoundingClientRect();
+        const scaleX = wrapRect.width / 430;
+        const scaleY = wrapRect.height / 520;
+        const pxX = cx * scaleX;
+        const pxY = cy * scaleY;
+
+        const ttWidth = tooltip.offsetWidth || 228;
+        const ttHeight = tooltip.offsetHeight || 96;
+        const clampedX = Math.max(8, Math.min(wrapRect.width - ttWidth - 8, pxX - ttWidth / 2));
+        const preferAboveY = pxY - ttHeight - 14;
+        const finalY = preferAboveY >= 8 ? preferAboveY : Math.min(wrapRect.height - ttHeight - 8, pxY + 16);
+
+        tooltip.style.transform = `translate3d(${Math.round(clampedX)}px, ${Math.round(finalY)}px, 0)`;
+      }
     };
 
-    node.addEventListener('mouseenter', activateNode);
-    node.addEventListener('focus', activateNode);
-    node.addEventListener('click', activateNode);
+    const hideTooltip = () => {
+      const slug = node.dataset.marketNode;
+      if (!slug) return;
+      const tooltip = document.querySelector<HTMLElement>(`[data-map-tooltip="${slug}"]`);
+      if (tooltip) tooltip.hidden = true;
+    };
+
+    node.addEventListener('mouseenter', () => activateNode(true));
+    node.addEventListener('mouseleave', hideTooltip);
+    node.addEventListener('focus', () => activateNode(true));
+    node.addEventListener('blur', hideTooltip);
+    node.addEventListener('click', (e) => {
+      e.stopPropagation();
+      activateNode(true);
+    });
+    node.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        hideTooltip();
+        node.blur();
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        activateNode(true);
+      }
+    });
   });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document
+        .querySelectorAll<HTMLElement>('[data-map-tooltip]')
+        .forEach((tt) => (tt.hidden = true));
+    }
+  });
+
+  // =========================================================================
+  // Signature Motion & ScrollTrigger Reveals (Strictly respects reduced motion)
+  // =========================================================================
+  const mm = gsap.matchMedia();
+
+  mm.add(
+    {
+      canAnimate: '(prefers-reduced-motion: no-preference)',
+      reduceMotion: '(prefers-reduced-motion: reduce)',
+    },
+    (context) => {
+      const { reduceMotion } = context.conditions as {
+        canAnimate: boolean;
+        reduceMotion: boolean;
+      };
+
+      if (reduceMotion) {
+        // Immediately show final state with zero animation when prefers-reduced-motion: reduce
+        gsap.set(
+          '.line-history, .line-history-casing, .spark-line, .spark-line-casing',
+          { clearProps: 'strokeDasharray,strokeDashoffset' }
+        );
+        gsap.set(
+          '.hero-forecast-group, .hero-annotation, .dot-forecast, .spark-area, .dot-anchor, .map-market-node, .map-extremum-callout, [data-reveal="fade-up"]',
+          { opacity: 1, clearProps: 'transform' }
+        );
+        return;
+      }
+
+      // 1. HERO SIGNATURE MOTION:
+      // Price history line draws itself in 1.6s (stroke-dashoffset), then dashed forecast & 80%/90% fan bands extend
+      const defaultHeroPanel = document.querySelector<HTMLElement>(
+        `[data-product-panel="${currentProduct}"]`
+      );
+      if (defaultHeroPanel) {
+        const histPaths = defaultHeroPanel.querySelectorAll<SVGPathElement>(
+          '.line-history, .line-history-casing'
+        );
+        const fcGroup = defaultHeroPanel.querySelector<SVGGElement>('.hero-forecast-group');
+        const fcDots = defaultHeroPanel.querySelectorAll<SVGCircleElement>('.dot-forecast');
+        const peakAnnot = defaultHeroPanel.querySelector<SVGGElement>('.hero-peak-annotation');
+        const anchorAnnot = defaultHeroPanel.querySelector<SVGGElement>('.hero-anchor-annotation');
+        const fcAnnot = defaultHeroPanel.querySelector<SVGGElement>('.hero-forecast-annotations');
+
+        histPaths.forEach((p) => {
+          const totalLen = Math.ceil(p.getTotalLength() * 1.06 + 24);
+          p.style.strokeDasharray = `${totalLen}`;
+          p.style.strokeDashoffset = `${totalLen}`;
+        });
+
+        const asOfX = fcGroup?.dataset.asofX || '568';
+        if (fcGroup) {
+          gsap.set(fcGroup, { opacity: 0, scaleX: 0, svgOrigin: `${asOfX} 170` });
+        }
+        gsap.set([fcDots, peakAnnot, anchorAnnot, fcAnnot], { opacity: 0 });
+        if (peakAnnot) gsap.set(peakAnnot, { y: 6 });
+        if (anchorAnnot) gsap.set(anchorAnnot, { y: 6 });
+        if (fcAnnot) gsap.set(fcAnnot, { x: -6 });
+
+        const heroTl = gsap.timeline();
+        heroTl
+          .to(
+            histPaths,
+            {
+              strokeDashoffset: 0,
+              duration: 1.6,
+              ease: 'power2.inOut',
+              onComplete: () => {
+                histPaths.forEach((p) => {
+                  p.style.strokeDasharray = 'none';
+                  p.style.strokeDashoffset = '0';
+                });
+              },
+            },
+            0
+          )
+          .to(
+            peakAnnot,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.38,
+              ease: 'power2.out',
+            },
+            1.05
+          )
+          .to(
+            anchorAnnot,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.35,
+              ease: 'power2.out',
+            },
+            1.48
+          )
+          .to(
+            fcGroup,
+            {
+              opacity: 1,
+              scaleX: 1,
+              duration: 0.45,
+              ease: 'power2.out',
+            },
+            1.58
+          )
+          .to(
+            fcDots,
+            {
+              opacity: 1,
+              duration: 0.3,
+              stagger: 0.07,
+              ease: 'power2.out',
+            },
+            1.68
+          )
+          .to(
+            fcAnnot,
+            {
+              opacity: 1,
+              x: 0,
+              duration: 0.38,
+              ease: 'power2.out',
+            },
+            1.75
+          );
+      }
+
+      // 2. SECTION 2 SPARKLINE REVEALS (once on scroll)
+      const storyCards = document.querySelectorAll<HTMLElement>('.stories-section .story-card');
+      storyCards.forEach((card, idx) => {
+        const sparkLines = card.querySelectorAll<SVGPathElement>(
+          '.spark-line, .spark-line-casing'
+        );
+        const sparkArea = card.querySelector<SVGPathElement>('.spark-area');
+        const sparkDot = card.querySelector<SVGCircleElement>('.dot-anchor');
+
+        sparkLines.forEach((sl) => {
+          const len = Math.ceil(sl.getTotalLength() * 1.05 + 12);
+          sl.style.strokeDasharray = `${len}`;
+          sl.style.strokeDashoffset = `${len}`;
+        });
+        if (sparkArea) gsap.set(sparkArea, { opacity: 0 });
+        if (sparkDot) gsap.set(sparkDot, { opacity: 0, scale: 0, transformOrigin: '50% 50%' });
+
+        const stTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 85%',
+            once: true,
+          },
+        });
+
+        stTl
+          .to(
+            sparkLines,
+            {
+              strokeDashoffset: 0,
+              duration: 0.9,
+               delay: idx * 0.08,
+              ease: 'power2.out',
+            },
+            0
+          )
+          .to(
+            sparkArea,
+            {
+              opacity: 1,
+              duration: 0.5,
+              ease: 'power2.out',
+            },
+            0.35 + idx * 0.08
+          )
+          .to(
+            sparkDot,
+            {
+              opacity: 1,
+              scale: 1,
+              duration: 0.3,
+              ease: 'back.out(1.7)',
+            },
+            0.75 + idx * 0.08
+          );
+      });
+
+      // 3. SECTION 3 PROGRESSIVE SOUTH-TO-NORTH MAP DOT REVEAL (once on scroll)
+      const mapSection = document.getElementById('map-section-root');
+      if (mapSection) {
+        const activeMapPanel = mapSection.querySelector<HTMLElement>(
+          `[data-map-panel="${currentProduct}"]`
+        );
+        if (activeMapPanel) {
+          const dots = activeMapPanel.querySelectorAll<SVGGElement>('.map-market-node');
+          const callouts = activeMapPanel.querySelectorAll<SVGGElement>('.map-extremum-callout');
+          gsap.set(dots, { opacity: 0, scale: 0, transformOrigin: '50% 50%' });
+          gsap.set(callouts, { opacity: 0, y: 6 });
+
+          const mapTl = gsap.timeline({
+            scrollTrigger: {
+              trigger: mapSection,
+              start: 'top 78%',
+              once: true,
+            },
+          });
+
+          mapTl
+            .to(dots, {
+              opacity: 1,
+              scale: 1,
+              duration: 0.38,
+              stagger: { amount: 0.75, from: 'start' },
+              ease: 'back.out(1.5)',
+            })
+            .to(
+              callouts,
+              {
+                opacity: 1,
+                y: 0,
+                duration: 0.35,
+                stagger: 0.1,
+                ease: 'power2.out',
+              },
+              '-=0.2'
+            );
+        }
+      }
+
+      // 4. SUBTLE FADE-UP REVEALS (24px, ~400ms, once)
+      const fadeElements = gsap.utils.toArray<HTMLElement>('[data-reveal="fade-up"]');
+      ScrollTrigger.batch(fadeElements, {
+        start: 'top 88%',
+        once: true,
+        onEnter: (batch) => {
+          gsap.fromTo(
+            batch,
+            { opacity: 0, y: 24 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.4,
+              stagger: 0.07,
+              ease: 'power2.out',
+              overwrite: true,
+            }
+          );
+        },
+      });
+    }
+  );
 </script>
 
 <style>
-  /* Compact Hero Section so Chart + 4 KPIs + Honesty Strip fit within 1440×900 first screen */
+  /* ==========================================================================
+     1. HERO: Larger Chart (>55% of first screen), Plotted Directly on Sand
+     ========================================================================== */
   .hero-section {
-    padding-block: clamp(1.25rem, 2.2vw, 1.85rem);
+    padding-block: clamp(1rem, 1.8vw, 1.45rem);
   }
 
   .hero-grid {
@@ -1173,11 +1896,13 @@ const productViews = productOrder.map((slug) => {
 
   @media (min-width: 900px) {
     .hero-copy-col {
-      grid-column: 1 / span 5;
-      padding-right: var(--space-3);
+      grid-column: 1 / span 4;
+      padding-right: var(--space-2);
     }
     .hero-chart-col {
-      grid-column: 6 / span 7;
+      grid-column: 5 / span 8;
+      padding-left: var(--space-3);
+      border-left: 1px solid var(--color-line);
     }
   }
 
@@ -1189,14 +1914,14 @@ const productViews = productOrder.map((slug) => {
   }
 
   .hero-title {
-    font-size: clamp(2.15rem, 1.75rem + 2.1vw, 3.35rem);
+    font-size: clamp(2rem, 1.65rem + 1.85vw, 3.05rem);
     line-height: 1.04;
     margin-bottom: var(--space-3);
     letter-spacing: -0.03em;
   }
 
   .hero-subtitle {
-    font-size: var(--text-base);
+    font-size: clamp(0.98rem, 0.94rem + 0.2vw, 1.08rem);
     line-height: 1.46;
     color: var(--color-ink);
     margin: 0 0 var(--space-4) 0;
@@ -1215,12 +1940,11 @@ const productViews = productOrder.map((slug) => {
     color: var(--color-muted);
   }
 
-  /* Ledger Cards & Chart Panel */
-  .ledger-card {
-    background-color: var(--color-paper);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-md);
-    padding: clamp(0.85rem, 1.6vw, 1.15rem);
+  /* Unboxed Hero Chart Panel (plotted directly on --color-sand) */
+  .hero-chart-panel {
+    background-color: transparent;
+    border: 0;
+    padding: 0;
   }
 
   .chart-card-header {
@@ -1244,7 +1968,7 @@ const productViews = productOrder.map((slug) => {
 
   .chart-card-title {
     font-size: var(--text-lg);
-    line-height: 1.18;
+    line-height: 1.15;
   }
 
   .chart-card-subtitle {
@@ -1254,12 +1978,9 @@ const productViews = productOrder.map((slug) => {
   }
 
   .unit-badge {
-    font-size: 0.76rem;
-    font-weight: 650;
-    background-color: var(--color-sand-2);
-    color: var(--color-ink);
-    padding: 0.2rem 0.55rem;
-    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-muted);
     margin: 0;
   }
 
@@ -1267,8 +1988,8 @@ const productViews = productOrder.map((slug) => {
   .product-pill {
     display: inline-flex;
     align-items: center;
-    padding: 0.18rem 0.55rem;
-    border-radius: var(--radius-sm);
+    padding: 0.16rem 0.52rem;
+    border-radius: 2px;
     font-size: var(--text-xs);
     font-weight: 700;
   }
@@ -1289,16 +2010,16 @@ const productViews = productOrder.map((slug) => {
     color: var(--color-sand);
   }
 
-  /* Compact 4-Column KPI Strip Below Hero Chart */
+  /* Unboxed Typographic 4-Column KPI Row Below Hero Chart */
   .kpi-strip {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-2) var(--space-3);
+    gap: var(--space-2) var(--space-4);
     margin-top: var(--space-2);
-    padding: 0.55rem 0.75rem;
-    background-color: var(--color-sand);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-sm);
+    padding-block: 0.6rem;
+    border-top: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+    background-color: transparent;
   }
 
   @media (min-width: 640px) {
@@ -1321,30 +2042,46 @@ const productViews = productOrder.map((slug) => {
   }
 
   .kpi-value {
-    font-size: 0.9rem;
     color: var(--color-ink);
-    line-height: 1.25;
+    line-height: 1.15;
+  }
+
+  .kpi-display-num {
+    font-family: var(--font-display);
+    font-size: clamp(1.12rem, 1rem + 0.4vw, 1.38rem);
+    font-weight: 680;
+    letter-spacing: -0.02em;
+  }
+
+  .kpi-unit {
+    font-family: var(--font-sans);
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--color-muted);
   }
 
   .kpi-delta {
+    font-family: var(--font-sans);
     white-space: nowrap;
-    font-weight: 600;
-    font-size: 0.82rem;
+    font-weight: 650;
+    font-size: 0.8rem;
   }
 
   .kpi-method {
-    font-size: 0.8rem;
+    font-family: var(--font-sans);
+    font-size: 0.84rem;
+    font-weight: 650;
     line-height: 1.25;
   }
 
-  /* SVG Chart Styles */
+  /* SVG Chart Styles & Direct Curve Annotations */
   .svg-chart-wrap {
     width: 100%;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .forecast-zone-bg {
-    fill: rgba(237, 227, 208, 0.45);
+    fill: rgba(237, 227, 208, 0.55);
   }
 
   .forecast-zone-label {
@@ -1392,6 +2129,31 @@ const productViews = productOrder.map((slug) => {
     fill: var(--color-ink);
   }
 
+  /* High-contrast dark-gold/ink understroke for Maize on warm sand background */
+  .line-history-casing {
+    fill: none;
+    stroke: #6E4B00;
+    stroke-width: 4.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .line-forecast-casing {
+    fill: none;
+    stroke: #6E4B00;
+    stroke-width: 4.2;
+    stroke-dasharray: 6 4;
+    stroke-linecap: round;
+  }
+
+  .spark-line-casing {
+    fill: none;
+    stroke: #6E4B00;
+    stroke-width: 3.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
   .line-history {
     fill: none;
     stroke-width: 2.6;
@@ -1420,29 +2182,34 @@ const productViews = productOrder.map((slug) => {
   .fill-maize_white {
     fill: var(--color-maize);
     stroke: var(--color-ink);
-    stroke-width: 1.5;
+    stroke-width: 1.6;
   }
   .fill-tomatoes {
     fill: var(--color-laterite);
-    stroke: var(--color-paper);
-    stroke-width: 1.5;
+    stroke: var(--color-sand);
+    stroke-width: 1.6;
   }
   .fill-yam_white {
     fill: var(--color-green);
-    stroke: var(--color-paper);
-    stroke-width: 1.5;
+    stroke: var(--color-sand);
+    stroke-width: 1.6;
   }
 
   .dot-forecast {
-    fill: var(--color-paper);
-    stroke-width: 2;
+    fill: var(--color-sand);
+    stroke-width: 2.2;
+  }
+
+  .dot-forecast.stroke-maize_white {
+    stroke: #6E4B00;
+    fill: var(--color-maize);
   }
 
   .fan-band-80.band-maize_white {
-    fill: rgba(227, 168, 31, 0.34);
+    fill: rgba(227, 168, 31, 0.36);
   }
   .fan-band-90.band-maize_white {
-    fill: rgba(227, 168, 31, 0.17);
+    fill: rgba(227, 168, 31, 0.18);
   }
 
   .fan-band-80.band-tomatoes {
@@ -1459,117 +2226,88 @@ const productViews = productOrder.map((slug) => {
     fill: rgba(47, 93, 58, 0.14);
   }
 
-  /* Chart Legend */
-  .chart-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2) var(--space-4);
-    margin-top: var(--space-2);
-    font-size: 0.78rem;
-    color: var(--color-ink);
+  /* Direct SVG Curve Annotations (halo stroke in --color-sand, text in --color-ink) */
+  .annotation-leader {
+    stroke: var(--color-ink);
+    stroke-width: 1.1;
+    stroke-dasharray: 2 2;
   }
 
-  .legend-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
+  .curve-annotation-text {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    fill: var(--color-ink);
+    paint-order: stroke;
+    stroke: var(--color-sand);
+    stroke-width: 5px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
-  .legend-line-swatch {
-    width: 16px;
-    height: 3px;
-    display: inline-block;
+  .curve-annotation-sub {
+    font-family: var(--font-sans);
+    font-size: 10.2px;
+    font-weight: 600;
+    fill: var(--color-muted);
+    paint-order: stroke;
+    stroke: var(--color-sand);
+    stroke-width: 4.5px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
-  .legend-dash-swatch {
-    width: 16px;
-    height: 0;
-    border-top: 3px dashed currentColor;
-    display: inline-block;
-  }
-
-  .legend-band80-swatch,
-  .legend-band90-swatch {
-    width: 13px;
-    height: 9px;
-    border-radius: 2px;
-    display: inline-block;
-    border: 1px solid rgba(30, 27, 22, 0.2);
-  }
-
-  .stroke-bg-maize_white {
-    background-color: var(--color-maize);
-    color: var(--color-maize);
-  }
-  .stroke-bg-tomatoes {
-    background-color: var(--color-laterite);
-    color: var(--color-laterite);
-  }
-  .stroke-bg-yam_white {
-    background-color: var(--color-green);
-    color: var(--color-green);
-  }
-
-  .band-bg-maize_white.legend-band80-swatch {
-    background-color: rgba(227, 168, 31, 0.45);
-  }
-  .band-bg-maize_white.legend-band90-swatch {
-    background-color: rgba(227, 168, 31, 0.2);
-  }
-  .band-bg-tomatoes.legend-band80-swatch {
-    background-color: rgba(181, 71, 31, 0.35);
-  }
-  .band-bg-tomatoes.legend-band90-swatch {
-    background-color: rgba(181, 71, 31, 0.16);
-  }
-  .band-bg-yam_white.legend-band80-swatch {
-    background-color: rgba(47, 93, 58, 0.35);
-  }
-  .band-bg-yam_white.legend-band90-swatch {
-    background-color: rgba(47, 93, 58, 0.16);
-  }
-
-  /* Honesty Strip */
+  /* Unboxed Honesty & Reliability Line */
   .honesty-strip {
-    margin-top: var(--space-2);
-    padding: 0.55rem 0.75rem;
-    background-color: var(--color-sand);
-    border-left: 4px solid var(--color-ink);
-    border-radius: var(--radius-sm);
-  }
-
-  .honesty-strip-top {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-2);
-    margin-bottom: 4px;
-  }
-
-  .asof-meta {
-    font-size: 0.76rem;
-    color: var(--color-ink);
+    align-items: baseline;
+    gap: 0.4rem 0.65rem;
+    margin-top: 0.55rem;
+    padding: 0;
   }
 
   .honesty-note {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     color: var(--color-ink);
     margin: 0;
-    line-height: 1.42;
+    line-height: 1.45;
+    flex: 1 1 280px;
   }
 
-  /* Section 2 & 4: Three Product Cards with Subgrid Row Alignment on Desktop */
+  .details-tooltip-trigger {
+    appearance: none;
+    background: none;
+    border: 0;
+    border-bottom: 1px dotted var(--color-muted);
+    padding: 0;
+    margin-left: 0.25rem;
+    font-family: var(--font-sans);
+    font-size: 0.76rem;
+    font-weight: 650;
+    color: var(--color-laterite);
+    cursor: help;
+  }
+
+  .details-tooltip-trigger:hover,
+  .details-tooltip-trigger:focus-visible {
+    color: var(--color-ink);
+    border-bottom-style: solid;
+  }
+
+  /* ==========================================================================
+     2 & 4. OPEN EDITORIAL PRODUCT COLUMNS (No White Box Cards, Top 3px Rule)
+     ========================================================================== */
   .stories-grid > .story-card {
     grid-column: span 4;
   }
 
   .story-card {
-    background-color: var(--color-paper);
-    border: 1px solid var(--color-line);
-    border-top: 4px solid var(--color-ink);
-    border-radius: var(--radius-md);
-    padding: var(--space-5);
+    background-color: transparent;
+    border: 0;
+    border-top: 3px solid var(--color-ink);
+    border-radius: 0;
+    padding: var(--space-4) 0 0 0;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -1630,11 +2368,13 @@ const productViews = productOrder.map((slug) => {
     margin: 0;
   }
 
+  /* Unboxed Sparkline Block with Thin Rules */
   .sparkline-box {
-    background-color: var(--color-sand);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-sm);
-    padding: var(--space-2) var(--space-3);
+    background-color: transparent;
+    border: 0;
+    border-top: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+    padding: var(--space-2) 0;
     width: 100%;
   }
 
@@ -1663,10 +2403,12 @@ const productViews = productOrder.map((slug) => {
   .spark-line {
     fill: none;
     stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   .spark-area.band-maize_white {
-    fill: rgba(227, 168, 31, 0.22);
+    fill: rgba(227, 168, 31, 0.24);
   }
   .spark-area.band-tomatoes {
     fill: rgba(181, 71, 31, 0.18);
@@ -1695,8 +2437,19 @@ const productViews = productOrder.map((slug) => {
     grid-column: span 2;
   }
 
+  /* On mobile (<640px), wide-mobile items span both columns so long strings never touch */
+  .story-stat-wide-mobile {
+    grid-column: span 2;
+  }
+
+  @media (min-width: 640px) {
+    .story-stat-wide-mobile {
+      grid-column: span 1;
+    }
+  }
+
   .story-stat-item dt {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     color: var(--color-muted);
   }
 
@@ -1706,8 +2459,23 @@ const productViews = productOrder.map((slug) => {
     color: var(--color-ink);
   }
 
+  .stat-display-num {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 1.02rem + 0.35vw, 1.35rem);
+    font-weight: 680;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+
+  .stat-display-num small {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-muted);
+  }
+
   .tooltip-term {
-    border-bottom: 1px dotted var(--color-muted);
+    border-bottom: 1px dotted currentColor;
     cursor: help;
   }
 
@@ -1740,7 +2508,49 @@ const productViews = productOrder.map((slug) => {
     color: var(--color-ink);
   }
 
-  /* Section 3: Dot Map Layout & 5-Step Single-Hue Ramp */
+  .teaser-note {
+    font-size: 0.8rem;
+    color: var(--color-ink);
+    background-color: transparent;
+    padding: var(--space-2) 0 0 0;
+    border: 0;
+    border-top: 1px solid var(--color-line);
+    margin: 0;
+    width: 100%;
+    line-height: 1.45;
+  }
+
+  /* ==========================================================================
+     3. SECTION: FULL-BLEED DARK INK MAP SECTION (#1E1B16)
+     ========================================================================== */
+  .map-section-dark {
+    background-color: var(--color-ink);
+    color: var(--color-sand);
+    border-bottom: 1px solid rgba(246, 240, 228, 0.16);
+  }
+
+  .map-dark-title {
+    color: var(--color-sand);
+  }
+
+  .map-dark-subtitle {
+    color: var(--color-sand-2);
+  }
+
+  .map-dark-label {
+    color: var(--color-sand-2);
+  }
+
+  .map-dark-chip {
+    background-color: rgba(246, 240, 228, 0.08);
+    color: var(--color-sand);
+    border-color: rgba(246, 240, 228, 0.28);
+  }
+
+  .map-dark-chip:hover {
+    background-color: rgba(246, 240, 228, 0.16);
+  }
+
   .map-section-header {
     display: flex;
     flex-wrap: wrap;
@@ -1757,7 +2567,7 @@ const productViews = productOrder.map((slug) => {
     grid-column: span 4;
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-5);
   }
 
   @media (min-width: 900px) {
@@ -1766,19 +2576,21 @@ const productViews = productOrder.map((slug) => {
     }
     .map-inspector-col {
       grid-column: 6 / span 7;
+      padding-left: var(--space-4);
+      border-left: 1px solid rgba(246, 240, 228, 0.16);
     }
   }
 
   .map-legend-block {
     margin-bottom: var(--space-3);
     padding-bottom: var(--space-2);
-    border-bottom: 1px solid var(--color-line);
+    border-bottom: 1px solid rgba(246, 240, 228, 0.16);
   }
 
   .map-ramp-explanation {
     font-size: 0.78rem;
     font-weight: 600;
-    color: var(--color-ink);
+    color: var(--color-sand);
     margin: 0 0 0.4rem 0;
   }
 
@@ -1787,6 +2599,7 @@ const productViews = productOrder.map((slug) => {
     flex-wrap: wrap;
     gap: 0.45rem 0.75rem;
     font-size: 0.75rem;
+    color: var(--color-sand-2);
   }
 
   .map-legend-item {
@@ -1800,13 +2613,31 @@ const productViews = productOrder.map((slug) => {
     height: 12px;
     border-radius: 50%;
     display: inline-block;
-    border: 1.5px solid var(--color-ink);
+    border: 1.5px solid var(--color-sand);
     flex-shrink: 0;
   }
 
+  .dotmap-svg-wrap {
+    position: relative;
+    width: 100%;
+  }
+
+  .map-grid-line {
+    stroke: rgba(246, 240, 228, 0.18);
+    stroke-width: 1;
+    stroke-dasharray: 2 3;
+  }
+
+  .map-axis-text {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    fill: var(--color-sand-2);
+  }
+
   .map-dot {
-    stroke: var(--color-ink);
+    stroke: var(--color-sand);
     stroke-width: 1.5;
+    transition: stroke-width 150ms ease;
   }
 
   .map-hit-target {
@@ -1818,35 +2649,102 @@ const productViews = productOrder.map((slug) => {
     cursor: pointer;
   }
 
+  .map-market-node:focus-visible {
+    outline: none;
+  }
+
+  .map-market-node:focus-visible .map-dot,
   .map-market-node[data-active='true'] .map-dot {
-    stroke: var(--color-ink);
+    stroke: var(--color-maize);
     stroke-width: 3;
     r: 8.5;
   }
 
-  .callout-leader {
+  .callout-leader-dark {
     fill: none;
-    stroke: var(--color-ink);
+    stroke: var(--color-sand-2);
     stroke-width: 1.2;
     stroke-dasharray: 2.5 2;
   }
 
-  .callout-text {
+  .callout-text-dark {
     font-family: var(--font-sans);
     font-size: 10.5px;
     font-weight: 700;
-    fill: var(--color-ink);
+    fill: var(--color-sand);
     paint-order: stroke;
-    stroke: var(--color-paper);
+    stroke: var(--color-ink);
     stroke-width: 5px;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
 
+  /* Interactive Floating Map Tooltip */
+  .map-floating-tooltip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    width: 244px;
+    padding: 0.6rem 0.75rem;
+    background-color: rgba(30, 27, 22, 0.96);
+    color: var(--color-sand);
+    border: 1px solid var(--color-maize);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    pointer-events: none;
+    font-size: 0.75rem;
+    line-height: 1.35;
+  }
+
+  .tooltip-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.4rem;
+    margin-bottom: 2px;
+  }
+
+  .tooltip-market-name {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--color-sand);
+  }
+
+  .tooltip-coords {
+    font-size: 0.7rem;
+    color: var(--color-maize);
+    white-space: nowrap;
+  }
+
+  .tooltip-region {
+    font-size: 0.72rem;
+    color: var(--color-sand-2);
+    margin: 0 0 0.4rem 0;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid rgba(246, 240, 228, 0.16);
+  }
+
+  .tooltip-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tooltip-label {
+    color: var(--color-sand-2);
+  }
+
+  /* Unboxed Spatial Summary & Market Inspector on Dark Ink */
+  .spatial-summary-block {
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid rgba(246, 240, 228, 0.16);
+  }
+
   .spatial-kpi-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-3);
+    gap: var(--space-4);
   }
 
   .spatial-kpi-cell {
@@ -1855,33 +2753,113 @@ const productViews = productOrder.map((slug) => {
     gap: 2px;
   }
 
+  .spatial-display-num {
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 1.25rem + 0.8vw, 2rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--color-sand);
+  }
+
+  .spatial-display-num small {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-sand-2);
+  }
+
+  .spatial-sub-num {
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 0.98rem + 0.3vw, 1.25rem);
+    font-weight: 650;
+    color: var(--color-sand);
+    line-height: 1.25;
+  }
+
   .spatial-month-note {
     font-size: 0.76rem;
-    color: var(--color-muted);
+    color: var(--color-sand-2);
     margin: var(--space-3) 0 0 0;
     padding-top: var(--space-2);
-    border-top: 1px solid var(--color-line);
+    border-top: 1px solid rgba(246, 240, 228, 0.16);
+  }
+
+  .market-detail-block {
+    border-top: 3px solid var(--color-maize);
+    padding-top: var(--space-3);
+  }
+
+  .inspector-header-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-2);
   }
 
   .inspector-market-title {
     font-size: var(--text-xl);
-    margin-block: var(--space-1);
+    color: var(--color-sand);
+    margin-block: 2px var(--space-1);
+  }
+
+  .inspector-coords-pill {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-maize);
+    background-color: rgba(227, 168, 31, 0.12);
+    padding: 0.15rem 0.5rem;
+    border-left: 2px solid var(--color-maize);
   }
 
   .inspector-hint {
     font-size: var(--text-xs);
-    color: var(--color-muted);
+    color: var(--color-sand-2);
     margin: 0 0 var(--space-3) 0;
   }
 
-  .teaser-note {
-    font-size: var(--text-xs);
-    color: var(--color-ink);
-    background-color: var(--color-sand);
-    padding: var(--space-3);
-    border-radius: var(--radius-sm);
-    border-left: 3px solid var(--color-ink);
-    margin: 0;
-    width: 100%;
+  .map-dark-stats-grid {
+    border-top-color: rgba(246, 240, 228, 0.16);
+  }
+
+  .map-dark-stats-grid dt {
+    color: var(--color-sand-2);
+  }
+
+  .map-dark-stats-grid dd {
+    color: var(--color-sand);
+  }
+
+  .stat-display-num-dark {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 680;
+    color: var(--color-sand);
+  }
+
+  /* Dark Ink Table Drawer */
+  details.map-dark-drawer {
+    border-top-color: rgba(246, 240, 228, 0.16);
+    border-bottom-color: rgba(246, 240, 228, 0.16);
+  }
+
+  details.map-dark-drawer summary {
+    color: var(--color-sand);
+  }
+
+  details.map-dark-drawer summary:hover {
+    color: var(--color-maize);
+  }
+
+  table.map-dark-table th,
+  table.map-dark-table td {
+    border-bottom-color: rgba(246, 240, 228, 0.16);
+    color: var(--color-sand);
+  }
+
+  table.map-dark-table th {
+    background-color: rgba(246, 240, 228, 0.08);
+    color: var(--color-sand);
   }
 </style>

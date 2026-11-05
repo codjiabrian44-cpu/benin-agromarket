@@ -28,17 +28,23 @@
     "maize_white": {
       "chip": "White maize",
       "full": "White maize",
-      "short": "White maize"
+      "short": "White maize",
+      "exploreHistoryCta": "Explore white maize price history →",
+      "forecastCta": "Forecasts for white maize →"
     },
     "tomatoes": {
       "chip": "Tomato",
       "full": "Tomato",
-      "short": "Tomato"
+      "short": "Tomato",
+      "exploreHistoryCta": "Explore tomato price history →",
+      "forecastCta": "Forecasts for tomato →"
     },
     "yam_white": {
       "chip": "White yam",
       "full": "White yam (kokoro)",
-      "short": "White yam"
+      "short": "White yam",
+      "exploreHistoryCta": "Explore white yam price history →",
+      "forecastCta": "Forecasts for white yam →"
     }
   },
   "models": {
@@ -118,8 +124,10 @@
       "chartSubtitle": "Observed monthly retail history (2019–2026, gaps where unrecorded) and 3-month forecast (Oct–Dec 2026).",
       "chartAsOfMarker": "Sep 2026",
       "chartHorizonMarker": "+1 to 3 months",
-      "legendObserved": "Observed price (retail, XOF/kg)",
-      "legendForecast": "Point forecast (at 1, 2 and 3 months)",
+      "peakLabelPrefix": "Peak:",
+      "bandDirectLabel": "80% / 90% interval",
+      "legendObserved": "Observed price",
+      "legendForecast": "3-month forecast",
       "legendBand80": "80% interval",
       "legendBand90": "90% interval",
       "latestObservedLabel": "Last observed price (Sep 2026)",
@@ -128,7 +136,8 @@
       "modelUsedLabel": "Selected method (at 3 months)",
       "asOfLabel": "Data as of",
       "asOfDateFormatted": "15 September 2026",
-      "reliabilityHeading": "Reliability measured in testing (Oct 2025 – Sep 2026):",
+      "headlineReliabilityTemplate": "At 3 months, the average error measured in testing is {mape}% — the 80% interval contained {cov80}% of observed prices in testing.",
+      "detailsTriggerLabel": "Test details",
       "tableToggle": "Show underlying chart data table (Dantokpa)",
       "tableDate": "Period",
       "tableStatus": "Status",
@@ -173,13 +182,15 @@
       "spreadRatioStat": "Max / min ratio",
       "latestMonthOnlyNote": "Figures computed for the latest observed month only (September 2026).",
       "selectedMarketHeading": "Selected market details",
-      "selectedMarketHint": "Hover or tap any market dot on the map to inspect its price and forecast.",
+      "selectedMarketHint": "Hover, tap, or keyboard-focus any market dot on the map to inspect its coordinates, price, and forecast.",
       "departmentLabel": "Department",
       "zoneLabel": "Region (latitude band)",
+      "coordsLabel": "Geographic coordinates",
       "latestPriceLabel": "Observed price (Sep 2026)",
       "diffVsMedianLabel": "Spread vs tracked-market median",
-      "forecastH3MapLabel": "Forecast for December 2026",
+      "forecastH3MapLabel": "Forecast for December 2026 (80% interval)",
       "holdoutMapeLabel": "Average error measured in testing",
+      "tooltipCloseAria": "Close tooltip",
       "tableAlternativeToggle": "Show accessible data table of all well-tracked markets",
       "colMarket": "Market",
       "colDepartment": "Department",
@@ -195,7 +206,7 @@
       "horizon1Label": "At 1 month (Oct 2026)",
       "horizon2Label": "At 2 months (Nov 2026)",
       "horizon3Label": "At 3 months (Dec 2026)",
-      "modelLabel": "Method:",
+      "modelLabel": "Selected method (at 3 months)",
       "holdoutMaeLabel": "Average error measured in testing",
       "skillVsBaselineLabel": "Gain vs simple method",
       "coverage80Label": "80% interval coverage",
