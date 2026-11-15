@@ -49,26 +49,17 @@ export interface HeroAnnotation {
 }
 
 export interface HeroMorphData {
-  width: number;
-  height: number;
-  histX: number[];
-  histY: number[];
-  histDefined: boolean[];
-  fcX: number[];
-  fcPointY: number[];
-  fcLow80Y: number[];
-  fcHigh80Y: number[];
-  fcLow90Y: number[];
-  fcHigh90Y: number[];
-  historyPath: string;
-  forecastPath: string;
-  band80Path: string;
-  band90Path: string;
-  lastObsX: number;
-  lastObsY: number;
-  peakX: number;
-  peakY: number;
-  fcDots: Array<{ x: number; y: number }>;
+  x93: number[];
+  y93: number[];
+  def93: number[];
+  fcBridge: Array<{
+    x: number;
+    y: number;
+    l80: number;
+    h80: number;
+    l90: number;
+    h90: number;
+  }>;
 }
 
 export interface HeroChartGeometry {
@@ -90,24 +81,29 @@ export interface HeroChartGeometry {
     y: number;
     price: number;
     date: string;
-    annotation: HeroAnnotation;
+    labelX: number;
+    labelY: number;
+    anchor: 'start' | 'middle' | 'end';
   };
   lastObsPoint: {
     x: number;
     y: number;
     price: number;
     date: string;
-    annotation: HeroAnnotation;
-  };
-  forecastAnnotation: {
-    x: number;
-    y: number;
     labelX: number;
     labelY: number;
-    bandLabelY: number;
-    fanLabelX: number;
-    fanLabelY: number;
-    leaderPath: string;
+  };
+  bandLabelPos: {
+    tickX1: number;
+    tickY1: number;
+    tickX2: number;
+    labelX: number;
+    labelY: number;
+  };
+  forecastEndLabelPos: {
+    x: number;
+    yLine1: number;
+    yLine2: number;
   };
   forecastPoints: Array<{
     x: number;
@@ -322,6 +318,10 @@ export function buildHeroChartGeometry(
   const band80Path = area80Gen(bridgePoints) ?? '';
   const band90Path = area90Gen(bridgePoints) ?? '';
 
+  const bandTickX = fcPts[1]?.x ?? fcH3Pt.x;
+  const bandTickY = fcPts[1]?.yLow90 ?? fcH3Pt.yLow90;
+  const forecastZoneTextX = Math.round((asOfX + 10) * 10) / 10;
+
   return {
     width,
     height,
@@ -341,61 +341,43 @@ export function buildHeroChartGeometry(
       y: peakY,
       price: peakObs.price,
       date: peakObs.date,
-      annotation: {
-        x: peakX,
-        y: peakY,
-        labelX: peakLabelX,
-        labelY: peakLabelY,
-        anchor: peakAnchor,
-        leaderPath: peakLeaderPath,
-      },
+      labelX: peakLabelX,
+      labelY: peakLabelY,
+      anchor: peakAnchor,
     },
     lastObsPoint: {
       x: lastObsX,
       y: lastObsY,
       price: lastObs.price,
       date: lastObs.date,
-      annotation: {
-        x: lastObsX,
-        y: lastObsY,
-        labelX: lastObsLabelX,
-        labelY: lastObsLabelY,
-        anchor: 'end',
-        leaderPath: lastObsLeaderPath,
-      },
+      labelX: lastObsLabelX,
+      labelY: lastObsLabelY,
     },
-    forecastAnnotation: {
-      x: fcH3Pt.x,
-      y: fcH3Pt.y,
-      labelX: fcLabelX,
-      labelY: fcLabelY,
-      bandLabelY: fcBandLabelY,
-      fanLabelX,
-      fanLabelY,
-      leaderPath: fcLeaderPath,
+    bandLabelPos: {
+      tickX1: bandTickX,
+      tickY1: bandTickY,
+      tickX2: bandTickX,
+      labelX: forecastZoneTextX,
+      labelY: fanLabelY,
+    },
+    forecastEndLabelPos: {
+      x: forecastZoneTextX,
+      yLine1: fcLabelY,
+      yLine2: fcBandLabelY,
     },
     forecastPoints: fcPts.map(({ yLow90: _l90, yHigh90: _h90, ...rest }) => rest),
     morphData: {
-      width,
-      height,
-      histX,
-      histY,
-      histDefined,
-      fcX: bridgePoints.map((b) => Math.round(xForecastScale(b.h) * 10) / 10),
-      fcPointY: bridgePoints.map((b) => Math.round(yScale(b.point) * 10) / 10),
-      fcLow80Y: bridgePoints.map((b) => Math.round(yScale(b.low80) * 10) / 10),
-      fcHigh80Y: bridgePoints.map((b) => Math.round(yScale(b.high80) * 10) / 10),
-      fcLow90Y: bridgePoints.map((b) => Math.round(yScale(b.low90) * 10) / 10),
-      fcHigh90Y: bridgePoints.map((b) => Math.round(yScale(b.high90) * 10) / 10),
-      historyPath,
-      forecastPath,
-      band80Path,
-      band90Path,
-      lastObsX,
-      lastObsY,
-      peakX,
-      peakY,
-      fcDots: fcPts.map((p) => ({ x: p.x, y: p.y })),
+      x93: histX,
+      y93: histY,
+      def93: histDefined.map((d) => (d ? 1 : 0)),
+      fcBridge: bridgePoints.map((b) => ({
+        x: Math.round(xForecastScale(b.h) * 10) / 10,
+        y: Math.round(yScale(b.point) * 10) / 10,
+        l80: Math.round(yScale(b.low80) * 10) / 10,
+        h80: Math.round(yScale(b.high80) * 10) / 10,
+        l90: Math.round(yScale(b.low90) * 10) / 10,
+        h90: Math.round(yScale(b.high90) * 10) / 10,
+      })),
     },
   };
 }

@@ -393,57 +393,61 @@ const heroMorphMap = Object.fromEntries(
                     <path d={heroGeom.historyPath} class={`line-history stroke-${slug}`} />
 
                     <!-- 1. Direct Annotation: Historical Observed Peak -->
-                    <g class="hero-annotation hero-peak-annotation">
-                      <line
-                        x1={heroGeom.peakPoint.x}
-                        y1={heroGeom.peakPoint.y - 4}
-                        x2={heroGeom.peakPoint.x}
-                        y2={heroGeom.peakPoint.labelY + 4}
-                        class="annotation-leader"
-                      />
-                      <circle
-                        cx={heroGeom.peakPoint.x}
-                        cy={heroGeom.peakPoint.y}
-                        r="4"
-                        class={`dot-peak fill-${slug}`}
-                      />
-                      <text
-                        x={heroGeom.peakPoint.labelX}
-                        y={heroGeom.peakPoint.labelY}
-                        text-anchor={heroGeom.peakPoint.anchor}
-                        class="curve-annotation-text tabular-nums"
-                      >
-                        {dict.home.hero.peakLabelPrefix}{' '}
-                        {formatInt(heroGeom.peakPoint.price, locale)} {dict.units.xofPerKg} (
-                        {peakDateShort})
-                      </text>
-                    </g>
+                    {heroGeom.peakPoint && (
+                      <g class="hero-annotation hero-peak-annotation">
+                        <line
+                          x1={heroGeom.peakPoint.x}
+                          y1={heroGeom.peakPoint.y - 4}
+                          x2={heroGeom.peakPoint.x}
+                          y2={heroGeom.peakPoint.labelY + 4}
+                          class="annotation-leader"
+                        />
+                        <circle
+                          cx={heroGeom.peakPoint.x}
+                          cy={heroGeom.peakPoint.y}
+                          r="4"
+                          class={`dot-peak fill-${slug}`}
+                        />
+                        <text
+                          x={heroGeom.peakPoint.labelX}
+                          y={heroGeom.peakPoint.labelY}
+                          text-anchor={heroGeom.peakPoint.anchor}
+                          class="curve-annotation-text tabular-nums"
+                        >
+                          {dict.home.hero.peakLabelPrefix}{' '}
+                          {formatInt(heroGeom.peakPoint.price, locale)} {dict.units.xofPerKg} (
+                          {peakDateShort})
+                        </text>
+                      </g>
+                    )}
 
                     <!-- 2. Direct Annotation: Last Observed Anchor Point (sept. 2026) -->
-                    <g class="hero-annotation hero-anchor-annotation">
-                      <line
-                        x1={heroGeom.lastObsPoint.x}
-                        y1={heroGeom.lastObsPoint.y + 4}
-                        x2={heroGeom.lastObsPoint.labelX + 3}
-                        y2={heroGeom.lastObsPoint.labelY - 9}
-                        class="annotation-leader"
-                      />
-                      <circle
-                        cx={heroGeom.lastObsPoint.x}
-                        cy={heroGeom.lastObsPoint.y}
-                        r="4.5"
-                        class={`dot-anchor fill-${slug}`}
-                      />
-                      <text
-                        x={heroGeom.lastObsPoint.labelX}
-                        y={heroGeom.lastObsPoint.labelY}
-                        text-anchor="end"
-                        class="curve-annotation-text tabular-nums"
-                      >
-                        {lastObsDateShort} · {formatDecimal(heroGeom.lastObsPoint.price, locale, 0)}{' '}
-                        {dict.units.xofPerKg}
-                      </text>
-                    </g>
+                    {heroGeom.lastObsPoint && (
+                      <g class="hero-annotation hero-anchor-annotation">
+                        <line
+                          x1={heroGeom.lastObsPoint.x}
+                          y1={heroGeom.lastObsPoint.y + 4}
+                          x2={heroGeom.lastObsPoint.labelX + 3}
+                          y2={heroGeom.lastObsPoint.labelY - 9}
+                          class="annotation-leader"
+                        />
+                        <circle
+                          cx={heroGeom.lastObsPoint.x}
+                          cy={heroGeom.lastObsPoint.y}
+                          r="4.5"
+                          class={`dot-anchor fill-${slug}`}
+                        />
+                        <text
+                          x={heroGeom.lastObsPoint.labelX}
+                          y={heroGeom.lastObsPoint.labelY}
+                          text-anchor="end"
+                          class="curve-annotation-text tabular-nums"
+                        >
+                          {lastObsDateShort} · {formatDecimal(heroGeom.lastObsPoint.price, locale, 0)}{' '}
+                          {dict.units.xofPerKg}
+                        </text>
+                      </g>
+                    )}
 
                     <!-- Forecast Horizon Dots (1, 2, 3 months) -->
                     <g class="hero-forecast-dots">
@@ -459,39 +463,47 @@ const heroMorphMap = Object.fromEntries(
 
                     <!-- 3. Direct Annotations: 80%/90% Fan Band & 3-Month Forecast Endpoint -->
                     <g class="hero-annotation hero-forecast-annotations">
-                      <line
-                        x1={heroGeom.bandLabelPos.tickX1}
-                        y1={heroGeom.bandLabelPos.tickY1}
-                        x2={heroGeom.bandLabelPos.tickX2}
-                        y2={heroGeom.bandLabelPos.labelY - 3}
-                        class="annotation-leader"
-                      />
-                      <text
-                        x={heroGeom.bandLabelPos.labelX}
-                        y={heroGeom.bandLabelPos.labelY}
-                        text-anchor="start"
-                        class="curve-annotation-sub tabular-nums"
-                      >
-                        {dict.home.hero.bandDirectLabel}
-                      </text>
-                      <text
-                        x={heroGeom.forecastEndLabelPos.x}
-                        y={heroGeom.forecastEndLabelPos.yLine1}
-                        text-anchor="start"
-                        class="curve-annotation-text tabular-nums"
-                      >
-                        {fc3DateShort} · {formatDecimal(fcH3.point_forecast, locale, 1)}{' '}
-                        {dict.units.xofPerKg}
-                      </text>
-                      <text
-                        x={heroGeom.forecastEndLabelPos.x}
-                        y={heroGeom.forecastEndLabelPos.yLine2}
-                        text-anchor="start"
-                        class="curve-annotation-sub tabular-nums"
-                      >
-                        [{formatInt(fcH3.low_80, locale)}–{formatInt(fcH3.high_80, locale)}{' '}
-                        {dict.units.xofPerKg}]
-                      </text>
+                      {heroGeom.bandLabelPos && (
+                        <>
+                          <line
+                            x1={heroGeom.bandLabelPos.tickX1}
+                            y1={heroGeom.bandLabelPos.tickY1}
+                            x2={heroGeom.bandLabelPos.tickX2}
+                            y2={heroGeom.bandLabelPos.labelY - 3}
+                            class="annotation-leader"
+                          />
+                          <text
+                            x={heroGeom.bandLabelPos.labelX}
+                            y={heroGeom.bandLabelPos.labelY}
+                            text-anchor="start"
+                            class="curve-annotation-sub tabular-nums"
+                          >
+                            {dict.home.hero.bandDirectLabel}
+                          </text>
+                        </>
+                      )}
+                      {heroGeom.forecastEndLabelPos && (
+                        <>
+                          <text
+                            x={heroGeom.forecastEndLabelPos.x}
+                            y={heroGeom.forecastEndLabelPos.yLine1}
+                            text-anchor="start"
+                            class="curve-annotation-text tabular-nums"
+                          >
+                            {fc3DateShort} · {formatDecimal(fcH3.point_forecast, locale, 1)}{' '}
+                            {dict.units.xofPerKg}
+                          </text>
+                          <text
+                            x={heroGeom.forecastEndLabelPos.x}
+                            y={heroGeom.forecastEndLabelPos.yLine2}
+                            text-anchor="start"
+                            class="curve-annotation-sub tabular-nums"
+                          >
+                            [{formatInt(fcH3.low_80, locale)}–{formatInt(fcH3.high_80, locale)}{' '}
+                            {dict.units.xofPerKg}]
+                          </text>
+                        </>
+                      )}
                     </g>
                   </svg>
                 </div>
