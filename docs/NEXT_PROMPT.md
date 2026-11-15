@@ -1,0 +1,8 @@
+We are on branch step-3.2. The build fails with: TypeError: Cannot read properties of undefined (reading 'tickX1') while rendering /en. HomePage.astro (around line 463) reads heroGeom.bandLabelPos.tickX1, tickY1, tickX2 and labelY, but src/lib/charts.ts does not define bandLabelPos at all. The template and charts.ts are out of sync, probably from an interrupted refactor.
+
+Part 1 (must do, nothing else): list every property HomePage.astro reads from heroGeom, and make buildHeroChartGeometry return exactly those (or update the template to the real names). Add a guard so a missing annotation can never crash the build. Run npm run build until every page in both languages builds, run validate_export, and retake only the hero screenshots (1440x900 and 390x844) to confirm no regression. Commit on step-3.2 as "fix: hero annotation geometry mismatch". No new feature, no refactor. Never leave the build broken: if you run low on budget, stop at a state where npm run build passes and write what remains in docs/STATUS.md.
+
+Part 2 (small checks, report first, fix only what is wrong), following the "Label truthfulness" rule in AGENTS.md:
+- The last observed maize price at Dantokpa for September 2026 appeared as 160.0 XOF/kg in the KPI strip and as 175.0 in the curve annotation. Find which one is right from the export and make both come from the same field.
+- The sentence "À 3 mois, l'erreur moyenne mesurée en test est de 13,5 %" may use a figure pooled over horizons 1 to 3. Check which field it uses and make the label match the field exactly.
+Write the findings in docs/STATUS.md, commit, and STOP.
