@@ -13,7 +13,7 @@
 | All Site JavaScript (`dist/_astro/*.js`) | All bundled JS across all routes | 1 | 121232 | 118.39 KiB | 46179 | **45.10 KiB** | <= 120.00 KiB gzip | PASS |
 | Home Page Stylesheets (`CSS`) | Stylesheets referenced by `/` (`dist/index.html`) | 1 | 28933 | 28.25 KiB | 5391 | **5.26 KiB** | <= 30.00 KiB gzip | PASS |
 | Self-Hosted Variable Fonts (`.woff2`) | `fraunces-latin-wght-normal.woff2` + `instrument-sans-latin-wght-normal.woff2` | 2 | 66712 | **65.15 KiB** | 66773 | **65.21 KiB** | <= 70.00 KiB total | PASS |
-| Home Page HTML (`/` FR) | `dist/index.html` (pre-rendered static HTML + SVG) | 1 | 285151 | 278.47 KiB | 41602 | 40.63 KiB | Informational (Static SSR) | PASS |
-| Home Page HTML (`/en/` EN) | `dist/en/index.html` (pre-rendered static HTML + SVG) | 1 | 283539 | 276.89 KiB | 40975 | 40.01 KiB | Informational (Static SSR) | PASS |
+| Home Page HTML (`/` FR) | `dist/index.html` (pre-rendered static HTML + SVG) | 1 | 285157 | 278.47 KiB | 41603 | 40.63 KiB | Informational (Static SSR) | PASS |
+| Home Page HTML (`/en/` EN) | `dist/en/index.html` (pre-rendered static HTML + SVG) | 1 | 283545 | 276.90 KiB | 40975 | 40.01 KiB | Informational (Static SSR) | PASS |
 | Home Summary Data (`home-summary.json`) | `dist/data/home-summary.json` (split summary, not all 111 series) | 1 | 146447 | 143.01 KiB | 20733 | 20.25 KiB | Never ship all 111 series to Home | PASS |
 | Raster Images (`.png/.jpg/.webp`) | All raster images in `dist/` (max 1 Open Graph image allowed) | 0 | 0 | 0.00 KiB | 0 | 0.00 KiB | <= 1 Open Graph image | PASS |

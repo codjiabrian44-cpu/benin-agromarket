@@ -166,3 +166,24 @@ We ran 2 iteration rounds on `http://127.0.0.1:4321` at desktop (`1440×900`) an
 ## 4. Proposed Next Step (Step 3.2 — Home Page Complete)
 
 Per [`docs/PHASE3_BRIEF.md`](file:///home/brian/projets-ds/benin-agromarket/docs/PHASE3_BRIEF.md) and your instructions, we stop here after committing **Step 3.1b** and await your validation before starting **Step 3.2 (Home page complete: signature GSAP motion, dot map interactions, product cards)**.
+
+---
+
+## 5. Step 3.2 Recovery & Label Truthfulness Checks (2026-11-16)
+
+### Part 1 — Hero Annotation Geometry Fix (`fix: hero annotation geometry mismatch`)
+- **Root cause:** [`web/src/components/HomePage.astro`](file:///home/brian/projets-ds/benin-agromarket/web/src/components/HomePage.astro) read `heroGeom.peakPoint.{labelX, labelY, anchor}`, `heroGeom.lastObsPoint.{labelX, labelY}`, `heroGeom.bandLabelPos.{tickX1, tickY1, tickX2, labelX, labelY}`, `heroGeom.forecastEndLabelPos.{x, yLine1, yLine2}`, and `heroGeom.morphData.{x93, y93, def93, fcBridge}`, whereas [`web/src/lib/charts.ts`](file:///home/brian/projets-ds/benin-agromarket/web/src/lib/charts.ts) returned nested `annotation` / `forecastAnnotation` objects and `histX`/`histY`/`histDefined`/`fcX` arrays.
+- **Fix:** Aligned `HeroChartGeometry`, `HeroMorphData`, and `buildHeroChartGeometry()` in [`web/src/lib/charts.ts`](file:///home/brian/projets-ds/benin-agromarket/web/src/lib/charts.ts) to return the exact fields consumed by [`web/src/components/HomePage.astro`](file:///home/brian/projets-ds/benin-agromarket/web/src/components/HomePage.astro), and added defensive conditional guards around `heroGeom.peakPoint`, `heroGeom.lastObsPoint`, `heroGeom.bandLabelPos`, and `heroGeom.forecastEndLabelPos` in [`web/src/components/HomePage.astro`](file:///home/brian/projets-ds/benin-agromarket/web/src/components/HomePage.astro) so a missing annotation cannot crash the build.
+- **Verification:**
+  - `npm run build` in `web/` succeeded for both `/` (FR) and `/en/` (EN).
+  - `.venv/bin/python -m src.evaluate.validate_export` passed all 7 contract checks ([`docs/tables/phase2_export_validation.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/phase2_export_validation.md)).
+  - Hero screenshots retaken in [`docs/screenshots/step-3.2/`](file:///home/brian/projets-ds/benin-agromarket/docs/screenshots/step-3.2/) (`desktop-hero-fr.png`, `desktop-hero-en.png`, `mobile-hero-fr.png`) confirming no regression.
+
+### Part 2 — Label Truthfulness Checks
+1. **Last observed maize price at Dantokpa (September 2026): `160.0 XOF/kg` vs `175.0`:**
+   - **Finding from export ([`web/src/data/generated/home-summary.json`](file:///home/brian/projets-ds/benin-agromarket/web/src/data/generated/home-summary.json)):** Both `products.maize_white.dantokpa.last_observed_price` and the final observed `history` entry (`2026-09-15`) are `160` (`160.0 XOF/kg`).
+   - **Code check:** In [`web/src/components/HomePage.astro`](file:///home/brian/projets-ds/benin-agromarket/web/src/components/HomePage.astro), the KPI strip read `prod.dantokpa.last_observed_price` (1 decimal) while the curve annotation read `heroGeom.lastObsPoint.price` (0 decimals).
+   - **Fix applied:** Updated the curve annotation in [`web/src/components/HomePage.astro`](file:///home/brian/projets-ds/benin-agromarket/web/src/components/HomePage.astro) to read `prod.dantokpa.last_observed_price` with `1` decimal place so both the KPI strip and curve annotation come from the exact same export field.
+2. **Horizon-3 test error label (`"À 3 mois, l'erreur moyenne mesurée en test est de ..."`):**
+   - **Finding from export ([`web/src/data/generated/home-summary.json`](file:///home/brian/projets-ds/benin-agromarket/web/src/data/generated/home-summary.json)):** For `maize_white`, `backtest_accuracy.test_overall.mape` (pooled over horizons 1–3) is `13.48` (`13,5 %`), whereas `backtest_accuracy.by_horizon_test.h3.mape` (3-month horizon) is `17.5` (`17,5 %`) and `coverage_80` is `78.9` (`78,9 %`).
+   - **Code check:** `getReliabilityHeadlineAndTooltip(prod, 'h3')` in [`web/src/components/HomePage.astro`](file:///home/brian/projets-ds/benin-agromarket/web/src/components/HomePage.astro) already reads `prod.backtest_accuracy.by_horizon_test.h3.mape` (`17,5 %` in FR / `17.5%` in EN), matching `"À 3 mois, l'erreur moyenne mesurée en test est de 17,5 %"` (verified in `desktop-hero-fr.png` and `desktop-hero-en.png`). No change needed.
