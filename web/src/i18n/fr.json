@@ -110,6 +110,7 @@
   },
   "units": {
     "xofPerKg": "XOF/kg",
+    "indexPoints": "points d'indice",
     "nominalRetailNotice": "Prix nominaux de détail en XOF/kg (franc CFA).",
     "marketsCount": "marchés bien suivis",
     "marketsDefinitionNote": "Marchés bien suivis : marchés disposant d'au moins 80 mois de relevés de prix sur 93 entre janvier 2019 et septembre 2026.",

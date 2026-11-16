@@ -110,6 +110,7 @@
   },
   "units": {
     "xofPerKg": "XOF/kg",
+    "indexPoints": "index points",
     "nominalRetailNotice": "Nominal retail prices in XOF/kg (West African CFA franc).",
     "marketsCount": "well-tracked markets",
     "marketsDefinitionNote": "Well-tracked markets: markets with at least 80 months of price records out of 93 between January 2019 and September 2026.",

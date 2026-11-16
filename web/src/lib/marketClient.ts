@@ -68,41 +68,28 @@ export function parseUrlState(): UrlState {
 }
 
 export function canonicalizeExplorerUrl(
-  locale: Locale,
+  _locale: Locale,
   state: { product: ProductSlug; market: string; range: ExplorerRangePreset; median: boolean }
 ): void {
   if (typeof window === 'undefined') return;
   const params = new URLSearchParams();
-  if (locale === 'fr') {
-    params.set('produit', PRODUCT_CANONICAL_PARAM.fr[state.product]);
-    params.set('marche', state.market);
-    params.set('plage', state.range);
-    params.set('mediane', state.median ? '1' : '0');
-  } else {
-    params.set('product', PRODUCT_CANONICAL_PARAM.en[state.product]);
-    params.set('market', state.market);
-    params.set('range', state.range);
-    params.set('median', state.median ? '1' : '0');
-  }
+  params.set('product', state.product);
+  params.set('market', state.market);
+  params.set('range', state.range);
+  params.set('median', state.median ? '1' : '0');
   const nextUrl = `${window.location.pathname}?${params.toString()}`;
   window.history.replaceState(null, '', nextUrl);
 }
 
 export function canonicalizeForecastUrl(
-  locale: Locale,
+  _locale: Locale,
   state: { product: ProductSlug; market: string; horizon: 1 | 2 | 3 }
 ): void {
   if (typeof window === 'undefined') return;
   const params = new URLSearchParams();
-  if (locale === 'fr') {
-    params.set('produit', PRODUCT_CANONICAL_PARAM.fr[state.product]);
-    params.set('marche', state.market);
-    params.set('horizon', String(state.horizon));
-  } else {
-    params.set('product', PRODUCT_CANONICAL_PARAM.en[state.product]);
-    params.set('market', state.market);
-    params.set('horizon', String(state.horizon));
-  }
+  params.set('product', state.product);
+  params.set('market', state.market);
+  params.set('horizon', String(state.horizon));
   const nextUrl = `${window.location.pathname}?${params.toString()}`;
   window.history.replaceState(null, '', nextUrl);
 }

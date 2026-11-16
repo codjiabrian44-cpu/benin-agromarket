@@ -580,7 +580,7 @@ const clientConfig = {
 
           <a
             id="exp-forecast-cta"
-            href={`${routes.forecast}?${locale === 'fr' ? 'produit=mais-blanc&marche=' : 'product=white-maize&market='}${encodeURIComponent(defaultMarket.market)}`}
+            href={`${routes.forecast}?product=${defaultSlug}&market=${encodeURIComponent(defaultMarket.market)}`}
             class="btn btn-primary"
           >
             {dict.explorer.viewForecastCta}
@@ -1029,19 +1029,7 @@ const clientConfig = {
       document.getElementById('exp-season-amp')!.textContent = formatSignedPct(amp, locale, 1);
 
       const fcCta = document.getElementById('exp-forecast-cta') as HTMLAnchorElement;
-      const prodParam =
-        locale === 'fr'
-          ? state.product === 'maize_white'
-            ? 'mais-blanc'
-            : state.product === 'tomatoes'
-              ? 'tomate'
-              : 'igname-blanche'
-          : state.product === 'maize_white'
-            ? 'white-maize'
-            : state.product === 'tomatoes'
-              ? 'tomato'
-              : 'white-yam';
-      fcCta.href = `${cfg.forecastRoute}?${locale === 'fr' ? 'produit' : 'product'}=${prodParam}&${locale === 'fr' ? 'marche' : 'market'}=${encodeURIComponent(mkt.market)}`;
+      fcCta.href = `${cfg.forecastRoute}?product=${state.product}&market=${encodeURIComponent(mkt.market)}`;
     }
 
     async function switchProduct(slug: ProductSlug) {

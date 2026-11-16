@@ -526,7 +526,7 @@ const clientConfig = {
       <div class="btn-row">
         <a
           id="fc-explorer-cta"
-          href={`${routes.explorer}?${locale === 'fr' ? 'produit=mais-blanc&marche=' : 'product=white-maize&market='}${encodeURIComponent(defaultMarket.market)}`}
+          href={`${routes.explorer}?product=${defaultSlug}&market=${encodeURIComponent(defaultMarket.market)}`}
           class="btn btn-primary"
         >
           {dict.forecastPage.exploreHistoryCta}
@@ -840,19 +840,7 @@ const clientConfig = {
       }
 
       const expCta = document.getElementById('fc-explorer-cta') as HTMLAnchorElement;
-      const prodParam =
-        locale === 'fr'
-          ? state.product === 'maize_white'
-            ? 'mais-blanc'
-            : state.product === 'tomatoes'
-              ? 'tomate'
-              : 'igname-blanche'
-          : state.product === 'maize_white'
-            ? 'white-maize'
-            : state.product === 'tomatoes'
-              ? 'tomato'
-              : 'white-yam';
-      expCta.href = `${cfg.explorerRoute}?${locale === 'fr' ? 'produit' : 'product'}=${prodParam}&${locale === 'fr' ? 'marche' : 'market'}=${encodeURIComponent(mkt.market)}`;
+      expCta.href = `${cfg.explorerRoute}?product=${state.product}&market=${encodeURIComponent(mkt.market)}`;
     }
 
     async function switchProduct(slug: ProductSlug) {
