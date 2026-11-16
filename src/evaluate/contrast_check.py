@@ -31,10 +31,12 @@ TOKENS: Dict[str, str] = {
     "paper-white": "#FFFDF9",
     "maize-step-1": "#FBF3D5",
     "maize-step-5": "#7A5200",
+    "maize-map-dim": "#966814",
     "tomato-step-1": "#F9E5DC",
     "tomato-step-5": "#6E240B",
     "yam-step-1": "#E3EFE6",
     "yam-step-5": "#16331E",
+    "yam-map-dim": "#4E825B",
     "maize-understroke": "#8A5E00",
 }
 
@@ -113,6 +115,12 @@ def run_contrast_audit() -> Tuple[Path, Path]:
         ("sand", "maize-step-5", "Dark-ink map dot `sand` stroke (`#F6F0E4`) against Maize step 5 (`#7A5200`)", "Allowed (AAA)"),
         ("sand", "tomato-step-5", "Dark-ink map dot `sand` stroke (`#F6F0E4`) against Tomato step 5 (`#6E240B`)", "Allowed (AAA)"),
         ("sand", "yam-step-5", "Dark-ink map dot `sand` stroke (`#F6F0E4`) against Yam step 5 (`#16331E`)", "Allowed (AAA)"),
+        ("maize-map-dim", "ink", "Dark-ink dot map Maize dimmest step (`#966814`, cheapest) vs `ink`", "Allowed (UI/Graphical >= 3.0:1)"),
+        ("laterite", "ink", "Dark-ink dot map Tomato dimmest step (`#B5471F`, cheapest) vs `ink`", "Allowed (UI/Graphical >= 3.0:1)"),
+        ("yam-map-dim", "ink", "Dark-ink dot map Yam dimmest step (`#4E825B`, cheapest) vs `ink`", "Allowed (UI/Graphical >= 3.0:1)"),
+        ("maize-step-1", "ink", "Dark-ink dot map Maize brightest step (`#FBF3D5`, most expensive) vs `ink`", "Allowed (AAA)"),
+        ("tomato-step-1", "ink", "Dark-ink dot map Tomato brightest step (`#F9E5DC`, most expensive) vs `ink`", "Allowed (AAA)"),
+        ("yam-step-1", "ink", "Dark-ink dot map Yam brightest step (`#E3EFE6`, most expensive) vs `ink`", "Allowed (AAA)"),
         (
             "maize",
             "sand",

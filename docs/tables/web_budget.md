@@ -4,16 +4,16 @@
 
 - **Overall Budget Verdict:** **PASS (All Phase 3 asset budgets satisfied)**
 - **Home JS Gzip Size:** `45.10 KiB` (`46179` bytes) vs `120.00 KiB` limit (`All site JS`: `45.10 KiB` gzip).
-- **Home CSS Gzip Size:** `5.26 KiB` (`5391` bytes) vs `30.00 KiB` limit.
+- **Home CSS Gzip Size:** `5.39 KiB` (`5524` bytes) vs `30.00 KiB` limit.
 - **Self-Hosted Variable Fonts (`.woff2`):** `65.15 KiB` raw (`66712` bytes: `fraunces-latin-wght-normal.woff2` `35.76 KiB` + `instrument-sans-latin-wght-normal.woff2` `29.39 KiB`) vs `70.00 KiB` total limit.
 
 | Budget Category | Scope / Files Included | File Count | Raw Size (Bytes) | Raw Size (KiB) | Gzip Size (Bytes) | Gzip Size (KiB) | Phase 3 Budget Limit | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Home Page JavaScript (`JS`) | Scripts referenced by `/` (`dist/index.html`) | 1 | 121232 | 118.39 KiB | 46179 | **45.10 KiB** | <= 120.00 KiB gzip | PASS |
 | All Site JavaScript (`dist/_astro/*.js`) | All bundled JS across all routes | 1 | 121232 | 118.39 KiB | 46179 | **45.10 KiB** | <= 120.00 KiB gzip | PASS |
-| Home Page Stylesheets (`CSS`) | Stylesheets referenced by `/` (`dist/index.html`) | 1 | 28933 | 28.25 KiB | 5391 | **5.26 KiB** | <= 30.00 KiB gzip | PASS |
+| Home Page Stylesheets (`CSS`) | Stylesheets referenced by `/` (`dist/index.html`) | 1 | 29728 | 29.03 KiB | 5524 | **5.39 KiB** | <= 30.00 KiB gzip | PASS |
 | Self-Hosted Variable Fonts (`.woff2`) | `fraunces-latin-wght-normal.woff2` + `instrument-sans-latin-wght-normal.woff2` | 2 | 66712 | **65.15 KiB** | 66773 | **65.21 KiB** | <= 70.00 KiB total | PASS |
-| Home Page HTML (`/` FR) | `dist/index.html` (pre-rendered static HTML + SVG) | 1 | 285157 | 278.47 KiB | 41603 | 40.63 KiB | Informational (Static SSR) | PASS |
-| Home Page HTML (`/en/` EN) | `dist/en/index.html` (pre-rendered static HTML + SVG) | 1 | 283545 | 276.90 KiB | 40975 | 40.01 KiB | Informational (Static SSR) | PASS |
-| Home Summary Data (`home-summary.json`) | `dist/data/home-summary.json` (split summary, not all 111 series) | 1 | 146447 | 143.01 KiB | 20733 | 20.25 KiB | Never ship all 111 series to Home | PASS |
+| Home Page HTML (`/` FR) | `dist/index.html` (pre-rendered static HTML + SVG) | 1 | 285863 | 279.16 KiB | 41741 | 40.76 KiB | Informational (Static SSR) | PASS |
+| Home Page HTML (`/en/` EN) | `dist/en/index.html` (pre-rendered static HTML + SVG) | 1 | 284105 | 277.45 KiB | 41107 | 40.14 KiB | Informational (Static SSR) | PASS |
+| Home Summary Data (`home-summary.json`) | `dist/data/home-summary.json` (split summary, not all 111 series) | 1 | 146452 | 143.02 KiB | 20804 | 20.32 KiB | Never ship all 111 series to Home | PASS |
 | Raster Images (`.png/.jpg/.webp`) | All raster images in `dist/` (max 1 Open Graph image allowed) | 0 | 0 | 0.00 KiB | 0 | 0.00 KiB | <= 1 Open Graph image | PASS |

@@ -22,5 +22,15 @@ CLR-20,ink,#1E1B16,0.0112,tomato-step-1,#F9E5DC,0.8135,14.11:1,PASS,PASS,Dot map
 CLR-21,paper-white,#FFFDF9,0.9835,tomato-step-5,#6E240B,0.0460,10.76:1,PASS,PASS,Dot map Tomato darkest step (#6E240B) against paper-white canvas — Allowed (AAA)
 CLR-22,ink,#1E1B16,0.0112,yam-step-1,#E3EFE6,0.8378,14.51:1,PASS,PASS,Dot map Yam lightest step (#E3EFE6) with dark ink stroke/label — Allowed (AAA)
 CLR-23,paper-white,#FFFDF9,0.9835,yam-step-5,#16331E,0.0263,13.54:1,PASS,PASS,Dot map Yam darkest step (#16331E) against paper-white canvas — Allowed (AAA)
-CLR-24,maize,#E3A81F,0.4444,sand,#F6F0E4,0.8751,1.87:1,BANNED (Expected Fail),BANNED (Expected Fail),BANNED: Maize yellow text on light sand background — BANNED by brief (1.87:1 fails AA — never used for text on light backgrounds)
-CLR-25,maize,#E3A81F,0.4444,sand-2,#EDE3D0,0.7750,1.67:1,BANNED (Expected Fail),BANNED (Expected Fail),BANNED: Maize yellow text on light sand-2 background — BANNED by brief (1.67:1 fails AA — never used for text on light backgrounds)
+CLR-24,maize-understroke,#8A5E00,0.1341,sand,#F6F0E4,0.8751,5.03:1,PASS,PASS,Maize curve understroke (#8A5E00) on unboxed sand Hero/Sparkline canvas — Allowed (AA Normal & Graphical)
+CLR-25,sand,#F6F0E4,0.8751,maize-step-5,#7A5200,0.1017,6.10:1,PASS,PASS,Dark-ink map dot sand stroke (#F6F0E4) against Maize step 5 (#7A5200) — Allowed (AAA)
+CLR-26,sand,#F6F0E4,0.8751,tomato-step-5,#6E240B,0.0460,9.64:1,PASS,PASS,Dark-ink map dot sand stroke (#F6F0E4) against Tomato step 5 (#6E240B) — Allowed (AAA)
+CLR-27,sand,#F6F0E4,0.8751,yam-step-5,#16331E,0.0263,12.12:1,PASS,PASS,Dark-ink map dot sand stroke (#F6F0E4) against Yam step 5 (#16331E) — Allowed (AAA)
+CLR-28,maize-map-dim,#966814,0.1644,ink,#1E1B16,0.0112,3.50:1,Large/UI Only (>=3.0:1),PASS,"Dark-ink dot map Maize dimmest step (#966814, cheapest) vs ink — Allowed (UI/Graphical >= 3.0:1)"
+CLR-29,laterite,#B5471F,0.1443,ink,#1E1B16,0.0112,3.18:1,Large/UI Only (>=3.0:1),PASS,"Dark-ink dot map Tomato dimmest step (#B5471F, cheapest) vs ink — Allowed (UI/Graphical >= 3.0:1)"
+CLR-30,yam-map-dim,#4E825B,0.1834,ink,#1E1B16,0.0112,3.82:1,Large/UI Only (>=3.0:1),PASS,"Dark-ink dot map Yam dimmest step (#4E825B, cheapest) vs ink — Allowed (UI/Graphical >= 3.0:1)"
+CLR-31,maize-step-1,#FBF3D5,0.8941,ink,#1E1B16,0.0112,15.43:1,PASS,PASS,"Dark-ink dot map Maize brightest step (#FBF3D5, most expensive) vs ink — Allowed (AAA)"
+CLR-32,tomato-step-1,#F9E5DC,0.8135,ink,#1E1B16,0.0112,14.11:1,PASS,PASS,"Dark-ink dot map Tomato brightest step (#F9E5DC, most expensive) vs ink — Allowed (AAA)"
+CLR-33,yam-step-1,#E3EFE6,0.8378,ink,#1E1B16,0.0112,14.51:1,PASS,PASS,"Dark-ink dot map Yam brightest step (#E3EFE6, most expensive) vs ink — Allowed (AAA)"
+CLR-34,maize,#E3A81F,0.4444,sand,#F6F0E4,0.8751,1.87:1,BANNED (Expected Fail),BANNED (Expected Fail),BANNED: Maize yellow text on light sand background — BANNED by brief (1.87:1 fails AA — never used for text on light backgrounds)
+CLR-35,maize,#E3A81F,0.4444,sand-2,#EDE3D0,0.7750,1.67:1,BANNED (Expected Fail),BANNED (Expected Fail),BANNED: Maize yellow text on light sand-2 background — BANNED by brief (1.67:1 fails AA — never used for text on light backgrounds)

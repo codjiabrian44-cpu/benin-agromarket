@@ -101,7 +101,8 @@
     "calibrated": "Fourchettes fiables en test",
     "baseline_retained": "Méthode simple retenue",
     "intervals_too_narrow": "Fourchettes étroites en test",
-    "baseline_retained_intervals_too_narrow": "Méthode simple · fourchettes étroites"
+    "baseline_retained_intervals_too_narrow": "Méthode simple · fourchettes étroites",
+    "no_better_than_simple": "Pas meilleur que la méthode simple en test"
   },
   "units": {
     "xofPerKg": "XOF/kg",
@@ -136,7 +137,7 @@
       "modelUsedLabel": "Méthode retenue (à 3 mois)",
       "asOfLabel": "Arrêté des données",
       "asOfDateFormatted": "15 septembre 2026",
-      "headlineReliabilityTemplate": "À 3 mois, l'erreur moyenne mesurée en test est de {mape} % — la fourchette à 80 % a contenu {cov80} % des prix observés en test.",
+      "headlineReliabilityTemplate": "Sur l'ensemble des {n} marchés suivis, à 3 mois, l'erreur moyenne mesurée en test est de {mape} % — la fourchette à 80 % a contenu {cov80} % des prix observés.",
       "detailsTriggerLabel": "Détails du test",
       "tableToggle": "Afficher le tableau de données du graphique (Dantokpa)",
       "tableDate": "Période",
@@ -168,7 +169,7 @@
       "title": "Un même kilo, des prix différents",
       "subtitle": "Position géographique des marchés bien suivis pour le produit sélectionné (latitude / longitude). La teinte indique l'écart du dernier prix observé (septembre 2026) par rapport à la médiane des marchés suivis.",
       "productFilterLabel": "Comparer les marchés pour :",
-      "rampExplanation": "Plus clair = moins cher · Plus foncé = plus cher (5 niveaux d'écart à la médiane)",
+      "rampExplanation": "Plus sombre = moins cher · Plus lumineux = plus cher (5 niveaux d'écart à la médiane)",
       "step1Label": "≤ −15 %",
       "step2Label": "−15 % à −5 %",
       "step3Label": "−5 % à +5 %",

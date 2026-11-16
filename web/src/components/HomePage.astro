@@ -96,15 +96,16 @@ function getReliabilityHeadlineAndTooltip(
   );
 
   const headline = dict.home.hero.headlineReliabilityTemplate
+    .replace('{n}', String(prod.tier1_markets_count))
     .replace('{mape}', mapeStr)
     .replace('{cov80}', cov80Str);
 
   if (locale === 'fr') {
-    const detailedTooltip = `Méthode retenue : ${champLabel}. Erreur moyenne sur les 12 mois de test (oct. 2025 – sept. 2026) : ${maeStr} XOF/kg (${mapeStr} %) ; écart face à la méthode simple « ${baseLabel} » : ${skillStr} ; la fourchette à 80 % a contenu ${cov80Str} % des prix observés en test.`;
+    const detailedTooltip = `Méthode retenue : ${champLabel}. Sur l'ensemble des ${prod.tier1_markets_count} marchés suivis (12 mois de test, oct. 2025 – sept. 2026), à 3 mois : erreur moyenne de ${maeStr} XOF/kg (${mapeStr} %) ; écart face à la méthode simple « ${baseLabel} » : ${skillStr} ; la fourchette à 80 % a contenu ${cov80Str} % des prix observés.`;
     return { headline, detailedTooltip };
   }
 
-  const detailedTooltip = `Selected method: ${champLabel}. Average error across the 12 test months (Oct 2025 – Sep 2026): ${maeStr} XOF/kg (${mapeStr}%); gain vs simple method "${baseLabel}": ${skillStr}; the 80% interval contained ${cov80Str}% of observed prices in testing.`;
+  const detailedTooltip = `Selected method: ${champLabel}. Across all ${prod.tier1_markets_count} well-tracked markets (12 test months, Oct 2025 – Sep 2026), at 3 months: average error of ${maeStr} XOF/kg (${mapeStr}%); gain vs simple method "${baseLabel}": ${skillStr}; the 80% interval contained ${cov80Str}% of observed prices.`;
   return { headline, detailedTooltip };
 }
 
@@ -2352,6 +2353,12 @@ const heroMorphMap = Object.fromEntries(
     border-top-color: var(--color-green);
   }
 
+  .story-card-header {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
   .story-card-title-row {
     display: flex;
     flex-wrap: wrap;
@@ -2371,6 +2378,7 @@ const heroMorphMap = Object.fromEntries(
   .story-card-title {
     font-size: var(--text-xl);
     line-height: 1.15;
+    margin-top: auto;
     margin-bottom: var(--space-2);
   }
 

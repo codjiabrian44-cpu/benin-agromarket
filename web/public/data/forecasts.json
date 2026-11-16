@@ -60,7 +60,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -70,8 +70,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -153,11 +153,11 @@
             "coverage_80": 78.2,
             "coverage_90": 88.7,
             "mean_width_80": 68.9,
-            "reliability": "calibrated",
-            "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-            "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg).",
+            "reliability": "no_better_than_simple",
+            "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+            "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg).",
             "reliability_detail": {
-              "status": "calibrated",
+              "status": "no_better_than_simple",
               "is_calibrated_80": true,
               "is_baseline_retained": false,
               "did_worse_than_another_candidate_on_holdout": true,
@@ -167,8 +167,8 @@
               "skill_vs_best_baseline_test_pct": -5.5,
               "holdout_coverage_80_pct": 78.2,
               "holdout_coverage_90_pct": 88.7,
-              "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-              "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+              "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+              "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
             }
           },
           "h3": {
@@ -2539,7 +2539,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -2549,8 +2549,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -3431,9 +3431,9 @@
           "low_90": 106.12,
           "high_90": 161.94,
           "change_vs_last_pct": 3.6,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -3492,7 +3492,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -3502,8 +3502,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -4400,9 +4400,9 @@
           "low_90": 112.01,
           "high_90": 181.71,
           "change_vs_last_pct": 4.9,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -4461,7 +4461,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -4471,8 +4471,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -5361,9 +5361,9 @@
           "low_90": 123.38,
           "high_90": 189.91,
           "change_vs_last_pct": -6.9,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -5422,7 +5422,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -5432,8 +5432,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -6538,9 +6538,9 @@
           "low_90": 59.89,
           "high_90": 107.85,
           "change_vs_last_pct": 20,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -6599,7 +6599,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -6609,8 +6609,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -7523,9 +7523,9 @@
           "low_90": 119.57,
           "high_90": 174.49,
           "change_vs_last_pct": 3,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -7584,7 +7584,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -7594,8 +7594,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -8692,9 +8692,9 @@
           "low_90": 55.08,
           "high_90": 134.45,
           "change_vs_last_pct": -9.4,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -8753,7 +8753,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -8763,8 +8763,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -9661,9 +9661,9 @@
           "low_90": 80.18,
           "high_90": 145.55,
           "change_vs_last_pct": -9.6,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -9722,7 +9722,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -9732,8 +9732,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -10638,9 +10638,9 @@
           "low_90": 49.56,
           "high_90": 151.85,
           "change_vs_last_pct": -2.8,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -10699,7 +10699,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -10709,8 +10709,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -11831,9 +11831,9 @@
           "low_90": 84.84,
           "high_90": 144.29,
           "change_vs_last_pct": 5.9,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -11892,7 +11892,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -11902,8 +11902,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -12832,9 +12832,9 @@
           "low_90": 43.49,
           "high_90": 102.39,
           "change_vs_last_pct": -3.3,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -12893,7 +12893,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -12903,8 +12903,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -14025,9 +14025,9 @@
           "low_90": 136.3,
           "high_90": 218.58,
           "change_vs_last_pct": 2.3,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -14086,7 +14086,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -14096,8 +14096,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -14978,9 +14978,9 @@
           "low_90": 113.87,
           "high_90": 169.47,
           "change_vs_last_pct": 5.6,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -15039,7 +15039,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -15049,8 +15049,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -15955,9 +15955,9 @@
           "low_90": 108.37,
           "high_90": 186.93,
           "change_vs_last_pct": 0.2,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -16016,7 +16016,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -16026,8 +16026,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -17860,9 +17860,9 @@
           "low_90": 115.12,
           "high_90": 190.21,
           "change_vs_last_pct": -7.5,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -17921,7 +17921,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -17931,8 +17931,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -18837,9 +18837,9 @@
           "low_90": 86.16,
           "high_90": 155.7,
           "change_vs_last_pct": 3.4,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -18898,7 +18898,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -18908,8 +18908,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -19782,9 +19782,9 @@
           "low_90": 114.95,
           "high_90": 183.94,
           "change_vs_last_pct": 2,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -19843,7 +19843,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -19853,8 +19853,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -20983,9 +20983,9 @@
           "low_90": 93.27,
           "high_90": 142.28,
           "change_vs_last_pct": -20.6,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -21044,7 +21044,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -21054,8 +21054,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -21936,9 +21936,9 @@
           "low_90": 79.47,
           "high_90": 136.65,
           "change_vs_last_pct": 7.4,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -21997,7 +21997,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -22007,8 +22007,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -23153,9 +23153,9 @@
           "low_90": 74.45,
           "high_90": 148.23,
           "change_vs_last_pct": 16.2,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -23214,7 +23214,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -23224,8 +23224,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -24114,9 +24114,9 @@
           "low_90": 99.38,
           "high_90": 179.6,
           "change_vs_last_pct": 6,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -24175,7 +24175,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -24185,8 +24185,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -25115,9 +25115,9 @@
           "low_90": 163.79,
           "high_90": 238.66,
           "change_vs_last_pct": 5.5,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -25176,7 +25176,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -25186,8 +25186,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -26260,9 +26260,9 @@
           "low_90": 52.02,
           "high_90": 112.53,
           "change_vs_last_pct": -17.7,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -26321,7 +26321,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -26331,8 +26331,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -27189,9 +27189,9 @@
           "low_90": 90.35,
           "high_90": 163.01,
           "change_vs_last_pct": -19.1,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -27250,7 +27250,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -27260,8 +27260,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -28190,9 +28190,9 @@
           "low_90": 84.4,
           "high_90": 131.73,
           "change_vs_last_pct": -7.5,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -28251,7 +28251,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -28261,8 +28261,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -29191,9 +29191,9 @@
           "low_90": 133.49,
           "high_90": 197.22,
           "change_vs_last_pct": 1.4,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -29252,7 +29252,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -29262,8 +29262,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -30376,9 +30376,9 @@
           "low_90": 77.61,
           "high_90": 134.09,
           "change_vs_last_pct": -7.3,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -30437,7 +30437,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -30447,8 +30447,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -31585,9 +31585,9 @@
           "low_90": 77.86,
           "high_90": 143.8,
           "change_vs_last_pct": 15,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -31646,7 +31646,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -31656,8 +31656,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -33010,9 +33010,9 @@
           "low_90": 96.35,
           "high_90": 175.88,
           "change_vs_last_pct": -17.6,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -33071,7 +33071,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -33081,8 +33081,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -34179,9 +34179,9 @@
           "low_90": 108.97,
           "high_90": 169.17,
           "change_vs_last_pct": -17.7,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -34240,7 +34240,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -34250,8 +34250,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -35388,9 +35388,9 @@
           "low_90": 99.72,
           "high_90": 165.41,
           "change_vs_last_pct": -3.4,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -35449,7 +35449,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -35459,8 +35459,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -36581,9 +36581,9 @@
           "low_90": 95.44,
           "high_90": 153.06,
           "change_vs_last_pct": 6,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -36642,7 +36642,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -36652,8 +36652,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -37590,9 +37590,9 @@
           "low_90": 65.37,
           "high_90": 145.26,
           "change_vs_last_pct": 12,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -37651,7 +37651,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -37661,8 +37661,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -38551,9 +38551,9 @@
           "low_90": 100.89,
           "high_90": 170.7,
           "change_vs_last_pct": 0.9,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -38612,7 +38612,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -38622,8 +38622,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -39720,9 +39720,9 @@
           "low_90": 135.83,
           "high_90": 210.45,
           "change_vs_last_pct": 1.1,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -39781,7 +39781,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -39791,8 +39791,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -40881,9 +40881,9 @@
           "low_90": 98.62,
           "high_90": 180.68,
           "change_vs_last_pct": -0.4,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -40942,7 +40942,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -40952,8 +40952,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -41832,9 +41832,9 @@
           "low_90": 69.66,
           "high_90": 123.71,
           "change_vs_last_pct": -13.2,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -41893,7 +41893,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -41903,8 +41903,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -43009,9 +43009,9 @@
           "low_90": 119.56,
           "high_90": 188.31,
           "change_vs_last_pct": -2.2,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -43070,7 +43070,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -43080,8 +43080,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -43934,9 +43934,9 @@
           "low_90": 114.2,
           "high_90": 180.58,
           "change_vs_last_pct": -7.7,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -43995,7 +43995,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -44005,8 +44005,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -45061,9 +45061,9 @@
           "low_90": 70.18,
           "high_90": 199.33,
           "change_vs_last_pct": -11.1,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -45122,7 +45122,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -45132,8 +45132,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -46006,9 +46006,9 @@
           "low_90": 127.21,
           "high_90": 203.94,
           "change_vs_last_pct": -2.4,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -46067,7 +46067,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -46077,8 +46077,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -46959,9 +46959,9 @@
           "low_90": 137.31,
           "high_90": 258.27,
           "change_vs_last_pct": -1.9,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -47020,7 +47020,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -47030,8 +47030,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -47912,9 +47912,9 @@
           "low_90": 131.83,
           "high_90": 224.09,
           "change_vs_last_pct": 7.4,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -47973,7 +47973,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -47983,8 +47983,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -49095,9 +49095,9 @@
           "low_90": 72.59,
           "high_90": 138.5,
           "change_vs_last_pct": -15,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -49156,7 +49156,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -49166,8 +49166,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -50064,9 +50064,9 @@
           "low_90": 196.3,
           "high_90": 329.43,
           "change_vs_last_pct": -1.8,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -50125,7 +50125,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -50135,8 +50135,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -51001,9 +51001,9 @@
           "low_90": 84.64,
           "high_90": 164.41,
           "change_vs_last_pct": -2.5,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -51062,7 +51062,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -51072,8 +51072,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -51938,9 +51938,9 @@
           "low_90": 82.62,
           "high_90": 157.44,
           "change_vs_last_pct": -0.4,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -51999,7 +51999,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -52009,8 +52009,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -52899,9 +52899,9 @@
           "low_90": 117.83,
           "high_90": 188.16,
           "change_vs_last_pct": -2,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -52960,7 +52960,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -52970,8 +52970,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -53844,9 +53844,9 @@
           "low_90": 97.33,
           "high_90": 153.05,
           "change_vs_last_pct": 2.6,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,
@@ -53905,7 +53905,7 @@
           "note_en": "Selected method: Last known price (simple method). At 1 month, no complex statistical model beats the last known price (average test error: 9.6 XOF/kg, or 6.8%; the 80% interval contained 84.4% of observed prices in testing)."
         },
         "h2": {
-          "status": "calibrated",
+          "status": "no_better_than_simple",
           "is_calibrated_80": true,
           "is_baseline_retained": false,
           "did_worse_than_another_candidate_on_holdout": true,
@@ -53915,8 +53915,8 @@
           "skill_vs_best_baseline_test_pct": -5.5,
           "holdout_coverage_80_pct": 78.2,
           "holdout_coverage_90_pct": 88.7,
-          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         "h3": {
           "status": "baseline_retained",
@@ -54805,9 +54805,9 @@
           "low_90": 130.6,
           "high_90": 234.09,
           "change_vs_last_pct": -8.9,
-          "reliability": "calibrated",
-          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement (erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; la fourchette à 80 % a contenu 78.2 % des prix observés en test), bien que devancée sur les 12 mois de test par « Dernier prix connu (méthode simple) » (14.9 XOF/kg).",
-          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the training period (average error 21.3 XOF/kg, or 16.2%; the 80% interval contained 78.2% of observed prices in testing), though trailed on the 12 test months by 'Last known price (simple method)' (14.9 XOF/kg)."
+          "reliability": "no_better_than_simple",
+          "reliability_note_fr": "Méthode retenue : Arbres de décision sur historique de prix, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (-5.5 %, erreur moyenne de 21.3 XOF/kg, soit 16.2 % ; devancée par « Dernier prix connu (méthode simple) » à 14.9 XOF/kg).",
+          "reliability_note_en": "Selected method: Decision trees on price history, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (-5.5%, average error 21.3 XOF/kg, or 16.2%; trailed 'Last known price (simple method)' at 14.9 XOF/kg)."
         },
         {
           "horizon_months": 3,

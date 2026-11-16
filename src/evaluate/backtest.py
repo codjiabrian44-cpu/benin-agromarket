@@ -348,6 +348,22 @@ def compute_product_horizon_reliability(
             f"but the {nominal_80}% interval covered {cov80:.1f}% of observed test prices "
             f"(target: {nominal_80}%)."
         )
+    elif (not is_baseline_champ) and (skill_vs_best_base < 0.0):
+        status = "no_better_than_simple"
+        note_fr = (
+            f"Méthode retenue : {champ_fr}, sélectionnée sur la période d'entraînement "
+            f"({val_skill_vs_best_base:+.1f} % par rapport à « {base_fr} »), mais pas meilleure "
+            f"que la méthode simple en test sur l'ensemble des marchés suivis "
+            f"({skill_vs_best_base:+.1f} %, erreur moyenne de {mae:.1f} XOF/kg, soit {mape:.1f} % ; "
+            f"devancée par « {best_test_fr} » à {best_test_mae:.1f} XOF/kg)."
+        )
+        note_en = (
+            f"Selected method: {champ_en}, chosen on the validation period "
+            f"({val_skill_vs_best_base:+.1f}% vs '{base_en}'), but no better than the simple method "
+            f"in testing across all well-tracked markets "
+            f"({skill_vs_best_base:+.1f}%, average error {mae:.1f} XOF/kg, or {mape:.1f}%; "
+            f"trailed '{best_test_en}' at {best_test_mae:.1f} XOF/kg)."
+        )
     elif is_baseline_champ:
         status = "baseline_retained"
         if champ_id == "Naive_LastValue":

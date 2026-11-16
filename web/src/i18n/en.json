@@ -101,7 +101,8 @@
     "calibrated": "Calibrated test intervals",
     "baseline_retained": "Simple method retained",
     "intervals_too_narrow": "Narrow test intervals",
-    "baseline_retained_intervals_too_narrow": "Simple method · narrow intervals"
+    "baseline_retained_intervals_too_narrow": "Simple method · narrow intervals",
+    "no_better_than_simple": "No better than the simple method in testing"
   },
   "units": {
     "xofPerKg": "XOF/kg",
@@ -136,7 +137,7 @@
       "modelUsedLabel": "Selected method (at 3 months)",
       "asOfLabel": "Data as of",
       "asOfDateFormatted": "15 September 2026",
-      "headlineReliabilityTemplate": "At 3 months, the average error measured in testing is {mape}% — the 80% interval contained {cov80}% of observed prices in testing.",
+      "headlineReliabilityTemplate": "Across all {n} well-tracked markets, at 3 months, the average error measured in testing is {mape}% — the 80% interval contained {cov80}% of observed prices.",
       "detailsTriggerLabel": "Test details",
       "tableToggle": "Show underlying chart data table (Dantokpa)",
       "tableDate": "Period",
@@ -168,7 +169,7 @@
       "title": "One kilogram, different market realities",
       "subtitle": "Geographic position of well-tracked markets for the selected staple (latitude / longitude). Dot shade shows how each market's latest observed price (September 2026) compares to the median of tracked markets.",
       "productFilterLabel": "Compare markets for:",
-      "rampExplanation": "Lighter = cheaper · Darker = more expensive (5 steps relative to median)",
+      "rampExplanation": "Dimmer = cheaper · Brighter = more expensive (5 steps relative to median)",
       "step1Label": "≤ −15%",
       "step2Label": "−15% to −5%",
       "step3Label": "−5% to +5%",

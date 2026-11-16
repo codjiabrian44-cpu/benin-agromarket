@@ -11,31 +11,32 @@ import type { ProductSlug } from '../i18n';
 import type { ForecastPoint, HistoryPoint, Tier1MarketMapItem } from './data';
 
 /**
- * 5-step single-hue sequential ramps per product (`light = cheaper`, `dark = more expensive`),
- * generated with `d3-interpolate` between the product's light tint, mid identity token, and deep shade.
- * On the dark `#1E1B16` map background, every dot carries a crisp `#F6F0E4` (`sand`, 15.12:1 AAA) stroke.
+ * 5-step single-hue sequential ramps per product on dark `#1E1B16` ink background
+ * (`dimmer = cheaper`, `brighter/more luminous = more expensive`).
+ * Every dimmest step has >= 3.0:1 graphical contrast against `#1E1B16` (`ink`),
+ * and every dot carries a crisp `#F6F0E4` (`sand`, 15.12:1 AAA) stroke.
  */
 export const PRODUCT_RAMP_5: Record<ProductSlug, [string, string, string, string, string]> = {
   maize_white: [
-    '#FBF3D5',
-    interpolateRgb('#FBF3D5', '#E3A81F')(0.55),
+    '#966814',
+    interpolateRgb('#966814', '#E3A81F')(0.5),
     '#E3A81F',
-    interpolateRgb('#E3A81F', '#7A5200')(0.5),
-    '#7A5200',
+    interpolateRgb('#E3A81F', '#FBF3D5')(0.5),
+    '#FBF3D5',
   ],
   tomatoes: [
-    '#F9E5DC',
-    interpolateRgb('#F9E5DC', '#B5471F')(0.5),
     '#B5471F',
-    interpolateRgb('#B5471F', '#6E240B')(0.5),
-    '#6E240B',
+    interpolateRgb('#B5471F', '#D46A43')(0.5),
+    '#D46A43',
+    interpolateRgb('#D46A43', '#F9E5DC')(0.5),
+    '#F9E5DC',
   ],
   yam_white: [
+    '#4E825B',
+    interpolateRgb('#4E825B', '#7CB088')(0.5),
+    '#7CB088',
+    interpolateRgb('#7CB088', '#E3EFE6')(0.5),
     '#E3EFE6',
-    interpolateRgb('#E3EFE6', '#2F5D3A')(0.48),
-    '#2F5D3A',
-    interpolateRgb('#2F5D3A', '#16331E')(0.5),
-    '#16331E',
   ],
 };
 

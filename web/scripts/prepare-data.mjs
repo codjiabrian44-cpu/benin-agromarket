@@ -71,8 +71,24 @@ function buildCalendarMonths2019To2026() {
 
 const CALENDAR_93_MONTHS = buildCalendarMonths2019To2026();
 
-function buildPlainReliabilityNotes(relObj, accObj, horizon) {
+function resolveReliabilityStatus(relObj, accObj) {
   const status = relObj.status;
+  if (status === 'baseline_retained_intervals_too_narrow' || status === 'intervals_too_narrow') {
+    return status;
+  }
+  const champId = accObj?.model_used;
+  const isBaseline =
+    relObj.is_baseline_retained ||
+    ['Naive_LastValue', 'Seasonal_Naive_12m', 'Seasonal_Ratio_Naive'].includes(champId);
+  const skill = relObj.skill_vs_best_baseline_test_pct ?? accObj?.skill_vs_best_baseline_pct ?? 0;
+  if (!isBaseline && skill < 0) {
+    return 'no_better_than_simple';
+  }
+  return status;
+}
+
+function buildPlainReliabilityNotes(relObj, accObj, horizon) {
+  const status = resolveReliabilityStatus(relObj, accObj);
   const champId = accObj.model_used;
   const baseId = relObj.best_validation_baseline || accObj.best_baseline_val;
   const bestTestId = relObj.best_holdout_candidate;
@@ -102,6 +118,12 @@ function buildPlainReliabilityNotes(relObj, accObj, horizon) {
     return {
       note_fr: `Méthode retenue : ${champFr} (erreur moyenne de ${mae.toFixed(1)} XOF/kg en test, soit ${mape.toFixed(1)} %), mais la fourchette à ${nominal80} % a contenu ${cov80.toFixed(1)} % des prix observés en test (cible : ${nominal80} %).`,
       note_en: `Selected method: ${champEn} (average test error of ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%), while the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices in testing (target: ${nominal80}%).`,
+    };
+  }
+  if (status === 'no_better_than_simple') {
+    return {
+      note_fr: `Méthode retenue : ${champFr}, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (${skill.toFixed(1)} %, erreur moyenne de ${mae.toFixed(1)} XOF/kg, soit ${mape.toFixed(1)} % ; devancée par « ${bestTestFr} » à ${bestTestMae.toFixed(1)} XOF/kg).`,
+      note_en: `Selected method: ${champEn}, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (${skill.toFixed(1)}%, average error ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%; trailed '${bestTestEn}' at ${bestTestMae.toFixed(1)} XOF/kg).`,
     };
   }
   if (status === 'baseline_retained') {
@@ -328,13 +350,21 @@ function buildSplitDataFiles() {
       const hKey = `h${h}`;
       const relObj = prodMeta.reliability_by_horizon[hKey];
       const accObj = prodMeta.backtest_accuracy.by_horizon_test[hKey];
+      const nextStatus = resolveReliabilityStatus(relObj, accObj);
       const plainNotes = buildPlainReliabilityNotes(relObj, accObj, h);
-      if (relObj.note_fr !== plainNotes.note_fr || relObj.note_en !== plainNotes.note_en) {
+      if (
+        relObj.status !== nextStatus ||
+        relObj.note_fr !== plainNotes.note_fr ||
+        relObj.note_en !== plainNotes.note_en
+      ) {
+        relObj.status = nextStatus;
         relObj.note_fr = plainNotes.note_fr;
         relObj.note_en = plainNotes.note_en;
+        accObj.reliability = nextStatus;
         accObj.reliability_note_fr = plainNotes.note_fr;
         accObj.reliability_note_en = plainNotes.note_en;
         if (accObj.reliability_detail) {
+          accObj.reliability_detail.status = nextStatus;
           accObj.reliability_detail.note_fr = plainNotes.note_fr;
           accObj.reliability_detail.note_en = plainNotes.note_en;
         }
@@ -351,7 +381,12 @@ function buildSplitDataFiles() {
     s.reliability_by_horizon = prodRel;
     for (const fc of s.forecasts) {
       const relH = prodRel[`h${fc.horizon_months}`];
-      if (fc.reliability_note_fr !== relH.note_fr || fc.reliability_note_en !== relH.note_en) {
+      if (
+        fc.reliability !== relH.status ||
+        fc.reliability_note_fr !== relH.note_fr ||
+        fc.reliability_note_en !== relH.note_en
+      ) {
+        fc.reliability = relH.status;
         fc.reliability_note_fr = relH.note_fr;
         fc.reliability_note_en = relH.note_en;
         forecastsUpdated = true;

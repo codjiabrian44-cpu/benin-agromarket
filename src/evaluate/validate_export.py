@@ -326,6 +326,7 @@ def validate_forecasts_export(
         "baseline_retained",
         "intervals_too_narrow",
         "baseline_retained_intervals_too_narrow",
+        "no_better_than_simple",
     }
 
     forbidden_note_tokens = (
