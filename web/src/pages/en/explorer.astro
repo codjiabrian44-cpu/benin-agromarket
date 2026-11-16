@@ -1,0 +1,19 @@
+---
+import ExplorerPage from '../../components/ExplorerPage.astro';
+import { getDictionary, getLocalizedRoutes } from '../../i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const locale = 'en';
+const dict = getDictionary(locale);
+const frRoutes = getLocalizedRoutes('fr', import.meta.env.BASE_URL);
+---
+
+<BaseLayout
+  locale={locale}
+  title={dict.meta.explorerTitle}
+  description={dict.meta.explorerDescription}
+  currentNav="explorer"
+  switchLangHref={frRoutes.explorer}
+>
+  <ExplorerPage locale={locale} />
+</BaseLayout>

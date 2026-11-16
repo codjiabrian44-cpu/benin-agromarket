@@ -1,4 +1,7 @@
 import homeSummaryRaw from '../data/generated/home-summary.json';
+import productMaizeRaw from '../data/generated/product-maize_white.json';
+import productTomatoesRaw from '../data/generated/product-tomatoes.json';
+import productYamRaw from '../data/generated/product-yam_white.json';
 import type { ProductSlug } from '../i18n';
 
 export interface HistoryPoint {
@@ -196,6 +199,178 @@ export function getValidatedHomeData(): HomeSummaryPayload {
         throw new Error(`[data.ts] Interval ordering violation in Dantokpa ${slug} h=${fc.horizon_months}`);
       }
     }
+  }
+  return data;
+}
+
+export interface SeasonalityByZoneItem {
+  zone: string;
+  tier1_markets: number;
+  obs: number;
+  trough_raw: string;
+  peak_raw: string;
+  spread_raw: string;
+  monthly_indices: Array<{ month_num: number; index: number }>;
+}
+
+export interface NationalMedianPoint {
+  date: string;
+  median_price: number;
+  mean_price: number;
+  markets_reporting: number;
+}
+
+export interface MarketHorizonTestStats {
+  model_id: string;
+  n_eval: number;
+  mae: number;
+  rmse: number;
+  mape: number;
+  coverage_80: number;
+  coverage_90: number;
+}
+
+export interface MarketSeries {
+  series_id: string;
+  product_slug: ProductSlug;
+  commodity: string;
+  label_fr: string;
+  market_id: string;
+  market: string;
+  admin1: string;
+  admin2: string;
+  latitude: number;
+  longitude: number;
+  agro_zone: string;
+  tier: string;
+  is_forecasted: boolean;
+  obs_months_2019_2026: number;
+  completeness_2019_2026_pct: number;
+  as_of_date: string;
+  last_observed_date: string;
+  last_observed_price: number;
+  model_used: Record<'h1' | 'h2' | 'h3', string>;
+  reliability_by_horizon: Record<'h1' | 'h2' | 'h3', ReliabilityInfo>;
+  backtest_accuracy: {
+    test_overall: {
+      n_eval: number;
+      mae: number;
+      rmse: number;
+      mape: number;
+      coverage_80: number;
+      coverage_90: number;
+      skill_vs_snaive_pct: number;
+    };
+    by_horizon_test: Record<'h1' | 'h2' | 'h3', MarketHorizonTestStats>;
+  };
+  history: HistoryPoint[];
+  history_calendar_2019_2026: HistoryPoint[];
+  forecasts: ForecastPoint[];
+}
+
+export interface ProductPayload {
+  metadata: HomeSummaryPayload['metadata'];
+  product: HomeProductData;
+  seasonality_by_zone: SeasonalityByZoneItem[];
+  national_median_series: NationalMedianPoint[];
+  series: MarketSeries[];
+}
+
+const PRODUCT_RAW_MAP: Record<ProductSlug, unknown> = {
+  maize_white: productMaizeRaw,
+  tomatoes: productTomatoesRaw,
+  yam_white: productYamRaw,
+};
+
+/**
+ * Guarantee full 93-month calendar grid (`2019-01-15..2026-09-15`) with explicit `is_observed: false, price: null`
+ * on unobserved months so `d3.line().defined()` always breaks across missing months.
+ */
+export function ensureFull93MonthHistory(rawHistory: HistoryPoint[]): HistoryPoint[] {
+  const byDate = new Map<string, HistoryPoint>();
+  for (const pt of rawHistory) {
+    if (pt.date >= '2019-01-15' && pt.is_observed !== false && typeof pt.price === 'number') {
+      byDate.set(pt.date, pt);
+    }
+  }
+  const fullGrid: HistoryPoint[] = [];
+  for (let yr = 2019; yr <= 2026; yr++) {
+    const maxMo = yr === 2026 ? 9 : 12;
+    for (let mo = 1; mo <= maxMo; mo++) {
+      const mStr = String(mo).padStart(2, '0');
+      const dStr = `${yr}-${mStr}-15`;
+      const ymStr = `${yr}-${mStr}`;
+      const existing = byDate.get(dStr);
+      if (existing) {
+        fullGrid.push({
+          date: dStr,
+          year_month: ymStr,
+          price: existing.price,
+          is_observed: true,
+          is_outlier: Boolean(existing.is_outlier),
+        });
+      } else {
+        fullGrid.push({
+          date: dStr,
+          year_month: ymStr,
+          price: null,
+          is_observed: false,
+          is_outlier: false,
+        });
+      }
+    }
+  }
+  return fullGrid;
+}
+
+/**
+ * Align the tracked-market median series onto the same 93-month calendar grid,
+ * breaking at months where no markets reported.
+ */
+export function alignMedianSeries93(
+  rawMedian: NationalMedianPoint[]
+): Array<{ date: string; year_month: string; price: number | null; is_observed: boolean }> {
+  const byDate = new Map<string, NationalMedianPoint>();
+  for (const pt of rawMedian) {
+    if (pt.date >= '2019-01-15' && typeof pt.median_price === 'number' && Number.isFinite(pt.median_price)) {
+      byDate.set(pt.date, pt);
+    }
+  }
+  const fullGrid: Array<{ date: string; year_month: string; price: number | null; is_observed: boolean }> = [];
+  for (let yr = 2019; yr <= 2026; yr++) {
+    const maxMo = yr === 2026 ? 9 : 12;
+    for (let mo = 1; mo <= maxMo; mo++) {
+      const mStr = String(mo).padStart(2, '0');
+      const dStr = `${yr}-${mStr}-15`;
+      const ymStr = `${yr}-${mStr}`;
+      const existing = byDate.get(dStr);
+      if (existing) {
+        fullGrid.push({
+          date: dStr,
+          year_month: ymStr,
+          price: existing.median_price,
+          is_observed: true,
+        });
+      } else {
+        fullGrid.push({
+          date: dStr,
+          year_month: ymStr,
+          price: null,
+          is_observed: false,
+        });
+      }
+    }
+  }
+  return fullGrid;
+}
+
+/**
+ * Load and validate a full per-product dataset at build time.
+ */
+export function getValidatedProductData(slug: ProductSlug): ProductPayload {
+  const data = PRODUCT_RAW_MAP[slug] as ProductPayload;
+  if (!data?.metadata || !data?.product || !Array.isArray(data?.series) || !data.series.length) {
+    throw new Error(`[data.ts] Build-time validation failed for product-${slug}.json`);
   }
   return data;
 }

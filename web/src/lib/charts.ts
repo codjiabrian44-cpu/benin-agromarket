@@ -635,7 +635,6 @@ export function buildBeninDotMapGeometry(
 
   return {
     width,
-    height,
     mapLeft,
     mapRight,
     maxOffsetPx,
@@ -644,5 +643,499 @@ export function buildBeninDotMapGeometry(
     cheapestCallout,
     priciestCallout,
     latBands,
+    height,
+  };
+}
+
+/* ==========================================================================
+   Shared Helpers for Explorer & Forecast Charts (Step 3.3)
+   ========================================================================== */
+
+export interface CalendarSeriesPoint {
+  date: string;
+  year_month: string;
+  price: number | null;
+  is_observed?: boolean;
+  is_outlier?: boolean;
+}
+
+/**
+ * Shared D3 line generator that strictly breaks whenever a month is unobserved
+ * (`is_observed === false` or `price === null`).
+ */
+export function buildObservedLinePath<T extends CalendarSeriesPoint>(
+  points: T[],
+  xAccessor: (d: T) => number,
+  yAccessor: (price: number) => number
+): string {
+  const gen = line<T>()
+    .defined((d) => d.is_observed !== false && typeof d.price === 'number' && Number.isFinite(d.price))
+    .x(xAccessor)
+    .y((d) => yAccessor(d.price as number))
+    .curve(curveMonotoneX);
+  return gen(points) ?? '';
+}
+
+export type ExplorerRangePreset = '1y' | '3y' | 'all';
+
+export interface ExplorerPointNode {
+  index: number;
+  date: string;
+  year_month: string;
+  x: number;
+  y: number | null;
+  price: number | null;
+  isObserved: boolean;
+  isOutlier: boolean;
+  medianPrice: number | null;
+  medianY: number | null;
+}
+
+export interface ExplorerChartGeometry {
+  width: number;
+  height: number;
+  margin: { top: number; right: number; bottom: number; left: number };
+  historyPath: string;
+  medianPath: string;
+  yTicks: Array<{ value: number; y: number }>;
+  xTicks: Array<{ date: string; year: number; monthNum: number; x: number; isJan: boolean }>;
+  points: ExplorerPointNode[];
+  minObserved: number | null;
+  maxObserved: number | null;
+  unobservedCount: number;
+}
+
+export function buildExplorerChartGeometry(
+  history93: HistoryPoint[],
+  median93: CalendarSeriesPoint[],
+  rangePreset: ExplorerRangePreset,
+  includeMedian: boolean,
+  width = 860,
+  height = 330
+): ExplorerChartGeometry {
+  const margin = { top: 24, right: 24, bottom: 34, left: 52 };
+  const sliceCount = rangePreset === '1y' ? 12 : rangePreset === '3y' ? 36 : history93.length;
+  const slicedHist = history93.slice(-sliceCount);
+  const slicedMedian = median93.slice(-sliceCount);
+
+  const parseDate = (dStr: string) => new Date(`${dStr}T00:00:00Z`);
+  const dates = slicedHist.map((d) => parseDate(d.date));
+  const [minDate, maxDate] = extent(dates) as [Date, Date];
+
+  const obsPrices = slicedHist
+    .filter((d): d is HistoryPoint & { price: number } => d.is_observed !== false && typeof d.price === 'number' && Number.isFinite(d.price))
+    .map((d) => d.price);
+
+  const medianPrices = includeMedian
+    ? slicedMedian
+        .filter((d): d is CalendarSeriesPoint & { price: number } => d.is_observed !== false && typeof d.price === 'number' && Number.isFinite(d.price))
+        .map((d) => d.price)
+    : [];
+
+  const allVals = [...obsPrices, ...medianPrices];
+  const yMaxRaw = max(allVals) ?? 400;
+  const yMax = Math.ceil((yMaxRaw * 1.12) / 50) * 50;
+
+  const xScale = scaleTime()
+    .domain([minDate, maxDate])
+    .range([margin.left, width - margin.right]);
+
+  const yScale = scaleLinear()
+    .domain([0, yMax])
+    .nice(5)
+    .range([height - margin.bottom, margin.top]);
+
+  const historyPath = buildObservedLinePath(
+    slicedHist,
+    (d) => xScale(parseDate(d.date)),
+    (p) => yScale(p)
+  );
+
+  const medianPath = includeMedian
+    ? buildObservedLinePath(
+        slicedMedian,
+        (d) => xScale(parseDate(d.date)),
+        (p) => yScale(p)
+      )
+    : '';
+
+  const yTicks = yScale.ticks(5).map((value) => ({
+    value,
+    y: Math.round(yScale(value) * 10) / 10,
+  }));
+
+  const xTicks: Array<{ date: string; year: number; monthNum: number; x: number; isJan: boolean }> = [];
+  for (let i = 0; i < slicedHist.length; i++) {
+    const pt = slicedHist[i];
+    const [yrStr, moStr] = pt.year_month.split('-');
+    const yr = parseInt(yrStr, 10);
+    const mo = parseInt(moStr, 10);
+    if (rangePreset === '1y') {
+      // Every 2 months on 1y view so labels never collide
+      if (i === 0 || i === slicedHist.length - 1 || mo % 2 === 1) {
+        xTicks.push({
+          date: pt.date,
+          year: yr,
+          monthNum: mo,
+          x: Math.round(xScale(parseDate(pt.date)) * 10) / 10,
+          isJan: mo === 1,
+        });
+      }
+    } else if (rangePreset === '3y') {
+      if (mo === 1 || mo === 7) {
+        xTicks.push({
+          date: pt.date,
+          year: yr,
+          monthNum: mo,
+          x: Math.round(xScale(parseDate(pt.date)) * 10) / 10,
+          isJan: mo === 1,
+        });
+      }
+    } else {
+      if (mo === 1) {
+        xTicks.push({
+          date: pt.date,
+          year: yr,
+          monthNum: mo,
+          x: Math.round(xScale(parseDate(pt.date)) * 10) / 10,
+          isJan: true,
+        });
+      }
+    }
+  }
+
+  const medianByDate = new Map<string, number | null>();
+  for (const m of slicedMedian) {
+    medianByDate.set(m.date, m.is_observed !== false && typeof m.price === 'number' ? m.price : null);
+  }
+
+  const points: ExplorerPointNode[] = slicedHist.map((pt, index) => {
+    const isObserved = pt.is_observed !== false && typeof pt.price === 'number' && Number.isFinite(pt.price);
+    const price = isObserved ? (pt.price as number) : null;
+    const medianPrice = medianByDate.get(pt.date) ?? null;
+    return {
+      index,
+      date: pt.date,
+      year_month: pt.year_month,
+      x: Math.round(xScale(parseDate(pt.date)) * 10) / 10,
+      y: price !== null ? Math.round(yScale(price) * 10) / 10 : null,
+      price,
+      isObserved,
+      isOutlier: Boolean(pt.is_outlier),
+      medianPrice,
+      medianY: medianPrice !== null ? Math.round(yScale(medianPrice) * 10) / 10 : null,
+    };
+  });
+
+  return {
+    width,
+    height,
+    margin,
+    historyPath,
+    medianPath,
+    yTicks,
+    xTicks,
+    points,
+    minObserved: obsPrices.length ? (min(obsPrices) ?? null) : null,
+    maxObserved: obsPrices.length ? (max(obsPrices) ?? null) : null,
+    unobservedCount: slicedHist.length - obsPrices.length,
+  };
+}
+
+export interface SeasonalityBarNode {
+  monthNum: number;
+  index: number;
+  x: number;
+  yTop: number;
+  barHeight: number;
+  isAbove100: boolean;
+  isPeak: boolean;
+  isTrough: boolean;
+}
+
+export interface SeasonalityChartGeometry {
+  width: number;
+  height: number;
+  margin: { top: number; right: number; bottom: number; left: number };
+  ref100Y: number;
+  yTicks: Array<{ value: number; y: number }>;
+  bars: SeasonalityBarNode[];
+  barWidth: number;
+}
+
+export function buildSeasonalityChartGeometry(
+  monthlyIndices: Array<{ month_num: number; index: number }>,
+  width = 560,
+  height = 220
+): SeasonalityChartGeometry {
+  const margin = { top: 20, right: 16, bottom: 30, left: 42 };
+  const sorted = [...monthlyIndices].sort((a, b) => a.month_num - b.month_num);
+  const vals = sorted.map((d) => d.index);
+  const vMin = Math.min(85, Math.floor(((min(vals) ?? 80) - 6) / 10) * 10);
+  const vMax = Math.max(115, Math.ceil(((max(vals) ?? 120) + 6) / 10) * 10);
+
+  let peakMonth = sorted[0]?.month_num ?? 1;
+  let troughMonth = sorted[0]?.month_num ?? 1;
+  let maxVal = -Infinity;
+  let minVal = Infinity;
+  for (const d of sorted) {
+    if (d.index > maxVal) {
+      maxVal = d.index;
+      peakMonth = d.month_num;
+    }
+    if (d.index < minVal) {
+      minVal = d.index;
+      troughMonth = d.month_num;
+    }
+  }
+
+  const plotW = width - margin.left - margin.right;
+  const stepW = plotW / 12;
+  const barWidth = Math.max(14, Math.round(stepW * 0.56));
+
+  const yScale = scaleLinear()
+    .domain([vMin, vMax])
+    .range([height - margin.bottom, margin.top]);
+
+  const ref100Y = Math.round(yScale(100) * 10) / 10;
+  const yTicks = yScale.ticks(4).map((value) => ({
+    value,
+    y: Math.round(yScale(value) * 10) / 10,
+  }));
+
+  const bars: SeasonalityBarNode[] = sorted.map((d, i) => {
+    const cx = Math.round((margin.left + stepW * (i + 0.5)) * 10) / 10;
+    const valY = Math.round(yScale(d.index) * 10) / 10;
+    const isAbove100 = d.index >= 100;
+    const yTop = isAbove100 ? valY : ref100Y;
+    const barHeight = Math.max(2, Math.round(Math.abs(valY - ref100Y) * 10) / 10);
+    return {
+      monthNum: d.month_num,
+      index: d.index,
+      x: cx,
+      yTop,
+      barHeight,
+      isAbove100,
+      isPeak: d.month_num === peakMonth,
+      isTrough: d.month_num === troughMonth,
+    };
+  });
+
+  return {
+    width,
+    height,
+    margin,
+    ref100Y,
+    yTicks,
+    bars,
+    barWidth,
+  };
+}
+
+export interface ForecastChartGeometry {
+  width: number;
+  height: number;
+  margin: { top: number; right: number; bottom: number; left: number };
+  asOfX: number;
+  forecastEndX: number;
+  historyPath: string;
+  forecastPath: string;
+  band80Path: string;
+  band90Path: string;
+  yTicks: Array<{ value: number; y: number }>;
+  xTicks: Array<{ date: string; year_month: string; x: number; isForecast: boolean }>;
+  obsPoints: Array<{
+    date: string;
+    year_month: string;
+    x: number;
+    y: number | null;
+    price: number | null;
+    isObserved: boolean;
+  }>;
+  lastObsPoint: {
+    date: string;
+    year_month: string;
+    x: number;
+    y: number;
+    price: number;
+  };
+  forecastPoints: Array<{
+    horizon: number;
+    date: string;
+    year_month: string;
+    x: number;
+    y: number;
+    yLow80: number;
+    yHigh80: number;
+    yLow90: number;
+    yHigh90: number;
+    price: number;
+    low80: number;
+    high80: number;
+    low90: number;
+    high90: number;
+  }>;
+  unobservedCount: number;
+}
+
+export function buildForecastChartGeometry(
+  history93: HistoryPoint[],
+  forecasts: ForecastPoint[],
+  width = 860,
+  height = 340
+): ForecastChartGeometry {
+  const margin = { top: 28, right: 26, bottom: 34, left: 52 };
+  const forecastZoneWidth = 176;
+  const recent24 = history93.slice(-24);
+  const parseDate = (dStr: string) => new Date(`${dStr}T00:00:00Z`);
+
+  const dates = recent24.map((d) => parseDate(d.date));
+  const [minDate, maxHistDate] = extent(dates) as [Date, Date];
+
+  const observed24 = recent24.filter(
+    (d): d is HistoryPoint & { price: number } =>
+      d.is_observed !== false && typeof d.price === 'number' && Number.isFinite(d.price)
+  );
+  const lastObs = observed24[observed24.length - 1];
+
+  const allValues = [
+    ...observed24.map((d) => d.price),
+    ...forecasts.flatMap((f) => [f.low_90, f.high_90, f.point_forecast]),
+  ];
+  const yMaxRaw = max(allValues) ?? 400;
+  const yMax = Math.ceil((yMaxRaw * 1.14) / 50) * 50;
+
+  const asOfX = width - margin.right - forecastZoneWidth;
+  const forecastEndX = width - margin.right;
+
+  const xHistScale = scaleTime().domain([minDate, maxHistDate]).range([margin.left, asOfX]);
+  const xForecastScale = scaleLinear().domain([0, 3]).range([asOfX, forecastEndX]);
+  const yScale = scaleLinear()
+    .domain([0, yMax])
+    .nice(5)
+    .range([height - margin.bottom, margin.top]);
+
+  const historyPath = buildObservedLinePath(
+    recent24,
+    (d) => xHistScale(parseDate(d.date)),
+    (p) => yScale(p)
+  );
+
+  const bridgePoints = [
+    {
+      h: 0,
+      date: lastObs.date,
+      point: lastObs.price,
+      low80: lastObs.price,
+      high80: lastObs.price,
+      low90: lastObs.price,
+      high90: lastObs.price,
+    },
+    ...forecasts.map((f) => ({
+      h: f.horizon_months,
+      date: f.target_date,
+      point: f.point_forecast,
+      low80: f.low_80,
+      high80: f.high_80,
+      low90: f.low_90,
+      high90: f.high_90,
+    })),
+  ];
+
+  const fcLineGen = line<(typeof bridgePoints)[number]>()
+    .x((d) => xForecastScale(d.h))
+    .y((d) => yScale(d.point))
+    .curve(curveMonotoneX);
+
+  const area80Gen = area<(typeof bridgePoints)[number]>()
+    .x((d) => xForecastScale(d.h))
+    .y0((d) => yScale(d.low80))
+    .y1((d) => yScale(d.high80))
+    .curve(curveMonotoneX);
+
+  const area90Gen = area<(typeof bridgePoints)[number]>()
+    .x((d) => xForecastScale(d.h))
+    .y0((d) => yScale(d.low90))
+    .y1((d) => yScale(d.high90))
+    .curve(curveMonotoneX);
+
+  const yTicks = yScale.ticks(5).map((value) => ({
+    value,
+    y: Math.round(yScale(value) * 10) / 10,
+  }));
+
+  const xTicks: Array<{ date: string; year_month: string; x: number; isForecast: boolean }> = [];
+  for (let i = 0; i < recent24.length; i++) {
+    if (i === 0 || i === 6 || i === 12 || i === 18 || i === recent24.length - 1) {
+      const pt = recent24[i];
+      xTicks.push({
+        date: pt.date,
+        year_month: pt.year_month,
+        x: Math.round(xHistScale(parseDate(pt.date)) * 10) / 10,
+        isForecast: false,
+      });
+    }
+  }
+  const h3Fc = forecasts[forecasts.length - 1];
+  if (h3Fc) {
+    xTicks.push({
+      date: h3Fc.target_date,
+      year_month: h3Fc.year_month,
+      x: Math.round(xForecastScale(h3Fc.horizon_months) * 10) / 10,
+      isForecast: true,
+    });
+  }
+
+  const obsPoints = recent24.map((pt) => {
+    const isObserved = pt.is_observed !== false && typeof pt.price === 'number' && Number.isFinite(pt.price);
+    return {
+      date: pt.date,
+      year_month: pt.year_month,
+      x: Math.round(xHistScale(parseDate(pt.date)) * 10) / 10,
+      y: isObserved ? Math.round(yScale(pt.price as number) * 10) / 10 : null,
+      price: isObserved ? (pt.price as number) : null,
+      isObserved,
+    };
+  });
+
+  const forecastPoints = forecasts.map((f) => ({
+    horizon: f.horizon_months,
+    date: f.target_date,
+    year_month: f.year_month,
+    x: Math.round(xForecastScale(f.horizon_months) * 10) / 10,
+    y: Math.round(yScale(f.point_forecast) * 10) / 10,
+    yLow80: Math.round(yScale(f.low_80) * 10) / 10,
+    yHigh80: Math.round(yScale(f.high_80) * 10) / 10,
+    yLow90: Math.round(yScale(f.low_90) * 10) / 10,
+    yHigh90: Math.round(yScale(f.high_90) * 10) / 10,
+    price: f.point_forecast,
+    low80: f.low_80,
+    high80: f.high_80,
+    low90: f.low_90,
+    high90: f.high_90,
+  }));
+
+  return {
+    width,
+    height,
+    margin,
+    asOfX: Math.round(asOfX * 10) / 10,
+    forecastEndX: Math.round(forecastEndX * 10) / 10,
+    historyPath,
+    forecastPath: fcLineGen(bridgePoints) ?? '',
+    band80Path: area80Gen(bridgePoints) ?? '',
+    band90Path: area90Gen(bridgePoints) ?? '',
+    yTicks,
+    xTicks,
+    obsPoints,
+    lastObsPoint: {
+      date: lastObs.date,
+      year_month: lastObs.year_month,
+      x: Math.round(xHistScale(parseDate(lastObs.date)) * 10) / 10,
+      y: Math.round(yScale(lastObs.price) * 10) / 10,
+      price: lastObs.price,
+    },
+    forecastPoints,
+    unobservedCount: recent24.length - observed24.length,
   };
 }

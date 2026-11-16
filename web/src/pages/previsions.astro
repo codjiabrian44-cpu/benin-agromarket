@@ -1,0 +1,19 @@
+---
+import ForecastPage from '../components/ForecastPage.astro';
+import { getDictionary, getLocalizedRoutes } from '../i18n';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const locale = 'fr';
+const dict = getDictionary(locale);
+const enRoutes = getLocalizedRoutes('en', import.meta.env.BASE_URL);
+---
+
+<BaseLayout
+  locale={locale}
+  title={dict.meta.forecastTitle}
+  description={dict.meta.forecastDescription}
+  currentNav="forecast"
+  switchLangHref={enRoutes.forecast}
+>
+  <ForecastPage locale={locale} />
+</BaseLayout>

@@ -1,0 +1,911 @@
+---
+import {
+  formatDecimal,
+  formatInt,
+  formatModelName,
+  formatSignedPct,
+  formatYearMonth,
+  getDictionary,
+  getLocalizedRoutes,
+  type Locale,
+  type ProductSlug,
+} from '../i18n';
+import { buildForecastChartGeometry } from '../lib/charts';
+import { ensureFull93MonthHistory, getValidatedProductData } from '../lib/data';
+import { groupMarketsByDepartment, resolveMarketSeries } from '../lib/marketClient';
+
+export interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const dict = getDictionary(locale);
+const baseUrl = import.meta.env.BASE_URL;
+const cleanBase = baseUrl === '/' ? '' : baseUrl.replace(/\/$/, '');
+const routes = getLocalizedRoutes(locale, baseUrl);
+const productOrder: ProductSlug[] = ['maize_white', 'tomatoes', 'yam_white'];
+
+// Build-time default state: maize_white + Dantokpa + horizon 3
+const defaultSlug: ProductSlug = 'maize_white';
+const defaultPayload = getValidatedProductData(defaultSlug);
+const defaultMarket = resolveMarketSeries(defaultPayload.series, 'Dantokpa');
+const deptGroups = groupMarketsByDepartment(defaultPayload.series);
+const defaultHistory93 = ensureFull93MonthHistory(
+  defaultMarket.history_calendar_2019_2026 ?? defaultMarket.history
+);
+const defaultChart = buildForecastChartGeometry(defaultHistory93, defaultMarket.forecasts, 860, 340);
+
+const defaultHorizon: 1 | 2 | 3 = 3;
+const hKey = `h${defaultHorizon}` as 'h1' | 'h2' | 'h3';
+const defaultFc = defaultMarket.forecasts.find((f) => f.horizon_months === defaultHorizon)!;
+const defaultRel = defaultMarket.reliability_by_horizon[hKey];
+const defaultMarketErr = defaultMarket.backtest_accuracy.by_horizon_test[hKey];
+const defaultRelStatus = defaultRel.status as keyof typeof dict.reliability;
+
+const horizonTitles: Record<1 | 2 | 3, string> = {
+  1: dict.forecastPage.horizon1Title,
+  2: dict.forecastPage.horizon2Title,
+  3: dict.forecastPage.horizon3Title,
+};
+
+const clientConfig = {
+  locale,
+  baseUrl: cleanBase,
+  explorerRoute: routes.explorer,
+  methodRoute: routes.method,
+  months: dict.months,
+  monthsShort: dict.monthsShort,
+  products: dict.products,
+  models: dict.models,
+  reliability: dict.reliability,
+  units: dict.units,
+  i18n: dict.forecastPage,
+};
+---
+
+<div
+  id="forecast-root"
+  data-active-product={defaultSlug}
+  data-config={JSON.stringify(clientConfig)}
+>
+  <section class="subpage-hero">
+    <div class="container">
+      <p class="subpage-kicker">{dict.forecastPage.kicker}</p>
+      <h1 class="subpage-title">{dict.forecastPage.title}</h1>
+      <p class="subpage-subtitle">{dict.forecastPage.subtitle}</p>
+    </div>
+  </section>
+
+  <!-- Product Chips + Searchable Market Picker -->
+  <section class="controls-band" aria-label={dict.forecastPage.productLabel}>
+    <div class="container">
+      <div class="controls-grid">
+        <div>
+          <span class="control-group-label" id="fc-product-label">
+            {dict.forecastPage.productLabel}
+          </span>
+          <div class="chip-group" role="group" aria-labelledby="fc-product-label">
+            {
+              productOrder.map((slug) => (
+                <button
+                  type="button"
+                  class="product-chip"
+                  data-product={slug}
+                  data-role="fc-product"
+                  aria-pressed={slug === defaultSlug ? 'true' : 'false'}
+                >
+                  <span class="chip-swatch" aria-hidden="true" />
+                  <span>{dict.products[slug].chip}</span>
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="market-picker" id="fc-market-picker">
+          <span class="control-group-label" id="fc-market-label">
+            {dict.forecastPage.marketLabel}
+          </span>
+          <button
+            type="button"
+            class="market-picker-trigger"
+            id="fc-picker-trigger"
+            aria-expanded="false"
+            aria-controls="fc-picker-panel"
+            aria-labelledby="fc-market-label fc-picker-trigger-name"
+          >
+            <span>
+              <span id="fc-picker-trigger-name">{defaultMarket.market}</span>{' '}
+              <span class="market-picker-trigger-meta" id="fc-picker-trigger-dept">
+                ({defaultMarket.admin1})
+              </span>
+            </span>
+            <span aria-hidden="true">▾</span>
+          </button>
+
+          <div class="market-picker-panel" id="fc-picker-panel" hidden>
+            <div class="market-picker-search-wrap">
+              <label for="fc-picker-search" class="sr-only">
+                {dict.explorer.marketSearchPlaceholder}
+              </label>
+              <input
+                type="search"
+                id="fc-picker-search"
+                class="market-picker-search"
+                placeholder={dict.explorer.marketSearchPlaceholder}
+                autocomplete="off"
+              />
+            </div>
+            <div
+              class="market-picker-list"
+              id="fc-picker-list"
+              role="listbox"
+              aria-label={dict.forecastPage.marketLabel}
+            >
+              {
+                deptGroups.map((grp) => (
+                  <div class="market-dept-group" data-dept={grp.department}>
+                    <div class="market-dept-title">{grp.department}</div>
+                    {grp.markets.map((m) => (
+                      <button
+                        type="button"
+                        class="market-option"
+                        role="option"
+                        data-market={m.market}
+                        aria-selected={m.market === defaultMarket.market ? 'true' : 'false'}
+                      >
+                        <span>{m.market}</span>
+                        <span class="market-option-price">
+                          {formatInt(m.last_observed_price, locale)} {dict.units.xofPerKg}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                ))
+              }
+            </div>
+            <p class="market-picker-empty" id="fc-picker-empty" hidden>
+              {dict.explorer.marketSearchEmpty}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Forecast Chart + How To Read + Interactive Horizon Cards + Reliability -->
+  <section class="section-block">
+    <div class="container">
+      <div class="editorial-chart-card">
+        <div class="chart-header-row">
+          <div>
+            <h2 class="chart-heading" id="fc-chart-title">
+              {dict.forecastPage.chartHeadingPrefix} {defaultMarket.market} ({defaultMarket.admin1}) ·{' '}
+              {dict.products[defaultSlug].full}
+            </h2>
+            <p class="chart-unit-note">{dict.forecastPage.chartSubtitle}</p>
+          </div>
+          <p class="chart-unit-note">
+            {dict.home.hero.asOfLabel} : {dict.home.hero.asOfDateFormatted}
+          </p>
+        </div>
+
+        <svg
+          id="fc-chart-svg"
+          class="chart-svg-focusable"
+          viewBox={`0 0 ${defaultChart.width} ${defaultChart.height}`}
+          role="img"
+          aria-label={`${defaultMarket.market} · ${dict.products[defaultSlug].full}`}
+        >
+          <g id="fc-grid-y">
+            {
+              defaultChart.yTicks.map((t) => (
+                <g>
+                  <line
+                    x1={defaultChart.margin.left}
+                    x2={defaultChart.width - defaultChart.margin.right}
+                    y1={t.y}
+                    y2={t.y}
+                    stroke="#D9CDB8"
+                    stroke-width="1"
+                  />
+                  <text
+                    x={defaultChart.margin.left - 8}
+                    y={t.y + 4}
+                    text-anchor="end"
+                    fill="#6F665A"
+                    font-size="11.5"
+                    class="tabular-nums"
+                  >
+                    {formatInt(t.value, locale)}
+                  </text>
+                </g>
+              ))
+            }
+          </g>
+
+          <!-- Forecast zone backdrop -->
+          <rect
+            id="fc-zone-bg"
+            x={defaultChart.asOfX}
+            y={defaultChart.margin.top}
+            width={defaultChart.forecastEndX - defaultChart.asOfX}
+            height={defaultChart.height - defaultChart.margin.top - defaultChart.margin.bottom}
+            fill="#EDE3D0"
+            fill-opacity="0.45"
+          />
+
+          <line
+            id="fc-asof-line"
+            x1={defaultChart.asOfX}
+            x2={defaultChart.asOfX}
+            y1={defaultChart.margin.top}
+            y2={defaultChart.height - defaultChart.margin.bottom}
+            stroke="#6F665A"
+            stroke-width="1.25"
+            stroke-dasharray="4 3"
+          />
+
+          <g id="fc-axis-x">
+            {
+              defaultChart.xTicks.map((t) => (
+                <g>
+                  <line
+                    x1={t.x}
+                    x2={t.x}
+                    y1={defaultChart.height - defaultChart.margin.bottom}
+                    y2={defaultChart.height - defaultChart.margin.bottom + 5}
+                    stroke="#6F665A"
+                    stroke-width="1"
+                  />
+                  <text
+                    x={t.x}
+                    y={defaultChart.height - defaultChart.margin.bottom + 19}
+                    text-anchor={t.isForecast ? 'end' : 'middle'}
+                    fill={t.isForecast ? '#1E1B16' : '#6F665A'}
+                    font-weight={t.isForecast ? '700' : '400'}
+                    font-size="11.5"
+                    class="tabular-nums"
+                  >
+                    {formatYearMonth(t.date, dict)}
+                  </text>
+                </g>
+              ))
+            }
+          </g>
+
+          <!-- 90% and 80% prediction bands -->
+          <path
+            id="fc-band-90"
+            d={defaultChart.band90Path}
+            fill="var(--active-product-stroke)"
+            fill-opacity="0.14"
+          />
+          <path
+            id="fc-band-80"
+            d={defaultChart.band80Path}
+            fill="var(--active-product-stroke)"
+            fill-opacity="0.28"
+          />
+
+          <!-- 24-month observed history (breaks at unobserved months) -->
+          <path
+            id="fc-history-path"
+            d={defaultChart.historyPath}
+            fill="none"
+            stroke="var(--active-product-stroke)"
+            stroke-width="2.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+
+          <!-- 3-month dashed forecast -->
+          <path
+            id="fc-forecast-path"
+            d={defaultChart.forecastPath}
+            fill="none"
+            stroke="var(--active-product-stroke)"
+            stroke-width="2.8"
+            stroke-dasharray="6 5"
+            stroke-linecap="round"
+          />
+
+          <!-- Last observed dot & 3 forecast dots -->
+          <circle
+            id="fc-last-obs-dot"
+            cx={defaultChart.lastObsPoint.x}
+            cy={defaultChart.lastObsPoint.y}
+            r="4.5"
+            fill="#1E1B16"
+            stroke="#FFFDF9"
+            stroke-width="1.5"
+          />
+          <g id="fc-forecast-dots">
+            {
+              defaultChart.forecastPoints.map((fp) => (
+                <circle
+                  cx={fp.x}
+                  cy={fp.y}
+                  r={fp.horizon === defaultHorizon ? '6' : '4.5'}
+                  fill={fp.horizon === defaultHorizon ? 'var(--active-product-stroke)' : '#FFFDF9'}
+                  stroke="var(--active-product-stroke)"
+                  stroke-width="2.2"
+                />
+              ))
+            }
+          </g>
+        </svg>
+
+        <div class="chart-legend-row">
+          <span class="legend-item">
+            <span class="legend-line-solid" aria-hidden="true"></span>
+            <span>{dict.home.hero.legendObserved}</span>
+          </span>
+          <span class="legend-item">
+            <span class="legend-line-forecast" aria-hidden="true"></span>
+            <span>{dict.home.hero.legendForecast}</span>
+          </span>
+          <span class="legend-item">
+            <span class="legend-band-80" aria-hidden="true"></span>
+            <span>{dict.home.hero.legendBand80}</span>
+          </span>
+          <span class="legend-item">
+            <span class="legend-band-90" aria-hidden="true"></span>
+            <span>{dict.home.hero.legendBand90}</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- How to read this chart (3 short lines) -->
+      <div class="how-to-read-box">
+        <h2>{dict.forecastPage.howToReadHeading}</h2>
+        <ul class="how-to-read-list">
+          <li>{dict.forecastPage.howToReadLine1}</li>
+          <li>{dict.forecastPage.howToReadLine2}</li>
+          <li>{dict.forecastPage.howToReadLine3}</li>
+        </ul>
+      </div>
+
+      <!-- Interactive Horizon Cards -->
+      <div
+        class="horizon-cards-grid"
+        role="group"
+        aria-label={dict.forecastPage.horizonSelectorHeading}
+      >
+        {
+          defaultMarket.forecasts.map((fc) => {
+            const h = fc.horizon_months as 1 | 2 | 3;
+            return (
+              <button
+                type="button"
+                class="horizon-card-btn"
+                data-horizon={h}
+                aria-pressed={h === defaultHorizon ? 'true' : 'false'}
+              >
+                <span class="horizon-card-title">{horizonTitles[h]}</span>
+                <span class="horizon-card-price" data-hc-price={h}>
+                  {formatDecimal(fc.point_forecast, locale, 1)} {dict.units.xofPerKg}
+                </span>
+                <span class="horizon-card-meta" data-hc-change={h}>
+                  {dict.forecastPage.vsLastObservedLabel} :{' '}
+                  {formatSignedPct(fc.change_vs_last_pct, locale, 1)}
+                </span>
+                <span class="horizon-card-meta" data-hc-band80={h}>
+                  {dict.forecastPage.interval80Label} : [{formatInt(fc.low_80, locale)} –{' '}
+                  {formatInt(fc.high_80, locale)}] {dict.units.xofPerKg}
+                </span>
+              </button>
+            );
+          })
+        }
+      </div>
+
+      <!-- Reliability & Method Block for Selected Horizon -->
+      <div class="reliability-panel" aria-live="polite">
+        <div
+          style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); margin-bottom: var(--space-3);"
+        >
+          <h2 style="font-size: var(--text-lg);" id="fc-rel-heading">
+            {dict.forecastPage.reliabilityHeading} · {horizonTitles[defaultHorizon]}
+          </h2>
+          <span
+            class="reliability-badge"
+            id="fc-rel-badge"
+            data-status={defaultRel.status}
+          >
+            {dict.reliability[defaultRelStatus] ?? defaultRel.status}
+          </span>
+        </div>
+
+        <p id="fc-rel-note" style="margin: 0;">
+          {locale === 'fr' ? defaultFc.reliability_note_fr : defaultFc.reliability_note_en}
+        </p>
+
+        <div class="reliability-metrics-grid">
+          <div>
+            <span class="kpi-ledger-label">{dict.forecastPage.modelUsedLabel}</span>
+            <strong class="kpi-ledger-value" id="fc-rel-model">
+              {formatModelName(defaultFc.model_used, dict)}
+            </strong>
+          </div>
+          <div>
+            <span class="kpi-ledger-label">{dict.forecastPage.marketTestErrorLabel}</span>
+            <strong class="kpi-ledger-value" id="fc-rel-market-err">
+              {formatDecimal(defaultMarketErr.mae, locale, 1)} {dict.units.xofPerKg} (
+              {formatDecimal(defaultMarketErr.mape, locale, 1)} %)
+            </strong>
+            <span class="kpi-ledger-sub" id="fc-rel-market-err-scope">
+              {dict.forecastPage.marketTestErrorScopeTemplate.replace('{h}', String(defaultHorizon))}
+            </span>
+          </div>
+          <div>
+            <span class="kpi-ledger-label">{dict.forecastPage.productSkillLabel}</span>
+            <strong class="kpi-ledger-value" id="fc-rel-skill">
+              {formatSignedPct(defaultRel.skill_vs_best_baseline_test_pct, locale, 1)}
+            </strong>
+            <span class="kpi-ledger-sub" id="fc-rel-skill-scope">
+              {dict.forecastPage.productSkillScopeTemplate.replace(
+                '{n}',
+                String(defaultPayload.product.tier1_markets_count)
+              )}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clear Warning on Statistical Limits & Tomatoes -->
+      <div class="forecast-warning-box" role="note">
+        <h2>{dict.forecastPage.warningHeading}</h2>
+        <p>{dict.forecastPage.warningGeneral}</p>
+        <p id="fc-tomato-warning">
+          <strong>{dict.forecastPage.warningTomato}</strong>
+        </p>
+      </div>
+
+      <!-- Accessible Data Table -->
+      <details class="data-drawer" id="fc-table-drawer">
+        <summary>
+          <span>{dict.forecastPage.tableToggle}</span>
+          <span aria-hidden="true">▾</span>
+        </summary>
+        <div class="table-scroll">
+          <table class="ledger-table">
+            <thead>
+              <tr>
+                <th scope="col">{dict.forecastPage.colDate}</th>
+                <th scope="col">{dict.forecastPage.colStatus}</th>
+                <th scope="col" class="num">{dict.forecastPage.colPrice}</th>
+                <th scope="col" class="num">{dict.forecastPage.colBand80}</th>
+                <th scope="col" class="num">{dict.forecastPage.colBand90}</th>
+              </tr>
+            </thead>
+            <tbody id="fc-table-body">
+              {
+                defaultMarket.forecasts
+                  .slice()
+                  .reverse()
+                  .map((f) => (
+                    <tr>
+                      <td>{formatYearMonth(f.target_date, dict)}</td>
+                      <td>{dict.forecastPage.statusForecast}</td>
+                      <td class="num">{formatDecimal(f.point_forecast, locale, 1)}</td>
+                      <td class="num">
+                        [{formatInt(f.low_80, locale)} – {formatInt(f.high_80, locale)}]
+                      </td>
+                      <td class="num">
+                        [{formatInt(f.low_90, locale)} – {formatInt(f.high_90, locale)}]
+                      </td>
+                    </tr>
+                  ))
+              }
+              {
+                defaultHistory93
+                  .slice(-24)
+                  .reverse()
+                  .map((pt) => (
+                    <tr>
+                      <td>{formatYearMonth(pt.date, dict)}</td>
+                      <td>
+                        {pt.is_observed !== false
+                          ? dict.forecastPage.statusObserved
+                          : dict.forecastPage.statusUnobserved}
+                      </td>
+                      <td class="num">
+                        {pt.price !== null ? formatDecimal(pt.price, locale, 1) : '—'}
+                      </td>
+                      <td class="num">—</td>
+                      <td class="num">—</td>
+                    </tr>
+                  ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <div class="btn-row">
+        <a
+          id="fc-explorer-cta"
+          href={`${routes.explorer}?${locale === 'fr' ? 'produit=mais-blanc&marche=' : 'product=white-maize&market='}${encodeURIComponent(defaultMarket.market)}`}
+          class="btn btn-primary"
+        >
+          {dict.forecastPage.exploreHistoryCta}
+        </a>
+        <a href={routes.method} class="btn btn-secondary">
+          {dict.forecastPage.readMethodCta}
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  import {
+    formatDecimal,
+    formatInt,
+    formatModelName,
+    formatSignedPct,
+    formatYearMonth,
+    type ProductSlug,
+  } from '../i18n';
+  import { buildForecastChartGeometry } from '../lib/charts';
+  import { ensureFull93MonthHistory, type ProductPayload } from '../lib/data';
+  import {
+    canonicalizeForecastUrl,
+    groupMarketsByDepartment,
+    loadProductPayload,
+    parseUrlState,
+    resolveMarketSeries,
+  } from '../lib/marketClient';
+
+  const root = document.getElementById('forecast-root');
+  if (root) {
+    const cfg = JSON.parse(root.getAttribute('data-config') || '{}');
+    const locale = cfg.locale as 'fr' | 'en';
+    const baseUrl = cfg.baseUrl as string;
+    const dictLike = {
+      months: cfg.months,
+      monthsShort: cfg.monthsShort,
+      models: cfg.models,
+    } as any;
+
+    const urlState = parseUrlState();
+    const state: {
+      product: ProductSlug;
+      market: string;
+      horizon: 1 | 2 | 3;
+    } = {
+      product: urlState.product,
+      market: urlState.market || 'Dantokpa',
+      horizon: urlState.horizon,
+    };
+
+    let currentPayload: ProductPayload | null = null;
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+
+    const productBtns = root.querySelectorAll<HTMLButtonElement>('[data-role="fc-product"]');
+    const horizonBtns = root.querySelectorAll<HTMLButtonElement>('[data-horizon]');
+    const pickerTrigger = document.getElementById('fc-picker-trigger') as HTMLButtonElement;
+    const pickerPanel = document.getElementById('fc-picker-panel') as HTMLDivElement;
+    const pickerSearch = document.getElementById('fc-picker-search') as HTMLInputElement;
+    const pickerList = document.getElementById('fc-picker-list') as HTMLDivElement;
+    const pickerEmpty = document.getElementById('fc-picker-empty') as HTMLParagraphElement;
+    const triggerName = document.getElementById('fc-picker-trigger-name')!;
+    const triggerDept = document.getElementById('fc-picker-trigger-dept')!;
+
+    const horizonTitleMap: Record<1 | 2 | 3, string> = {
+      1: cfg.i18n.horizon1Title,
+      2: cfg.i18n.horizon2Title,
+      3: cfg.i18n.horizon3Title,
+    };
+
+    function syncControlButtons() {
+      root?.setAttribute('data-active-product', state.product);
+      productBtns.forEach((btn) => {
+        btn.setAttribute('aria-pressed', btn.dataset.product === state.product ? 'true' : 'false');
+      });
+      horizonBtns.forEach((btn) => {
+        btn.setAttribute('aria-pressed', Number(btn.dataset.horizon) === state.horizon ? 'true' : 'false');
+      });
+    }
+
+    function renderMarketDropdown(payload: ProductPayload, selectedMarketName: string) {
+      const groups = groupMarketsByDepartment(payload.series);
+      pickerList.innerHTML = '';
+      for (const grp of groups) {
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'market-dept-group';
+        groupDiv.setAttribute('data-dept', grp.department);
+
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'market-dept-title';
+        titleDiv.textContent = grp.department;
+        groupDiv.appendChild(titleDiv);
+
+        for (const m of grp.markets) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'market-option';
+          btn.setAttribute('role', 'option');
+          btn.setAttribute('data-market', m.market);
+          btn.setAttribute('aria-selected', m.market === selectedMarketName ? 'true' : 'false');
+
+          const nameSpan = document.createElement('span');
+          nameSpan.textContent = m.market;
+          const priceSpan = document.createElement('span');
+          priceSpan.className = 'market-option-price';
+          priceSpan.textContent = `${formatInt(m.last_observed_price, locale)} ${cfg.units.xofPerKg}`;
+
+          btn.appendChild(nameSpan);
+          btn.appendChild(priceSpan);
+          btn.addEventListener('click', () => {
+            state.market = m.market;
+            closePicker();
+            renderAll();
+          });
+          groupDiv.appendChild(btn);
+        }
+        pickerList.appendChild(groupDiv);
+      }
+      filterMarketDropdown(pickerSearch.value);
+    }
+
+    function filterMarketDropdown(query: string) {
+      const q = query.trim().toLowerCase();
+      let visibleCount = 0;
+      pickerList.querySelectorAll<HTMLElement>('.market-dept-group').forEach((grp) => {
+        const dept = (grp.getAttribute('data-dept') || '').toLowerCase();
+        const deptMatch = q.length > 0 && dept.includes(q);
+        let groupVisible = 0;
+        grp.querySelectorAll<HTMLButtonElement>('.market-option').forEach((opt) => {
+          const mName = (opt.getAttribute('data-market') || '').toLowerCase();
+          const show = !q || deptMatch || mName.includes(q);
+          opt.hidden = !show;
+          if (show) {
+            groupVisible++;
+            visibleCount++;
+          }
+        });
+        grp.hidden = groupVisible === 0;
+      });
+      pickerEmpty.hidden = visibleCount > 0;
+    }
+
+    function openPicker() {
+      pickerPanel.hidden = false;
+      pickerTrigger.setAttribute('aria-expanded', 'true');
+      pickerSearch.focus();
+    }
+
+    function closePicker(returnFocus = false) {
+      pickerPanel.hidden = true;
+      pickerTrigger.setAttribute('aria-expanded', 'false');
+      if (returnFocus) pickerTrigger.focus();
+    }
+
+    function renderAll() {
+      if (!currentPayload) return;
+      const mkt = resolveMarketSeries(currentPayload.series, state.market);
+      state.market = mkt.market;
+
+      syncControlButtons();
+      canonicalizeForecastUrl(locale, state);
+
+      triggerName.textContent = mkt.market;
+      triggerDept.textContent = `(${mkt.admin1})`;
+      pickerList.querySelectorAll<HTMLButtonElement>('.market-option').forEach((opt) => {
+        opt.setAttribute('aria-selected', opt.dataset.market === mkt.market ? 'true' : 'false');
+      });
+
+      const hist93 = ensureFull93MonthHistory(mkt.history_calendar_2019_2026 ?? mkt.history);
+      const geom = buildForecastChartGeometry(hist93, mkt.forecasts, 860, 340);
+
+      document.getElementById('fc-chart-title')!.textContent =
+        `${cfg.i18n.chartHeadingPrefix} ${mkt.market} (${mkt.admin1}) · ${cfg.products[state.product].full}`;
+
+      // Y grid
+      const gridYEl = document.getElementById('fc-grid-y')!;
+      gridYEl.innerHTML = '';
+      for (const t of geom.yTicks) {
+        const g = document.createElementNS(SVG_NS, 'g');
+        const ln = document.createElementNS(SVG_NS, 'line');
+        ln.setAttribute('x1', String(geom.margin.left));
+        ln.setAttribute('x2', String(geom.width - geom.margin.right));
+        ln.setAttribute('y1', String(t.y));
+        ln.setAttribute('y2', String(t.y));
+        ln.setAttribute('stroke', '#D9CDB8');
+        ln.setAttribute('stroke-width', '1');
+        const txt = document.createElementNS(SVG_NS, 'text');
+        txt.setAttribute('x', String(geom.margin.left - 8));
+        txt.setAttribute('y', String(t.y + 4));
+        txt.setAttribute('text-anchor', 'end');
+        txt.setAttribute('fill', '#6F665A');
+        txt.setAttribute('font-size', '11.5');
+        txt.setAttribute('class', 'tabular-nums');
+        txt.textContent = formatInt(t.value, locale);
+        g.appendChild(ln);
+        g.appendChild(txt);
+        gridYEl.appendChild(g);
+      }
+
+      // X ticks
+      const axisXEl = document.getElementById('fc-axis-x')!;
+      axisXEl.innerHTML = '';
+      for (const t of geom.xTicks) {
+        const g = document.createElementNS(SVG_NS, 'g');
+        const ln = document.createElementNS(SVG_NS, 'line');
+        ln.setAttribute('x1', String(t.x));
+        ln.setAttribute('x2', String(t.x));
+        ln.setAttribute('y1', String(geom.height - geom.margin.bottom));
+        ln.setAttribute('y2', String(geom.height - geom.margin.bottom + 5));
+        ln.setAttribute('stroke', '#6F665A');
+        ln.setAttribute('stroke-width', '1');
+        const txt = document.createElementNS(SVG_NS, 'text');
+        txt.setAttribute('x', String(t.x));
+        txt.setAttribute('y', String(geom.height - geom.margin.bottom + 19));
+        txt.setAttribute('text-anchor', t.isForecast ? 'end' : 'middle');
+        txt.setAttribute('fill', t.isForecast ? '#1E1B16' : '#6F665A');
+        txt.setAttribute('font-weight', t.isForecast ? '700' : '400');
+        txt.setAttribute('font-size', '11.5');
+        txt.setAttribute('class', 'tabular-nums');
+        txt.textContent = formatYearMonth(t.date, dictLike);
+        g.appendChild(ln);
+        g.appendChild(txt);
+        axisXEl.appendChild(g);
+      }
+
+      document.getElementById('fc-band-90')!.setAttribute('d', geom.band90Path);
+      document.getElementById('fc-band-80')!.setAttribute('d', geom.band80Path);
+      document.getElementById('fc-history-path')!.setAttribute('d', geom.historyPath);
+      document.getElementById('fc-forecast-path')!.setAttribute('d', geom.forecastPath);
+      document.getElementById('fc-last-obs-dot')!.setAttribute('cx', String(geom.lastObsPoint.x));
+      document.getElementById('fc-last-obs-dot')!.setAttribute('cy', String(geom.lastObsPoint.y));
+
+      const dotsEl = document.getElementById('fc-forecast-dots')!;
+      dotsEl.innerHTML = '';
+      for (const fp of geom.forecastPoints) {
+        const c = document.createElementNS(SVG_NS, 'circle');
+        c.setAttribute('cx', String(fp.x));
+        c.setAttribute('cy', String(fp.y));
+        c.setAttribute('r', fp.horizon === state.horizon ? '6' : '4.5');
+        c.setAttribute(
+          'fill',
+          fp.horizon === state.horizon ? 'var(--active-product-stroke)' : '#FFFDF9'
+        );
+        c.setAttribute('stroke', 'var(--active-product-stroke)');
+        c.setAttribute('stroke-width', '2.2');
+        dotsEl.appendChild(c);
+      }
+
+      // Horizon Cards
+      for (const fc of mkt.forecasts) {
+        const h = fc.horizon_months as 1 | 2 | 3;
+        const pEl = root?.querySelector(`[data-hc-price="${h}"]`);
+        const cEl = root?.querySelector(`[data-hc-change="${h}"]`);
+        const bEl = root?.querySelector(`[data-hc-band80="${h}"]`);
+        if (pEl) pEl.textContent = `${formatDecimal(fc.point_forecast, locale, 1)} ${cfg.units.xofPerKg}`;
+        if (cEl) {
+          cEl.textContent = `${cfg.i18n.vsLastObservedLabel} : ${formatSignedPct(fc.change_vs_last_pct, locale, 1)}`;
+        }
+        if (bEl) {
+          bEl.textContent = `${cfg.i18n.interval80Label} : [${formatInt(fc.low_80, locale)} – ${formatInt(fc.high_80, locale)}] ${cfg.units.xofPerKg}`;
+        }
+      }
+
+      // Reliability Panel for selected horizon
+      const hKey = `h${state.horizon}` as 'h1' | 'h2' | 'h3';
+      const fcSel = mkt.forecasts.find((f) => f.horizon_months === state.horizon) ?? mkt.forecasts[2];
+      const relSel = mkt.reliability_by_horizon[hKey];
+      const errSel = mkt.backtest_accuracy.by_horizon_test[hKey];
+
+      document.getElementById('fc-rel-heading')!.textContent =
+        `${cfg.i18n.reliabilityHeading} · ${horizonTitleMap[state.horizon]}`;
+      const badgeEl = document.getElementById('fc-rel-badge')!;
+      badgeEl.setAttribute('data-status', relSel.status);
+      badgeEl.textContent = cfg.reliability[relSel.status] ?? relSel.status;
+
+      document.getElementById('fc-rel-note')!.textContent =
+        locale === 'fr' ? fcSel.reliability_note_fr : fcSel.reliability_note_en;
+      document.getElementById('fc-rel-model')!.textContent = formatModelName(
+        fcSel.model_used,
+        dictLike
+      );
+      document.getElementById('fc-rel-market-err')!.textContent =
+        `${formatDecimal(errSel.mae, locale, 1)} ${cfg.units.xofPerKg} (${formatDecimal(errSel.mape, locale, 1)} %)`;
+      document.getElementById('fc-rel-market-err-scope')!.textContent =
+        cfg.i18n.marketTestErrorScopeTemplate.replace('{h}', String(state.horizon));
+      document.getElementById('fc-rel-skill')!.textContent = formatSignedPct(
+        relSel.skill_vs_best_baseline_test_pct,
+        locale,
+        1
+      );
+      document.getElementById('fc-rel-skill-scope')!.textContent =
+        cfg.i18n.productSkillScopeTemplate.replace(
+          '{n}',
+          String(currentPayload.product.tier1_markets_count)
+        );
+
+      // Data Table
+      const tbody = document.getElementById('fc-table-body')!;
+      tbody.innerHTML = '';
+      for (const f of [...mkt.forecasts].reverse()) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${formatYearMonth(f.target_date, dictLike)}</td><td>${cfg.i18n.statusForecast}</td><td class="num">${formatDecimal(f.point_forecast, locale, 1)}</td><td class="num">[${formatInt(f.low_80, locale)} – ${formatInt(f.high_80, locale)}]</td><td class="num">[${formatInt(f.low_90, locale)} – ${formatInt(f.high_90, locale)}]</td>`;
+        tbody.appendChild(tr);
+      }
+      for (const pt of hist93.slice(-24).reverse()) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${formatYearMonth(pt.date, dictLike)}</td><td>${pt.is_observed !== false ? cfg.i18n.statusObserved : cfg.i18n.statusUnobserved}</td><td class="num">${pt.price !== null ? formatDecimal(pt.price, locale, 1) : '—'}</td><td class="num">—</td><td class="num">—</td>`;
+        tbody.appendChild(tr);
+      }
+
+      const expCta = document.getElementById('fc-explorer-cta') as HTMLAnchorElement;
+      const prodParam =
+        locale === 'fr'
+          ? state.product === 'maize_white'
+            ? 'mais-blanc'
+            : state.product === 'tomatoes'
+              ? 'tomate'
+              : 'igname-blanche'
+          : state.product === 'maize_white'
+            ? 'white-maize'
+            : state.product === 'tomatoes'
+              ? 'tomato'
+              : 'white-yam';
+      expCta.href = `${cfg.explorerRoute}?${locale === 'fr' ? 'produit' : 'product'}=${prodParam}&${locale === 'fr' ? 'marche' : 'market'}=${encodeURIComponent(mkt.market)}`;
+    }
+
+    async function switchProduct(slug: ProductSlug) {
+      state.product = slug;
+      syncControlButtons();
+      try {
+        currentPayload = await loadProductPayload(baseUrl, slug);
+        const resolved = resolveMarketSeries(currentPayload.series, state.market);
+        state.market = resolved.market;
+        renderMarketDropdown(currentPayload, resolved.market);
+        renderAll();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    productBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const slug = btn.dataset.product as ProductSlug;
+        if (slug && slug !== state.product) switchProduct(slug);
+      });
+    });
+
+    horizonBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const h = Number(btn.dataset.horizon);
+        state.horizon = h === 1 ? 1 : h === 2 ? 2 : 3;
+        renderAll();
+      });
+    });
+
+    pickerTrigger.addEventListener('click', () => {
+      if (pickerPanel.hidden) openPicker();
+      else closePicker();
+    });
+
+    pickerSearch.addEventListener('input', () => {
+      filterMarketDropdown(pickerSearch.value);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !pickerPanel.hidden) {
+        e.preventDefault();
+        closePicker(true);
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!pickerPanel.hidden && !document.getElementById('fc-market-picker')?.contains(e.target as Node)) {
+        closePicker();
+      }
+    });
+
+    switchProduct(state.product);
+  }
+</script>
