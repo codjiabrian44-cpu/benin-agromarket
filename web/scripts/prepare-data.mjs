@@ -87,7 +87,11 @@ function resolveReliabilityStatus(relObj, accObj) {
   return status;
 }
 
-function buildPlainReliabilityNotes(relObj, accObj, horizon) {
+function fmtFr(val, digits = 1) {
+  return Number(val).toFixed(digits).replace('.', ',');
+}
+
+function buildPlainReliabilityNotes(relObj, accObj, horizon, marketsCount) {
   const status = resolveReliabilityStatus(relObj, accObj);
   const champId = accObj.model_used;
   const baseId = relObj.best_validation_baseline || accObj.best_baseline_val;
@@ -107,46 +111,48 @@ function buildPlainReliabilityNotes(relObj, accObj, horizon) {
   const bestTestEn = MODEL_LABELS_EN[bestTestId] || bestTestId;
   const hFr = horizon === 1 ? '1 mois' : `${horizon} mois`;
   const hEn = horizon === 1 ? '1 month' : `${horizon} months`;
+  const scopeFr = `Sur l'ensemble des ${marketsCount} marchés suivis, à ${hFr}`;
+  const scopeEn = `Across all ${marketsCount} well-tracked markets, at ${hEn}`;
 
   if (status === 'baseline_retained_intervals_too_narrow') {
     return {
-      note_fr: `Méthode retenue : ${champFr} (erreur moyenne de ${mae.toFixed(1)} XOF/kg en test, soit ${mape.toFixed(1)} %), mais la fourchette à ${nominal80} % a contenu ${cov80.toFixed(1)} % des prix observés en test (cible : ${nominal80} %, fourchette un peu étroite lors des variations rapides).`,
-      note_en: `Selected method: ${champEn} (average test error of ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%), while the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices in testing (target: ${nominal80}%, slightly narrow during rapid price swings).`,
+      note_fr: `${scopeFr} : méthode retenue « ${champFr} » (erreur moyenne de ${fmtFr(mae)} XOF/kg en test, soit ${fmtFr(mape)} %), mais la fourchette à ${nominal80} % a contenu ${fmtFr(cov80)} % des prix observés (cible : ${nominal80} %, fourchette un peu étroite lors des variations rapides).`,
+      note_en: `${scopeEn}: selected method '${champEn}' (average test error of ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%), while the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices (target: ${nominal80}%, slightly narrow during rapid price swings).`,
     };
   }
   if (status === 'intervals_too_narrow') {
     return {
-      note_fr: `Méthode retenue : ${champFr} (erreur moyenne de ${mae.toFixed(1)} XOF/kg en test, soit ${mape.toFixed(1)} %), mais la fourchette à ${nominal80} % a contenu ${cov80.toFixed(1)} % des prix observés en test (cible : ${nominal80} %).`,
-      note_en: `Selected method: ${champEn} (average test error of ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%), while the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices in testing (target: ${nominal80}%).`,
+      note_fr: `${scopeFr} : méthode retenue « ${champFr} » (erreur moyenne de ${fmtFr(mae)} XOF/kg en test, soit ${fmtFr(mape)} %), mais la fourchette à ${nominal80} % a contenu ${fmtFr(cov80)} % des prix observés (cible : ${nominal80} %).`,
+      note_en: `${scopeEn}: selected method '${champEn}' (average test error of ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%), while the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices (target: ${nominal80}%).`,
     };
   }
   if (status === 'no_better_than_simple') {
     return {
-      note_fr: `Méthode retenue : ${champFr}, sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test sur l'ensemble des marchés suivis (${skill.toFixed(1)} %, erreur moyenne de ${mae.toFixed(1)} XOF/kg, soit ${mape.toFixed(1)} % ; devancée par « ${bestTestFr} » à ${bestTestMae.toFixed(1)} XOF/kg).`,
-      note_en: `Selected method: ${champEn}, chosen on the validation period, but no better than the simple method in testing across all well-tracked markets (${skill.toFixed(1)}%, average error ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%; trailed '${bestTestEn}' at ${bestTestMae.toFixed(1)} XOF/kg).`,
+      note_fr: `${scopeFr} : méthode retenue « ${champFr} », sélectionnée sur la période d'entraînement, mais pas meilleure que la méthode simple en test (${fmtFr(skill)} %, erreur moyenne de ${fmtFr(mae)} XOF/kg, soit ${fmtFr(mape)} % ; devancée par « ${bestTestFr} » à ${fmtFr(bestTestMae)} XOF/kg).`,
+      note_en: `${scopeEn}: selected method '${champEn}', chosen on the validation period, but no better than the simple method in testing (${skill.toFixed(1)}%, average error ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%; trailed '${bestTestEn}' at ${bestTestMae.toFixed(1)} XOF/kg).`,
     };
   }
   if (status === 'baseline_retained') {
     if (champId === 'Naive_LastValue') {
       return {
-        note_fr: `Méthode retenue : ${champFr}. À ${hFr}, aucune méthode statistique complexe ne fait mieux que le dernier prix connu (erreur moyenne en test : ${mae.toFixed(1)} XOF/kg, soit ${mape.toFixed(1)} % ; la fourchette à ${nominal80} % a contenu ${cov80.toFixed(1)} % des prix observés en test).`,
-        note_en: `Selected method: ${champEn}. At ${hEn}, no complex statistical model beats the last known price (average test error: ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%; the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices in testing).`,
+        note_fr: `${scopeFr} : méthode retenue « ${champFr} » — aucune méthode statistique complexe ne fait mieux que le dernier prix connu (erreur moyenne en test : ${fmtFr(mae)} XOF/kg, soit ${fmtFr(mape)} % ; la fourchette à ${nominal80} % a contenu ${fmtFr(cov80)} % des prix observés).`,
+        note_en: `${scopeEn}: selected method '${champEn}' — no complex statistical model beats the last known price (average test error: ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%; the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices).`,
       };
     }
     return {
-      note_fr: `Méthode retenue : ${champFr}, choisie car elle égale les modèles complexes (erreur moyenne en test : ${mae.toFixed(1)} XOF/kg, soit ${mape.toFixed(1)} % ; la fourchette à ${nominal80} % a contenu ${cov80.toFixed(1)} % des prix observés en test).`,
-      note_en: `Selected method: ${champEn}, retained because it matches complex models (average test error: ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%; the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices in testing).`,
+      note_fr: `${scopeFr} : méthode retenue « ${champFr} », choisie car elle égale les modèles complexes (erreur moyenne en test : ${fmtFr(mae)} XOF/kg, soit ${fmtFr(mape)} % ; la fourchette à ${nominal80} % a contenu ${fmtFr(cov80)} % des prix observés).`,
+      note_en: `${scopeEn}: selected method '${champEn}', retained because it matches complex models (average test error: ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%; the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices).`,
     };
   }
   if (skill >= 0) {
     return {
-      note_fr: `Méthode retenue : ${champFr} (erreur moyenne : ${mae.toFixed(1)} XOF/kg, soit ${mape.toFixed(1)} %, gain de +${skill.toFixed(1)} % par rapport à « ${baseFr} » ; la fourchette à ${nominal80} % a contenu ${cov80.toFixed(1)} % des prix observés en test).`,
-      note_en: `Selected method: ${champEn} (average error: ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%, +${skill.toFixed(1)}% gain over '${baseEn}'; the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices in testing).`,
+      note_fr: `${scopeFr} : méthode retenue « ${champFr} » (erreur moyenne : ${fmtFr(mae)} XOF/kg, soit ${fmtFr(mape)} %, gain de +${fmtFr(skill)} % par rapport à « ${baseFr} » ; la fourchette à ${nominal80} % a contenu ${fmtFr(cov80)} % des prix observés).`,
+      note_en: `${scopeEn}: selected method '${champEn}' (average error: ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%, +${skill.toFixed(1)}% gain over '${baseEn}'; the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices).`,
     };
   }
   return {
-    note_fr: `Méthode retenue : ${champFr}, sélectionnée sur la période d'entraînement (erreur moyenne de ${mae.toFixed(1)} XOF/kg, soit ${mape.toFixed(1)} % ; la fourchette à ${nominal80} % a contenu ${cov80.toFixed(1)} % des prix observés en test), bien que devancée sur les 12 mois de test par « ${bestTestFr} » (${bestTestMae.toFixed(1)} XOF/kg).`,
-    note_en: `Selected method: ${champEn}, chosen on the training period (average error ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%; the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices in testing), though trailed on the 12 test months by '${bestTestEn}' (${bestTestMae.toFixed(1)} XOF/kg).`,
+    note_fr: `${scopeFr} : méthode retenue « ${champFr} », sélectionnée sur la période d'entraînement (erreur moyenne de ${fmtFr(mae)} XOF/kg, soit ${fmtFr(mape)} % ; la fourchette à ${nominal80} % a contenu ${fmtFr(cov80)} % des prix observés), bien que devancée sur les 12 mois de test par « ${bestTestFr} » (${fmtFr(bestTestMae)} XOF/kg).`,
+    note_en: `${scopeEn}: selected method '${champEn}', chosen on the validation period (average error ${mae.toFixed(1)} XOF/kg, or ${mape.toFixed(1)}%; the ${nominal80}% interval contained ${cov80.toFixed(1)}% of observed prices), though trailed on the 12 test months by '${bestTestEn}' (${bestTestMae.toFixed(1)} XOF/kg).`,
   };
 }
 
@@ -351,7 +357,7 @@ function buildSplitDataFiles() {
       const relObj = prodMeta.reliability_by_horizon[hKey];
       const accObj = prodMeta.backtest_accuracy.by_horizon_test[hKey];
       const nextStatus = resolveReliabilityStatus(relObj, accObj);
-      const plainNotes = buildPlainReliabilityNotes(relObj, accObj, h);
+      const plainNotes = buildPlainReliabilityNotes(relObj, accObj, h, prodMeta.tier1_markets_count);
       if (
         relObj.status !== nextStatus ||
         relObj.note_fr !== plainNotes.note_fr ||
