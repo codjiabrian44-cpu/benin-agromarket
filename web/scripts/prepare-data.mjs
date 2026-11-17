@@ -448,6 +448,48 @@ function buildSplitDataFiles() {
   const covMarketRows = parseCsv(
     fs.readFileSync(path.join(TABLES_DIR, 'coverage_by_market.csv'), 'utf-8')
   );
+  const rawSummaryRows = parseCsv(
+    fs.readFileSync(path.join(TABLES_DIR, 'raw_dataset_summary.csv'), 'utf-8')
+  );
+  const rawSummaryMap = Object.fromEntries(rawSummaryRows.map((r) => [r['metric'], r['value']]));
+
+  // Compute overlap-weighted mean absolute difference between Yam and Yam (white)
+  let yamGapWeightedSum = 0;
+  let yamGapOverlapTotal = 0;
+  for (const row of rawSummaryRows) {
+    if ((row['metric'] || '').startsWith('yam_vs_yam_white_overlap_')) {
+      const val = row['value'] || '';
+      const ovMatch = val.match(/overlap=(\d+)/);
+      const diffMatch = val.match(/mean_abs_diff=([\d.]+)/);
+      const ov = ovMatch ? parseInt(ovMatch[1], 10) : 0;
+      const diff = diffMatch ? parseFloat(diffMatch[1]) : 0;
+      if (ov > 0 && Number.isFinite(diff)) {
+        yamGapWeightedSum += ov * diff;
+        yamGapOverlapTotal += ov;
+      }
+    }
+  }
+  const yamVarietyGapXof =
+    yamGapOverlapTotal > 0 ? round(yamGapWeightedSum / yamGapOverlapTotal, 1) : 0;
+
+  const rawSummary = {
+    n_observations: parseInt(rawSummaryMap['wfp_food_prices_ben.csv_data_rows'] || '0', 10),
+    first_date: rawSummaryMap['global_min_date'] || '2002-01-15',
+    last_date: rawSummaryMap['global_max_date'] || '2026-09-15',
+    n_active_markets: parseInt(rawSummaryMap['active_markets_in_prices'] || '0', 10),
+    n_departments: parseInt(rawSummaryMap['departments_covered'] || '0', 10),
+    yam_variety_gap_xof: yamVarietyGapXof,
+    tier1_min_months: 80,
+    n_model_months: 93,
+    model_window_start: '2019-01-15',
+    model_window_end: '2026-09-15',
+    validation_start: '2022-01-15',
+    validation_end: '2025-09-15',
+    test_start: '2025-10-15',
+    test_end: '2026-09-15',
+    first_forecast_month: payload.forecast_target_dates?.[0] || '2026-10-15',
+    last_forecast_month: payload.forecast_target_dates?.[2] || '2026-12-15',
+  };
 
   const monthAbbrevToNum = {
     Jan: 1,
@@ -700,6 +742,7 @@ function buildSplitDataFiles() {
   // Method & Limits tables file (`web/public/data/method-tables.json`)
   const methodTablesPayload = {
     metadata,
+    raw_summary: rawSummary,
     champion_selection: champRows,
     holdout_rank_comparison: rankRows,
     weather_ablation_pooled: weatherRows.filter((r) => r['Horizon'] === 'All (h=1..3)'),

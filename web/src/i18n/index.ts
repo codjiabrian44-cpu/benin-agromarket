@@ -63,6 +63,13 @@ export function formatYearMonth(dateStr: string, dict: Dictionary): string {
   return `${dict.monthsShort[mKey] ?? mo} ${yr}`;
 }
 
+export function formatYearMonthLong(dateStr: string, dict: Dictionary): string {
+  // e.g. "2026-09-15" -> "septembre 2026" or "September 2026"
+  const [yr, mo] = dateStr.split('-');
+  const mKey = String(parseInt(mo, 10)) as keyof typeof dict.months;
+  return `${dict.months[mKey] ?? mo} ${yr}`;
+}
+
 export function formatModelName(modelId: string, dict: Dictionary): string {
   const key = modelId as keyof typeof dict.models;
   return dict.models[key] ?? modelId;

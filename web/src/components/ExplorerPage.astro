@@ -315,7 +315,7 @@ const clientConfig = {
             />
 
             <!-- Interactive Crosshair Overlay -->
-            <g id="exp-crosshair-group" hidden>
+            <g id="exp-crosshair-group" hidden style="display: none;">
               <line
                 id="exp-crosshair-line"
                 x1="0"
@@ -465,7 +465,12 @@ const clientConfig = {
         <div class="editorial-chart-card">
           <div class="chart-header-row">
             <div>
-              <h2 class="chart-heading">{dict.explorer.seasonalityHeading}</h2>
+              <h2 class="chart-heading" id="exp-season-heading">
+                {dict.explorer.seasonalityHeadingTemplate
+                  .replace('{product}', dict.products[defaultSlug].short)
+                  .replace('{n}', String(defaultZoneSeasonality.tier1_markets))
+                  .replace('{zone}', formatZoneName(defaultZoneSeasonality.zone, dict))}
+              </h2>
               <p class="chart-unit-note" id="exp-season-scope">
                 {dict.explorer.seasonalityScopeTemplate
                   .replace('{zone}', formatZoneName(defaultZoneSeasonality.zone, dict))
@@ -764,6 +769,7 @@ const clientConfig = {
     function updateCrosshair(idx: number, announce = false) {
       if (!currentChartGeom || idx < 0 || idx >= currentChartGeom.points.length) {
         crosshairGroup.setAttribute('hidden', '');
+        crosshairGroup.style.display = 'none';
         tooltipEl.hidden = true;
         activePointIdx = -1;
         return;
@@ -771,23 +777,28 @@ const clientConfig = {
       activePointIdx = idx;
       const pt = currentChartGeom.points[idx];
       crosshairGroup.removeAttribute('hidden');
+      crosshairGroup.style.display = '';
       crosshairLine.setAttribute('x1', String(pt.x));
       crosshairLine.setAttribute('x2', String(pt.x));
 
       if (pt.isObserved && pt.y !== null) {
         crosshairDot.removeAttribute('hidden');
+        crosshairDot.style.display = '';
         crosshairDot.setAttribute('cx', String(pt.x));
         crosshairDot.setAttribute('cy', String(pt.y));
       } else {
         crosshairDot.setAttribute('hidden', '');
+        crosshairDot.style.display = 'none';
       }
 
       if (state.median && pt.medianY !== null) {
         crosshairMedianDot.removeAttribute('hidden');
+        crosshairMedianDot.style.display = '';
         crosshairMedianDot.setAttribute('cx', String(pt.x));
         crosshairMedianDot.setAttribute('cy', String(pt.medianY));
       } else {
         crosshairMedianDot.setAttribute('hidden', '');
+        crosshairMedianDot.style.display = 'none';
       }
 
       const dateLabel = formatYearMonth(pt.date, dictLike);
@@ -949,6 +960,10 @@ const clientConfig = {
         mkt.agro_zone
       );
       const sGeom = buildSeasonalityChartGeometry(zoneItem.monthly_indices, 560, 220);
+      document.getElementById('exp-season-heading')!.textContent = cfg.i18n.seasonalityHeadingTemplate
+        .replace('{product}', cfg.products[state.product].short)
+        .replace('{n}', String(zoneItem.tier1_markets))
+        .replace('{zone}', formatZoneName(zoneItem.zone, dictLike));
       document.getElementById('exp-season-scope')!.textContent = cfg.i18n.seasonalityScopeTemplate
         .replace('{zone}', formatZoneName(zoneItem.zone, dictLike))
         .replace('{n}', String(zoneItem.tier1_markets));
@@ -1143,6 +1158,10 @@ const clientConfig = {
       if (currentChartGeom && currentChartGeom.points.length && activePointIdx < 0) {
         updateCrosshair(currentChartGeom.points.length - 1, true);
       }
+    });
+
+    chartSvg.addEventListener('blur', () => {
+      updateCrosshair(-1);
     });
 
     // Hydrate initial state from URL + fetch product JSON

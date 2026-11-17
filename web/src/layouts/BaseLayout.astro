@@ -15,7 +15,17 @@ const dict = getDictionary(locale);
 const baseUrl = import.meta.env.BASE_URL;
 const cleanBase = baseUrl === '/' ? '' : baseUrl.replace(/\/$/, '');
 const routes = getLocalizedRoutes(locale, baseUrl);
+const frRoutes = getLocalizedRoutes('fr', baseUrl);
+const enRoutes = getLocalizedRoutes('en', baseUrl);
 const targetSwitchHref = switchLangHref ?? routes.switchLang;
+
+const siteOrigin = Astro.site ?? new URL('https://benin-agromarket.example.org');
+const routeKey = currentNav === '404' ? 'home' : currentNav;
+const currentPath = locale === 'fr' ? frRoutes[routeKey] : enRoutes[routeKey];
+const canonicalUrl = new URL(currentPath, siteOrigin).toString();
+const frAltUrl = new URL(frRoutes[routeKey], siteOrigin).toString();
+const enAltUrl = new URL(enRoutes[routeKey], siteOrigin).toString();
+const ogImageUrl = new URL(`${cleanBase}/og-image.png`, siteOrigin).toString();
 
 const frauncesUrl = `${cleanBase}/fonts/fraunces-latin-wght-normal.woff2`;
 const instrumentUrl = `${cleanBase}/fonts/instrument-sans-latin-wght-normal.woff2`;
@@ -47,6 +57,29 @@ const fontFaceCss = `
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {
+      currentNav !== '404' && (
+        <>
+          <link rel="canonical" href={canonicalUrl} />
+          <link rel="alternate" hreflang="fr" href={frAltUrl} />
+          <link rel="alternate" hreflang="en" href={enAltUrl} />
+          <link rel="alternate" hreflang="x-default" href={frAltUrl} />
+        </>
+      )
+    }
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={dict.meta.siteName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content={locale === 'fr' ? 'fr_BJ' : 'en_GB'} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
     <link rel="icon" type="image/svg+xml" href={`${cleanBase}/favicon.svg`} />
     <link rel="preload" href={frauncesUrl} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={instrumentUrl} as="font" type="font/woff2" crossorigin />

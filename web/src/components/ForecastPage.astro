@@ -11,7 +11,7 @@ import {
   type ProductSlug,
 } from '../i18n';
 import { buildForecastChartGeometry } from '../lib/charts';
-import { ensureFull93MonthHistory, getValidatedProductData } from '../lib/data';
+import { ensureFull93MonthHistory, getValidatedHomeData, getValidatedProductData } from '../lib/data';
 import { groupMarketsByDepartment, resolveMarketSeries } from '../lib/marketClient';
 
 export interface Props {
@@ -47,6 +47,23 @@ const horizonTitles: Record<1 | 2 | 3, string> = {
   2: dict.forecastPage.horizon2Title,
   3: dict.forecastPage.horizon3Title,
 };
+
+const homeSummary = getValidatedHomeData();
+function horizonMapeRange(slug: ProductSlug): { min: number; max: number } {
+  const byH = homeSummary.products[slug].backtest_accuracy.by_horizon_test;
+  const vals = [byH.h1.mape, byH.h2.mape, byH.h3.mape];
+  return { min: Math.min(...vals), max: Math.max(...vals) };
+}
+const tomatoRange = horizonMapeRange('tomatoes');
+const maizeRange = horizonMapeRange('maize_white');
+const yamRange = horizonMapeRange('yam_white');
+const computedTomatoWarning = dict.forecastPage.warningTomato
+  .replace('{tomatoMin}', formatDecimal(tomatoRange.min, locale, 1))
+  .replace('{tomatoMax}', formatDecimal(tomatoRange.max, locale, 1))
+  .replace('{maizeMin}', formatDecimal(maizeRange.min, locale, 1))
+  .replace('{maizeMax}', formatDecimal(maizeRange.max, locale, 1))
+  .replace('{yamMin}', formatDecimal(yamRange.min, locale, 1))
+  .replace('{yamMax}', formatDecimal(yamRange.max, locale, 1));
 
 const clientConfig = {
   locale,
@@ -458,7 +475,7 @@ const clientConfig = {
         <h2>{dict.forecastPage.warningHeading}</h2>
         <p>{dict.forecastPage.warningGeneral}</p>
         <p id="fc-tomato-warning">
-          <strong>{dict.forecastPage.warningTomato}</strong>
+          <strong>{computedTomatoWarning}</strong>
         </p>
       </div>
 

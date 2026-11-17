@@ -1,0 +1,52 @@
+---
+import { getDictionary, getLocalizedRoutes } from '../../i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const locale = 'en';
+const dictFr = getDictionary('fr');
+const dictEn = getDictionary('en');
+const baseUrl = import.meta.env.BASE_URL;
+const frRoutes = getLocalizedRoutes('fr', baseUrl);
+const enRoutes = getLocalizedRoutes('en', baseUrl);
+---
+
+<BaseLayout
+  locale={locale}
+  title={dictEn.meta.notFoundTitle}
+  description={dictEn.notFound.subtitle}
+  currentNav="404"
+  switchLangHref={`${frRoutes.home}404`}
+>
+  <section class="subpage-hero">
+    <div class="container">
+      <p class="subpage-kicker">{dictEn.notFound.kicker}</p>
+      <h1 class="subpage-title">{dictEn.notFound.title}</h1>
+      <p class="subpage-subtitle">{dictEn.notFound.subtitle}</p>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="container not-found-grid">
+      <div class="not-found-panel">
+        <h2>English</h2>
+        <div class="btn-row">
+          <a href={enRoutes.home} class="btn btn-primary">{dictEn.notFound.homeCta}</a>
+          <a href={enRoutes.explorer} class="btn btn-secondary">{dictEn.notFound.explorerCta}</a>
+          <a href={enRoutes.forecast} class="btn btn-secondary">{dictEn.notFound.forecastCta}</a>
+          <a href={enRoutes.method} class="btn btn-secondary">{dictEn.notFound.methodCta}</a>
+        </div>
+      </div>
+
+      <div class="not-found-panel" lang="fr">
+        <h2>Français — {dictFr.notFound.title}</h2>
+        <p class="not-found-en-sub">{dictFr.notFound.subtitle}</p>
+        <div class="btn-row">
+          <a href={frRoutes.home} class="btn btn-primary">{dictFr.notFound.homeCta}</a>
+          <a href={frRoutes.explorer} class="btn btn-secondary">{dictFr.notFound.explorerCta}</a>
+          <a href={frRoutes.forecast} class="btn btn-secondary">{dictFr.notFound.forecastCta}</a>
+          <a href={frRoutes.method} class="btn btn-secondary">{dictFr.notFound.methodCta}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -253,7 +253,8 @@
     "spreadVsMedianLabel": "Spread vs tracked-market median",
     "periodMinMaxLabel": "Min / Max in selected range",
     "seasonalityHeading": "Monthly seasonal profile",
-    "seasonalityScopeTemplate": "Average monthly index over 2019–2026 · Region: {zone} ({n} tracked markets). 100 = yearly average level.",
+    "seasonalityHeadingTemplate": "Seasonal profile · {product} — {n} tracked markets ({zone})",
+    "seasonalityScopeTemplate": "Average monthly index over 2019–2026 · Region (latitude band): {zone} ({n} tracked markets). 100 = yearly average level.",
     "seasonalityTroughLabel": "Typically lowest month",
     "seasonalityPeakLabel": "Typically highest month",
     "seasonalityAmplitudeLabel": "Seasonal amplitude",
@@ -296,7 +297,7 @@
     "productSkillScopeTemplate": "Computed across all {n} well-tracked markets for this commodity.",
     "warningHeading": "Warning on statistical forecast limits",
     "warningGeneral": "These forecasts rely solely on past price records. They cannot foresee sudden shocks (droughts, road disruptions, fuel spikes, or border closures).",
-    "warningTomato": "Special caution for tomato: this perishable crop experiences sharp month-to-month swings. Measured test errors are noticeably higher than for maize or yam.",
+    "warningTomato": "Special caution for tomato: in testing (Oct 2025 – Sep 2026), average error reaches {tomatoMin}% at 1 month and {tomatoMax}% at 3 months, compared with {maizeMin}% to {maizeMax}% for white maize and {yamMin}% to {yamMax}% for white yam.",
     "exploreHistoryCta": "Explore full history for this market",
     "readMethodCta": "Read methodology and test protocol",
     "tableToggle": "Show data table of the last 24 months and 3 forecast months",
@@ -309,5 +310,73 @@
     "statusUnobserved": "Unrecorded",
     "statusForecast": "Forecast",
     "monthUnit": "months"
+  },
+  "glossary": {
+    "closeLabel": "Close definition",
+    "wellTracked": {
+      "term": "well-tracked",
+      "definition": "A market is called well-tracked when it has at least 80 months of price records out of the 93 months from January 2019 to September 2026. Markets with fewer records do not receive forecasts."
+    },
+    "intervals8090": {
+      "term": "80% and 90% intervals",
+      "definition": "Price ranges built from past forecast errors: over time, roughly 8 out of 10 (respectively 9 out of 10) observed prices are expected to fall inside the range."
+    }
+  },
+  "methodPage": {
+    "kicker": "Methodology & honest limits",
+    "title": "Method, data & limits",
+    "subtitle": "How price series are selected, how forecasts are tested without look-ahead bias, and where their limits lie.",
+    "s1Title": "1. What this site does, and what it does not do",
+    "s1Body": "This site tracks monthly retail prices for white maize, tomato, and white yam across well-tracked markets in Benin, and provides 1- to 3-month ahead forecasts with uncertainty intervals. Prices are nominal, in CFA francs per kilogram (XOF/kg). These are statistical forecasts: they can be wrong, and they do not constitute buying or selling advice.",
+    "s2Title": "2. Where the data comes from",
+    "s2BodyTemplate": "Price data comes from the World Food Programme (WFP) Food Prices database, published on HDX under a CC BY-IGO 3.0 license. It compiles records from national sources (ONASA, CT-SAGSA, INStaD, FAO). It contains {n_observations} price records between {first_date} and {last_date}, across {n_active_markets} markets in {n_departments} departments. All prices are actual recorded prices, never estimated.",
+    "s3Title": "3. Data used for forecasting",
+    "s3Part1Template": "Before 2019, monitoring is sparse, and in 2017 and 2018 national reporting was interrupted. These periods are shown for context only, never filled in or used to train or test forecasts. Forecasts are built on {model_window_start} to {model_window_end} ({n_model_months} months). A market is called ",
+    "s3Part2Template": " if it has at least {tier1_min_months} months of records out of {n_model_months}. This yields {n_markets_maize} markets for white maize, {n_markets_tomato} for tomato, and {n_markets_yam} for white yam. Missing months are never filled in: price lines break at unrecorded months.",
+    "s3YamTemplate": "Yam is recorded under two varieties whose prices differ sharply (average gap of {yam_variety_gap} XOF/kg on markets where both are tracked). This site forecasts white yam (kokoro) only.",
+    "s4Title": "4. How forecasts are made",
+    "s4Part1Template": "For each commodity and horizon (1, 2, and 3 months), simple methods (repeating the last known price, or applying the usual seasonal pattern) are compared against more elaborate models ({models_list_plain}). Model selection happens on a validation period ({validation_start} to {validation_end}). A final test ({test_start} to {test_end}) is examined only once, after locking in the selection. Whenever a complex model does not beat a simple method, the simple method is retained. The ",
+    "s4Part2": " are derived from past forecast errors.",
+    "s5Title": "5. What the final test shows",
+    "tableColProduct": "Commodity",
+    "tableColHorizon": "Horizon",
+    "tableColMethod": "Selected method",
+    "tableColError": "Average test error",
+    "tableColGain": "Gain vs simple method",
+    "tableColCov80": "Prices inside 80% range",
+    "tableColReliability": "Test reliability",
+    "horizonLabel1": "1 month",
+    "horizonLabel2": "2 months",
+    "horizonLabel3": "3 months",
+    "gainSummaryBetterTemplate": "A statistical or machine-learning model beats the best simple method on the final test in {n_better} out of {n_total} cases: {details}.",
+    "gainSummaryRestTemplate": "In the other {n_rest} cases ({rest_details}), either a simple method was retained during validation or the selected model did not outperform the simple method on the final test.",
+    "rankChanceTemplate": "In {n_cases_other_better} out of {n_cases_total} cases, another model would have performed better than the selected one on the final test: choosing on validation always carries an element of chance.",
+    "weatherTemplate": "Adding rainfall and temperature (NASA POWER) did not improve forecasts (test error change: {weather_effect_range}). Weather data is therefore not used.",
+    "s6Title": "6. What these forecasts cannot do",
+    "s6Bullets": [
+      "They cannot foresee sudden shocks (droughts, road disruptions, fuel spikes, or border closures).",
+      "They do not extend beyond 3 months.",
+      "They cover well-tracked markets and retail prices only.",
+      "Prices are nominal: inflation is not removed.",
+      "They are less reliable for tomato, whose prices swing sharply from month to month."
+    ],
+    "knownLimitsHeading": "Cases requiring caution in the final test:",
+    "s7Title": "7. Transparency",
+    "s7BodyTemplate": "Code, tables, and the evaluation protocol are public: {github_url}. Every figure on this site is generated by scripts, never typed by hand. Every phase of the project was independently reviewed by a second agent that recomputed the results.",
+    "s7Author": "This personal project by Brian Codjia, computer science student at IFRI (Abomey-Calavi, Benin), was built with AI agents under his supervision.",
+    "s8Title": "8. Sources and attribution",
+    "s8Attribution": "Price data source: World Food Programme (WFP VAM) via Humanitarian Data Exchange (HDX), 'Benin - Food Prices', compiled from ONASA, CT-SAGSA (SIM-Agricole), INStaD (formerly INSAE), and FAO (FPMA/GIEWS). Licensed under Creative Commons Attribution for Intergovernmental Organisations 3.0 (CC BY-IGO 3.0).",
+    "s8Context": "NASA POWER (public domain) and FAOSTAT (CC BY 4.0) are cited as context sources. This site is an independent project: it is not affiliated with WFP, ONASA, or INStaD.",
+    "s9Title": "9. Updates",
+    "s9BodyTemplate": "Data is cut off as of {as_of_date}. Forecasts cover {first_forecast_month} to {last_forecast_month}. This date is displayed on every forecast page."
+  },
+  "notFound": {
+    "kicker": "Error 404",
+    "title": "Page not found",
+    "subtitle": "The requested address does not exist or has moved. Use the links below to return to market prices and forecasts.",
+    "homeCta": "Overview",
+    "explorerCta": "Explore prices",
+    "forecastCta": "Forecasts",
+    "methodCta": "Method & limits"
   }
 }

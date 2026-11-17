@@ -253,7 +253,8 @@
     "spreadVsMedianLabel": "Écart à la médiane des marchés suivis",
     "periodMinMaxLabel": "Min / Max sur la période affichée",
     "seasonalityHeading": "Profil saisonnier mensuel",
-    "seasonalityScopeTemplate": "Indice mensuel moyen sur la période 2019–2026 · Zone : {zone} ({n} marchés suivis). 100 = niveau moyen de l'année.",
+    "seasonalityHeadingTemplate": "Profil saisonnier · {product} — {n} marchés suivis ({zone})",
+    "seasonalityScopeTemplate": "Indice mensuel moyen sur la période 2019–2026 · Région (bande de latitude) : {zone} ({n} marchés suivis). 100 = niveau moyen de l'année.",
     "seasonalityTroughLabel": "Mois habituellement le plus bas",
     "seasonalityPeakLabel": "Mois habituellement le plus haut",
     "seasonalityAmplitudeLabel": "Amplitude saisonnière",
@@ -296,7 +297,7 @@
     "productSkillScopeTemplate": "Calculé sur l'ensemble des {n} marchés suivis pour ce produit.",
     "warningHeading": "Avertissement sur les limites des prévisions",
     "warningGeneral": "Ces prévisions reposent uniquement sur les relevés passés. Elles ne peuvent pas anticiper un choc soudain (sécheresse, coupure de route, hausse du carburant ou fermeture de frontière).",
-    "warningTomato": "Attention particulière pour la tomate : ce produit périssable subit des variations brutales d'un mois à l'autre. Les erreurs mesurées en test sont nettement plus élevées que pour le maïs ou l'igname.",
+    "warningTomato": "Attention particulière pour la tomate : lors des tests (oct. 2025 – sept. 2026), l'erreur moyenne atteint {tomatoMin} % à 1 mois et {tomatoMax} % à 3 mois, contre {maizeMin} % à {maizeMax} % pour le maïs blanc et {yamMin} % à {yamMax} % pour l'igname blanche.",
     "exploreHistoryCta": "Explorer tout l'historique de ce marché",
     "readMethodCta": "Comprendre la méthode et le protocole de test",
     "tableToggle": "Afficher le tableau des 24 derniers mois et des 3 mois prévus",
@@ -309,5 +310,73 @@
     "statusUnobserved": "Non relevé",
     "statusForecast": "Prévision",
     "monthUnit": "mois"
+  },
+  "glossary": {
+    "closeLabel": "Fermer la définition",
+    "wellTracked": {
+      "term": "bien suivi",
+      "definition": "Un marché est dit bien suivi lorsqu'il dispose d'au moins 80 mois de relevés de prix sur les 93 mois de la période janvier 2019 – septembre 2026. Les marchés avec moins de relevés ne reçoivent pas de prévision."
+    },
+    "intervals8090": {
+      "term": "fourchettes à 80 % et 90 %",
+      "definition": "Plages de prix construites à partir des erreurs passées : sur la durée, environ 8 prix observés sur 10 (respectivement 9 sur 10) devraient tomber à l'intérieur de la fourchette."
+    }
+  },
+  "methodPage": {
+    "kicker": "Documentation méthodologique & limites",
+    "title": "Méthode, données et limites",
+    "subtitle": "Comment les séries de prix sont sélectionnées, comment les prévisions sont testées sans tricher sur le temps, et où s'arrêtent leurs capacités.",
+    "s1Title": "1. Ce que ce site fait, et ce qu'il ne fait pas",
+    "s1Body": "Ce site montre l'évolution mensuelle des prix de détail du maïs blanc, de la tomate et de l'igname blanche sur les marchés béninois bien suivis, et propose des prévisions pour les 1 à 3 prochains mois, avec leur marge d'incertitude. Les prix sont nominaux, en francs CFA par kilo (XOF/kg). Ce sont des prévisions statistiques : elles peuvent se tromper, et elles ne constituent pas un conseil d'achat ou de vente.",
+    "s2Title": "2. D'où viennent les données",
+    "s2BodyTemplate": "Les prix viennent de la base de prix alimentaires du Programme alimentaire mondial (PAM), publiée sur la plateforme HDX sous licence CC BY-IGO 3.0. Elle rassemble des relevés de sources nationales (ONASA, CT-SAGSA, INStaD, FAO). Elle contient {n_observations} relevés de prix entre {first_date} et {last_date}, sur {n_active_markets} marchés répartis dans {n_departments} départements. Tous les prix sont des prix réellement relevés, jamais estimés.",
+    "s3Title": "3. Les données utilisées pour prévoir",
+    "s3Part1Template": "Avant 2019, le suivi est clairsemé, et en 2017 et 2018 le relevé national a été interrompu. Ces périodes sont montrées pour information, mais jamais comblées ni utilisées pour entraîner ou tester les prévisions. Les prévisions reposent sur la période {model_window_start} à {model_window_end} ({n_model_months} mois). Un marché est dit ",
+    "s3Part2Template": " s'il compte au moins {tier1_min_months} mois de relevés sur {n_model_months}. Cela donne {n_markets_maize} marchés pour le maïs blanc, {n_markets_tomato} pour la tomate et {n_markets_yam} pour l'igname blanche. Les mois sans relevé ne sont jamais remplis : les courbes s'interrompent.",
+    "s3YamTemplate": "L'igname existe sous deux variétés dont les prix diffèrent nettement (écart moyen de {yam_variety_gap} XOF/kg sur les marchés où les deux sont relevées). Le site ne prévoit que l'igname blanche (kokoro).",
+    "s4Title": "4. Comment les prévisions sont faites",
+    "s4Part1Template": "Pour chaque produit et chaque horizon (1, 2 et 3 mois), on compare des méthodes simples (reprendre le dernier prix connu, ou appliquer le rythme saisonnier habituel) à des modèles plus élaborés ({models_list_plain}). Le choix se fait sur une période de validation ({validation_start} à {validation_end}). Un test final ({test_start} à {test_end}) n'est regardé qu'une seule fois, après avoir figé le choix. Si un modèle élaboré ne fait pas mieux qu'une méthode simple, c'est la méthode simple qui est conservée. Les ",
+    "s4Part2": " se déduisent des erreurs passées.",
+    "s5Title": "5. Ce que montre le test final",
+    "tableColProduct": "Produit",
+    "tableColHorizon": "Horizon",
+    "tableColMethod": "Méthode retenue",
+    "tableColError": "Erreur moyenne en test",
+    "tableColGain": "Gain vs méthode simple",
+    "tableColCov80": "Prix dans la fourchette 80 %",
+    "tableColReliability": "Fiabilité en test",
+    "horizonLabel1": "1 mois",
+    "horizonLabel2": "2 mois",
+    "horizonLabel3": "3 mois",
+    "gainSummaryBetterTemplate": "Un modèle statistique ou d'apprentissage bat la méthode simple sur le test final dans {n_better} cas sur {n_total} : {details}.",
+    "gainSummaryRestTemplate": "Dans les {n_rest} autres cas ({rest_details}), soit une méthode simple a été conservée dès la validation, soit le modèle retenu n'a pas dépassé la méthode simple sur le test final.",
+    "rankChanceTemplate": "Dans {n_cases_other_better} cas sur {n_cases_total}, un autre modèle aurait fait mieux que celui retenu sur le test final : choisir sur la validation comporte une part de hasard.",
+    "weatherTemplate": "Ajouter la pluie et la température (NASA POWER) n'a pas amélioré les prévisions (variation de l'erreur en test : {weather_effect_range}). Ces données ne sont donc pas utilisées.",
+    "s6Title": "6. Ce que ces prévisions ne savent pas faire",
+    "s6Bullets": [
+      "Elles ne prévoient pas les chocs soudains (sécheresse, coupure de route, hausse du carburant, fermeture de frontière).",
+      "Elles ne vont pas au-delà de 3 mois.",
+      "Elles ne concernent que les marchés bien suivis et les prix de détail.",
+      "Les prix sont nominaux : l'inflation n'est pas retirée.",
+      "Elles sont moins fiables pour la tomate, dont les prix changent brutalement d'un mois à l'autre."
+    ],
+    "knownLimitsHeading": "Cas où la prudence s'impose lors du test final :",
+    "s7Title": "7. Transparence",
+    "s7BodyTemplate": "Le code, les tableaux et le protocole sont publics : {github_url}. Tous les chiffres de ce site sont produits par des scripts, jamais saisis à la main. Chaque phase du projet a été relue de façon indépendante par un second agent, qui a recalculé les résultats.",
+    "s7Author": "Ce projet personnel de Brian Codjia, étudiant en informatique à l'IFRI (Abomey-Calavi, Bénin), a été réalisé avec des agents d'intelligence artificielle sous sa supervision.",
+    "s8Title": "8. Sources et attribution",
+    "s8Attribution": "Source des données de prix : Programme Alimentaire Mondial (PAM / WFP VAM) via Humanitarian Data Exchange (HDX), « Benin - Food Prices », alimenté par l'ONASA, la CT-SAGSA (SIM-Agricole), l'INStaD (ex-INSAE) et la FAO (FPMA/GIEWS). Sous licence Creative Commons Attribution for Intergovernmental Organisations 3.0 (CC BY-IGO 3.0).",
+    "s8Context": "NASA POWER (domaine public) et FAOSTAT (CC BY 4.0) sont cités comme sources de contexte. Ce site est un projet indépendant : il n'est affilié ni au PAM, ni à l'ONASA, ni à l'INStaD.",
+    "s9Title": "9. Mises à jour",
+    "s9BodyTemplate": "Les données sont arrêtées au {as_of_date}. Les prévisions couvrent {first_forecast_month} à {last_forecast_month}. Cette date est rappelée sur chaque page de prévisions."
+  },
+  "notFound": {
+    "kicker": "Erreur 404",
+    "title": "Page introuvable",
+    "subtitle": "L'adresse demandée n'existe pas ou a été déplacée. Utilisez les liens ci-dessous pour revenir vers les données de prix et les prévisions.",
+    "homeCta": "Accueil",
+    "explorerCta": "Explorer les prix",
+    "forecastCta": "Prévisions",
+    "methodCta": "Méthode & limites"
   }
 }

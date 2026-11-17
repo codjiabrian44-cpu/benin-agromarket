@@ -1,0 +1,336 @@
+---
+import methodTablesRaw from '../data/generated/method-tables.json';
+import {
+  formatDecimal,
+  formatInt,
+  formatModelName,
+  formatSignedPct,
+  formatYearMonthLong,
+  getDictionary,
+  type Locale,
+  type ProductSlug,
+} from '../i18n';
+import { getValidatedHomeData } from '../lib/data';
+import GlossaryTerm from './GlossaryTerm.astro';
+
+export interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const dict = getDictionary(locale);
+const homeSummary = getValidatedHomeData();
+const methodTables = methodTablesRaw as any;
+
+const rawSum = methodTables.raw_summary ?? {
+  n_observations: 146501,
+  first_date: '2002-01-15',
+  last_date: '2026-09-15',
+  n_active_markets: 51,
+  n_departments: 12,
+  yam_variety_gap_xof: 151.3,
+  tier1_min_months: 80,
+  n_model_months: 93,
+  model_window_start: '2019-01-15',
+  model_window_end: '2026-09-15',
+  validation_start: '2022-01-15',
+  validation_end: '2025-09-15',
+  test_start: '2025-10-15',
+  test_end: '2026-09-15',
+  first_forecast_month: '2026-10-15',
+  last_forecast_month: '2026-12-15',
+};
+
+const COMMODITY_TO_SLUG: Record<string, ProductSlug> = {
+  'Maize (white)': 'maize_white',
+  Tomatoes: 'tomatoes',
+  'Yam (white)': 'yam_white',
+};
+
+const HORIZON_LABEL_MAP: Record<string, string> = {
+  'h=1m': dict.methodPage.horizonLabel1,
+  'h=2m': dict.methodPage.horizonLabel2,
+  'h=3m': dict.methodPage.horizonLabel3,
+};
+
+const evaluatedModelsPlain = [
+  'Ridge_ARX',
+  'HGBR_NoWeather',
+  'HGBR_WithWeather',
+  'ETS_HoltWinters',
+  'SARIMAX_101_011_12',
+]
+  .map((id) => formatModelName(id, dict))
+  .join(', ');
+
+const s2Body = dict.methodPage.s2BodyTemplate
+  .replace('{n_observations}', formatInt(rawSum.n_observations, locale))
+  .replace('{first_date}', formatYearMonthLong(rawSum.first_date, dict))
+  .replace('{last_date}', formatYearMonthLong(rawSum.last_date, dict))
+  .replace('{n_active_markets}', formatInt(rawSum.n_active_markets, locale))
+  .replace('{n_departments}', formatInt(rawSum.n_departments, locale));
+
+const s3Part1 = dict.methodPage.s3Part1Template
+  .replace('{model_window_start}', formatYearMonthLong(rawSum.model_window_start, dict))
+  .replace('{model_window_end}', formatYearMonthLong(rawSum.model_window_end, dict))
+  .replaceAll('{n_model_months}', formatInt(rawSum.n_model_months, locale));
+
+const s3Part2 = dict.methodPage.s3Part2Template
+  .replace('{tier1_min_months}', formatInt(rawSum.tier1_min_months, locale))
+  .replace('{n_model_months}', formatInt(rawSum.n_model_months, locale))
+  .replace('{n_markets_maize}', formatInt(homeSummary.products.maize_white.tier1_markets_count, locale))
+  .replace('{n_markets_tomato}', formatInt(homeSummary.products.tomatoes.tier1_markets_count, locale))
+  .replace('{n_markets_yam}', formatInt(homeSummary.products.yam_white.tier1_markets_count, locale));
+
+const s3Yam = dict.methodPage.s3YamTemplate.replace(
+  '{yam_variety_gap}',
+  formatDecimal(rawSum.yam_variety_gap_xof, locale, 1)
+);
+
+const s4Part1 = dict.methodPage.s4Part1Template
+  .replace('{models_list_plain}', evaluatedModelsPlain)
+  .replace('{validation_start}', formatYearMonthLong(rawSum.validation_start, dict))
+  .replace('{validation_end}', formatYearMonthLong(rawSum.validation_end, dict))
+  .replace('{test_start}', formatYearMonthLong(rawSum.test_start, dict))
+  .replace('{test_end}', formatYearMonthLong(rawSum.test_end, dict));
+
+// Build results table rows from champion_selection + reliability status
+const champRows: any[] = methodTables.champion_selection || [];
+const resultsRows = champRows.map((row) => {
+  const slug = COMMODITY_TO_SLUG[row['Product']] ?? 'maize_white';
+  const hNum = row['Horizon'] === 'h=1m' ? 1 : row['Horizon'] === 'h=2m' ? 2 : 3;
+  const hKey = `h${hNum}` as 'h1' | 'h2' | 'h3';
+  const relObj = homeSummary.products[slug].reliability_by_horizon[hKey];
+  const relStatus = relObj.status as keyof typeof dict.reliability;
+  const mapeNum = parseFloat(String(row['Test MAPE %'] || '0').replace('%', ''));
+  const skillNum = parseFloat(String(row['Test Skill vs Best Baseline'] || '0').replace('%', ''));
+  const cov80Num = parseFloat(String(row['Test 80% PI Cov'] || '0').replace('%', ''));
+  const isBaseline = ['Naive_LastValue', 'Seasonal_Ratio_Naive', 'Seasonal_Naive_12m'].includes(
+    row['Selected Champion']
+  );
+
+  return {
+    slug,
+    productName: dict.products[slug].full,
+    horizonLabel: HORIZON_LABEL_MAP[row['Horizon']] ?? row['Horizon'],
+    methodName: formatModelName(row['Selected Champion'], dict),
+    mapeFormatted: locale === 'fr' ? `${formatDecimal(mapeNum, locale, 1)} %` : `${formatDecimal(mapeNum, locale, 1)}%`,
+    skillNum,
+    skillFormatted: formatSignedPct(skillNum, locale, 1),
+    cov80Formatted: locale === 'fr' ? `${formatDecimal(cov80Num, locale, 1)} %` : `${formatDecimal(cov80Num, locale, 1)}%`,
+    reliabilityStatus: relStatus,
+    reliabilityLabel: dict.reliability[relStatus] ?? relObj.status,
+    isBaseline,
+    cov80Num,
+    mapeNum,
+  };
+});
+
+// Compute sentence_gain_summary
+const betterRows = resultsRows.filter((r) => !r.isBaseline && r.skillNum > 0);
+const restRows = resultsRows.filter((r) => r.isBaseline || r.skillNum <= 0);
+const formatRowList = (rows: typeof resultsRows, withGain: boolean) =>
+  rows
+    .map((r) =>
+      withGain
+        ? `${r.productName} (${r.horizonLabel} : ${r.skillFormatted})`
+        : `${r.productName} (${r.horizonLabel})`
+    )
+    .join(', ');
+
+const gainSummaryBetter = dict.methodPage.gainSummaryBetterTemplate
+  .replace('{n_better}', String(betterRows.length))
+  .replace('{n_total}', String(resultsRows.length))
+  .replace('{details}', formatRowList(betterRows, true));
+
+const gainSummaryRest = dict.methodPage.gainSummaryRestTemplate
+  .replace('{n_rest}', String(restRows.length))
+  .replace('{rest_details}', formatRowList(restRows, false));
+
+// Compute n_cases_other_better / n_cases_total from holdout_rank_comparison
+const rankRows: any[] = methodTables.holdout_rank_comparison || [];
+const nCasesTotal = rankRows.length;
+const nCasesOtherBetter = rankRows.filter(
+  (r) => !String(r['Champion Test Rank'] || '').startsWith('#1')
+).length;
+const rankChanceText = dict.methodPage.rankChanceTemplate
+  .replace('{n_cases_other_better}', String(nCasesOtherBetter))
+  .replace('{n_cases_total}', String(nCasesTotal));
+
+// Compute weather_effect_range from weather_ablation_pooled (Holdout Test rows)
+const weatherTestRows: any[] = (methodTables.weather_ablation_pooled || []).filter((r: any) =>
+  String(r['Split'] || '').startsWith('Holdout Test')
+);
+const weatherVals = weatherTestRows.map((r) =>
+  parseFloat(String(r['Weather Skill Gain %'] || '0').replace('%', ''))
+);
+const wMin = weatherVals.length ? Math.min(...weatherVals) : 0;
+const wMax = weatherVals.length ? Math.max(...weatherVals) : 0;
+const weatherRangeStr =
+  locale === 'fr'
+    ? `${formatSignedPct(wMin, locale, 1)} à ${formatSignedPct(wMax, locale, 1)}`
+    : `${formatSignedPct(wMin, locale, 1)} to ${formatSignedPct(wMax, locale, 1)}`;
+const weatherText = dict.methodPage.weatherTemplate.replace('{weather_effect_range}', weatherRangeStr);
+
+// Compute known_limits (every product & horizon whose reliability status != 'calibrated')
+const nonCalibratedRows = resultsRows.filter((r) => r.reliabilityStatus !== 'calibrated');
+
+const githubUrl = 'https://github.com/benin-agromarket/benin-agromarket';
+const s7BodyParts = dict.methodPage.s7BodyTemplate.split('{github_url}');
+const s9Body = dict.methodPage.s9BodyTemplate
+  .replace('{as_of_date}', dict.home.hero.asOfDateFormatted)
+  .replace('{first_forecast_month}', formatYearMonthLong(rawSum.first_forecast_month, dict))
+  .replace('{last_forecast_month}', formatYearMonthLong(rawSum.last_forecast_month, dict));
+---
+
+<section class="subpage-hero">
+  <div class="container">
+    <p class="subpage-kicker">{dict.methodPage.kicker}</p>
+    <h1 class="subpage-title">{dict.methodPage.title}</h1>
+    <p class="subpage-subtitle">{dict.methodPage.subtitle}</p>
+  </div>
+</section>
+
+<section class="section-block">
+  <div class="container method-editorial">
+    <div class="method-figures-strip" aria-label={dict.methodPage.kicker}>
+      <div class="kpi-ledger-cell">
+        <span class="kpi-ledger-label">{dict.methodPage.tableColProduct} / {dict.units.marketsCount}</span>
+        <strong class="kpi-ledger-value tabular-nums">{formatInt(homeSummary.metadata.total_tier1_series, locale)}</strong>
+      </div>
+      <div class="kpi-ledger-cell">
+        <span class="kpi-ledger-label">{dict.explorer.coverageLabel}</span>
+        <strong class="kpi-ledger-value tabular-nums">{formatInt(rawSum.n_model_months, locale)} {dict.forecastPage.monthUnit}</strong>
+      </div>
+      <div class="kpi-ledger-cell">
+        <span class="kpi-ledger-label">{dict.home.hero.asOfLabel}</span>
+        <strong class="kpi-ledger-value">{dict.home.hero.asOfDateFormatted}</strong>
+      </div>
+    </div>
+
+    <article class="method-section">
+      <h2>{dict.methodPage.s1Title}</h2>
+      <p>{dict.methodPage.s1Body}</p>
+    </article>
+
+    <article class="method-section">
+      <h2>{dict.methodPage.s2Title}</h2>
+      <p>{s2Body}</p>
+    </article>
+
+    <article class="method-section">
+      <h2>{dict.methodPage.s3Title}</h2>
+      <p>
+        {s3Part1}
+        <GlossaryTerm
+          id="glossary-well-tracked"
+          term={dict.glossary.wellTracked.term}
+          definition={dict.glossary.wellTracked.definition}
+          closeLabel={dict.glossary.closeLabel}
+        />
+        {s3Part2}
+      </p>
+      <p>{s3Yam}</p>
+    </article>
+
+    <article class="method-section">
+      <h2>{dict.methodPage.s4Title}</h2>
+      <p>
+        {s4Part1}
+        <GlossaryTerm
+          id="glossary-intervals-8090"
+          term={dict.glossary.intervals8090.term}
+          definition={dict.glossary.intervals8090.definition}
+          closeLabel={dict.glossary.closeLabel}
+        />
+        {dict.methodPage.s4Part2}
+      </p>
+    </article>
+
+    <article class="method-section">
+      <h2>{dict.methodPage.s5Title}</h2>
+      <div class="table-scroll method-table-wrap">
+        <table class="ledger-table">
+          <thead>
+            <tr>
+              <th scope="col">{dict.methodPage.tableColProduct}</th>
+              <th scope="col">{dict.methodPage.tableColHorizon}</th>
+              <th scope="col">{dict.methodPage.tableColMethod}</th>
+              <th scope="col" class="num">{dict.methodPage.tableColError}</th>
+              <th scope="col" class="num">{dict.methodPage.tableColGain}</th>
+              <th scope="col" class="num">{dict.methodPage.tableColCov80}</th>
+              <th scope="col">{dict.methodPage.tableColReliability}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              resultsRows.map((r) => (
+                <tr>
+                  <td><strong>{r.productName}</strong></td>
+                  <td>{r.horizonLabel}</td>
+                  <td>{r.methodName}</td>
+                  <td class="num">{r.mapeFormatted}</td>
+                  <td class="num">{r.skillFormatted}</td>
+                  <td class="num">{r.cov80Formatted}</td>
+                  <td>
+                    <span class="reliability-badge" data-status={r.reliabilityStatus}>
+                      {r.reliabilityLabel}
+                    </span>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <p>{gainSummaryBetter} {gainSummaryRest}</p>
+      <p>{rankChanceText}</p>
+      <p>{weatherText}</p>
+    </article>
+
+    <article class="method-section">
+      <h2>{dict.methodPage.s6Title}</h2>
+      <ul class="method-limits-list">
+        {dict.methodPage.s6Bullets.map((b: string) => <li>{b}</li>)}
+      </ul>
+      {
+        nonCalibratedRows.length > 0 && (
+          <div class="method-known-limits">
+            <h3>{dict.methodPage.knownLimitsHeading}</h3>
+            <ul class="method-limits-list">
+              {nonCalibratedRows.map((r) => (
+                <li>
+                  <strong>{r.productName} ({r.horizonLabel})</strong> — {r.reliabilityLabel} ({r.mapeFormatted},{' '}
+                  {r.cov80Formatted} {locale === 'fr' ? 'dans la fourchette 80 %' : 'inside 80% range'}).
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </article>
+
+    <article class="method-section">
+      <h2>{dict.methodPage.s7Title}</h2>
+      <p>
+        {s7BodyParts[0]}
+        <a href={githubUrl} rel="noopener noreferrer">{githubUrl}</a>
+        {s7BodyParts[1]}
+      </p>
+      <p>{dict.methodPage.s7Author}</p>
+    </article>
+
+    <article class="method-section">
+      <h2>{dict.methodPage.s8Title}</h2>
+      <blockquote class="method-attribution-quote">
+        {dict.methodPage.s8Attribution}
+      </blockquote>
+      <p>{dict.methodPage.s8Context}</p>
+    </article>
+
+    <article class="method-section">
+      <h2>{dict.methodPage.s9Title}</h2>
+      <p>{s9Body}</p>
+    </article>
+  </div>
+</section>

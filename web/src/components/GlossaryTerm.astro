@@ -1,0 +1,74 @@
+---
+export interface Props {
+  id: string;
+  term: string;
+  definition: string;
+  closeLabel: string;
+}
+
+const { id, term, definition, closeLabel } = Astro.props;
+---
+
+<span class="glossary-wrap" data-glossary-wrap>
+  <button
+    type="button"
+    class="glossary-trigger"
+    aria-expanded="false"
+    aria-controls={id}
+  >
+    <span>{term}</span>
+    <span class="glossary-badge" aria-hidden="true">?</span>
+  </button>
+  <span
+    id={id}
+    class="glossary-popover"
+    role="region"
+    aria-label={term}
+    hidden
+  >
+    <span class="glossary-def-text">{definition}</span>
+    <button type="button" class="glossary-close" aria-label={closeLabel}>×</button>
+  </span>
+</span>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-glossary-wrap]').forEach((wrap) => {
+    const btn = wrap.querySelector<HTMLButtonElement>('.glossary-trigger');
+    const pop = wrap.querySelector<HTMLElement>('.glossary-popover');
+    const closeBtn = wrap.querySelector<HTMLButtonElement>('.glossary-close');
+    if (!btn || !pop) return;
+
+    const setOpen = (open: boolean, returnFocus = false) => {
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      pop.hidden = !open;
+      if (!open && returnFocus) {
+        btn.focus();
+      }
+    };
+
+    btn.addEventListener('click', () => {
+      const isOpen = btn.getAttribute('aria-expanded') === 'true';
+      // Close any other open glossary popovers
+      document.querySelectorAll<HTMLElement>('[data-glossary-wrap]').forEach((other) => {
+        if (other !== wrap) {
+          const ob = other.querySelector<HTMLButtonElement>('.glossary-trigger');
+          const op = other.querySelector<HTMLElement>('.glossary-popover');
+          if (ob && op) {
+            ob.setAttribute('aria-expanded', 'false');
+            op.hidden = true;
+          }
+        }
+      });
+      setOpen(!isOpen);
+    });
+
+    closeBtn?.addEventListener('click', () => setOpen(false, true));
+
+    wrap.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') {
+        e.preventDefault();
+        setOpen(false, true);
+      }
+    });
+  });
+</script>
