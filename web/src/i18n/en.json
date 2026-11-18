@@ -169,7 +169,10 @@
       "sparklineScaleNote": "Each chart uses its own vertical scale (36-month min–max)",
       "indexUnit": "seasonal index",
       "indexTooltip": "100 = yearly average level",
-      "exploreProductCta": "Explore this staple"
+      "exploreProductCta": "Explore this staple",
+      "sparklineTableToggle": "Show 36-month median data table",
+      "sparklineColMonth": "Month",
+      "sparklineColMedian": "Median price (XOF/kg)"
     },
     "mapSection": {
       "title": "One kilogram, different market realities",
@@ -272,7 +275,10 @@
     "colMarketPrice": "Market price (XOF/kg)",
     "colMedianPrice": "Median of tracked markets (XOF/kg)",
     "statusObserved": "Observed",
-    "statusUnobserved": "Unrecorded"
+    "statusUnobserved": "Unrecorded",
+    "seasonalityTableToggle": "Show 12-month seasonal index table",
+    "colMonth": "Month",
+    "colSeasonalIndex": "Seasonal index (base 100)"
   },
   "forecastPage": {
     "kicker": "3-month projections · October to December 2026",

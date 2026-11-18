@@ -847,6 +847,11 @@ const clientConfig = {
       const relSel = mkt.reliability_by_horizon[hKey];
       const errSel = mkt.backtest_accuracy.by_horizon_test[hKey];
 
+      fcSvg?.setAttribute(
+        'aria-label',
+        `${mkt.market} (${mkt.admin1}) · ${cfg.products[state.product].full} · ${horizonTitleMap[state.horizon]}: ${formatDecimal(fcSel.point_forecast, locale, 1)} ${cfg.units.xofPerKg} [${formatInt(fcSel.low_80, locale)} – ${formatInt(fcSel.high_80, locale)}]`
+      );
+
       document.getElementById('fc-rel-heading')!.textContent =
         `${cfg.i18n.reliabilityHeading} · ${horizonTitleMap[state.horizon]}`;
       const badgeEl = document.getElementById('fc-rel-badge')!;

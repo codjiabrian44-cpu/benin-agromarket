@@ -921,6 +921,28 @@ const heroMorphMap = Object.fromEntries(
                 </div>
               </dl>
 
+              <details class="data-drawer sparkline-drawer">
+                <summary>{dict.home.stories.sparklineTableToggle}</summary>
+                <div class="table-scroll">
+                  <table class="ledger-table">
+                    <thead>
+                      <tr>
+                        <th>{dict.home.stories.sparklineColMonth}</th>
+                        <th class="num">{dict.home.stories.sparklineColMedian}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[...prod.latest_national_stats.sparkline_36m].reverse().map((sp) => (
+                        <tr>
+                          <td>{formatYearMonth(sp.date, dict)}</td>
+                          <td class="num">{formatDecimal(sp.median_price, locale, 1)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+
               <footer class="story-card-footer">
                 <a href={`${routes.explorer}?product=${slug}`} class="story-link">
                   {dict.products[slug].exploreHistoryCta}
@@ -1086,7 +1108,7 @@ const heroMorphMap = Object.fromEntries(
                           }
                           data-active={isDantokpa ? 'true' : 'false'}
                         >
-                          <circle cx={node.cx} cy={node.cy} r="12" class="map-hit-target" />
+                          <circle cx={node.cx} cy={node.cy} r="22" class="map-hit-target" />
                           <circle
                             cx={node.cx}
                             cy={node.cy}
@@ -1253,7 +1275,7 @@ const heroMorphMap = Object.fromEntries(
                             }
                             data-active={isDantokpa ? 'true' : 'false'}
                           >
-                            <circle cx={node.cx} cy={node.cy} r="12" class="map-hit-target" />
+                            <circle cx={node.cx} cy={node.cy} r="22" class="map-hit-target" />
                             <circle
                               cx={node.cx}
                               cy={node.cy}
@@ -2803,9 +2825,16 @@ const heroMorphMap = Object.fromEntries(
     appearance: none;
     background: none;
     border: 0;
-    border-bottom: 1px dotted var(--color-muted);
-    padding: 0;
-    margin-left: 0.25rem;
+    padding: 12px 2px;
+    margin-block: -12px;
+    margin-left: 0.2rem;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: underline dotted var(--color-muted);
+    text-underline-offset: 3px;
     font-family: var(--font-sans);
     font-size: 0.76rem;
     font-weight: 650;
@@ -2816,7 +2845,7 @@ const heroMorphMap = Object.fromEntries(
   .details-tooltip-trigger:hover,
   .details-tooltip-trigger:focus-visible {
     color: var(--color-ink);
-    border-bottom-style: solid;
+    text-decoration-style: solid;
   }
 
   /* ==========================================================================
@@ -3006,8 +3035,18 @@ const heroMorphMap = Object.fromEntries(
   }
 
   .tooltip-term {
-    border-bottom: 1px dotted currentColor;
+    display: inline-block;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 12px 0;
+    margin-block: -12px;
+    text-decoration: underline dotted currentColor;
+    text-underline-offset: 3px;
     cursor: help;
+  }
+
+  .sparkline-drawer {
+    margin-top: var(--space-3);
   }
 
   .horizon-rel-tag {

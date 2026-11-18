@@ -594,6 +594,30 @@ const clientConfig = {
           </a>
         </div>
       </div>
+
+      <details class="data-drawer" id="exp-season-drawer" style="margin-top: var(--space-4);">
+        <summary>{dict.explorer.seasonalityTableToggle}</summary>
+        <div class="table-scroll">
+          <table class="ledger-table">
+            <thead>
+              <tr>
+                <th>{dict.explorer.colMonth}</th>
+                <th class="num">{dict.explorer.colSeasonalIndex}</th>
+              </tr>
+            </thead>
+            <tbody id="exp-season-table-body">
+              {
+                defaultZoneSeasonality.monthly_indices.map((m) => (
+                  <tr>
+                    <td>{dict.months[String(m.month_num) as keyof typeof dict.months]}</td>
+                    <td class="num">{formatDecimal(m.index, locale, 1)}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </details>
     </div>
   </section>
 </div>
@@ -1075,6 +1099,22 @@ const clientConfig = {
       document.getElementById('exp-season-peak')!.textContent =
         `${pMonth} (${formatDecimal(pBar.index, locale, 1)})`;
       document.getElementById('exp-season-amp')!.textContent = formatSignedPct(amp, locale, 1);
+
+      const seasonHeadingTxt = document.getElementById('exp-season-heading')!.textContent || '';
+      seasonSvg?.setAttribute(
+        'aria-label',
+        `${seasonHeadingTxt} — ${tMonth} (${formatDecimal(tBar.index, locale, 1)}), ${pMonth} (${formatDecimal(pBar.index, locale, 1)}), ${formatSignedPct(amp, locale, 1)}`
+      );
+
+      const sTbody = document.getElementById('exp-season-table-body');
+      if (sTbody) {
+        sTbody.innerHTML = '';
+        for (const item of zoneItem.monthly_indices) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${cfg.months[String(item.month_num)]}</td><td class="num">${formatDecimal(item.index, locale, 1)}</td>`;
+          sTbody.appendChild(tr);
+        }
+      }
 
       const fcCta = document.getElementById('exp-forecast-cta') as HTMLAnchorElement;
       fcCta.href = `${cfg.forecastRoute}?product=${state.product}&market=${encodeURIComponent(mkt.market)}`;

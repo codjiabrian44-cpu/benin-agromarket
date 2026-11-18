@@ -169,7 +169,10 @@
       "sparklineScaleNote": "Échelle propre à chaque produit (min–max sur 36 mois)",
       "indexUnit": "indice saisonnier",
       "indexTooltip": "100 = niveau moyen de l'année",
-      "exploreProductCta": "Explorer ce produit"
+      "exploreProductCta": "Explorer ce produit",
+      "sparklineTableToggle": "Afficher le tableau de la médiane sur 36 mois",
+      "sparklineColMonth": "Mois",
+      "sparklineColMedian": "Prix médian (XOF/kg)"
     },
     "mapSection": {
       "title": "Un même kilo, des prix différents",
@@ -272,7 +275,10 @@
     "colMarketPrice": "Prix du marché (XOF/kg)",
     "colMedianPrice": "Médiane des marchés suivis (XOF/kg)",
     "statusObserved": "Observé",
-    "statusUnobserved": "Non relevé"
+    "statusUnobserved": "Non relevé",
+    "seasonalityTableToggle": "Afficher le tableau de l'indice saisonnier (12 mois)",
+    "colMonth": "Mois",
+    "colSeasonalIndex": "Indice saisonnier (base 100)"
   },
   "forecastPage": {
     "kicker": "Projections à 3 mois · Octobre à décembre 2026",
