@@ -115,14 +115,27 @@ function getReliabilityHeadlineAndTooltip(
 const productViews = productOrder.map((slug) => {
   const prod = homeData.products[slug];
   const fullHistory93 = ensureFull93MonthHistory(prod.dantokpa.history);
-  const heroGeom = buildHeroChartGeometry(fullHistory93, prod.dantokpa.forecasts, 820, 336);
+  const heroGeom = buildHeroChartGeometry(fullHistory93, prod.dantokpa.forecasts, 820, 336, false);
+  const heroMobileGeom = buildHeroChartGeometry(fullHistory93, prod.dantokpa.forecasts, 340, 225, true);
   const sparkGeom = buildSparklineGeometry(prod.latest_national_stats.sparkline_36m, 300, 68);
   const mapGeom = buildBeninDotMapGeometry(
     prod.tier1_markets_map,
     slug,
     dict.mapLatBands,
     430,
-    520
+    520,
+    false
+  );
+  const mapMobileGeom = buildBeninDotMapGeometry(
+    prod.tier1_markets_map,
+    slug,
+    dict.mapLatBands,
+    340,
+    410,
+    true
+  );
+  const mobileCoordByMarket = Object.fromEntries(
+    mapMobileGeom.nodes.map((n) => [n.market_name, { cx: n.cx, cy: n.cy }])
   );
   const fcH1 = prod.dantokpa.forecasts.find((f) => f.horizon_months === 1)!;
   const fcH2 = prod.dantokpa.forecasts.find((f) => f.horizon_months === 2)!;
@@ -157,8 +170,11 @@ const productViews = productOrder.map((slug) => {
     slug,
     prod,
     heroGeom,
+    heroMobileGeom,
     sparkGeom,
     mapGeom,
+    mapMobileGeom,
+    mobileCoordByMarket,
     fcH1,
     fcH2,
     fcH3,
@@ -254,6 +270,7 @@ const heroMorphMap = Object.fromEntries(
               slug,
               prod,
               heroGeom,
+              heroMobileGeom,
               fcH3,
               relH3,
               recentHistory12,
@@ -294,7 +311,7 @@ const heroMorphMap = Object.fromEntries(
                 <div class="svg-chart-wrap">
                   <svg
                     viewBox={`0 0 ${heroGeom.width} ${heroGeom.height}`}
-                    class="hero-svg"
+                    class="hero-svg hero-svg-desktop"
                     role="img"
                     aria-label={`${dict.home.hero.chartTitlePrefix} ${dict.products[slug].full} (2019–2026)`}
                   >
@@ -509,6 +526,146 @@ const heroMorphMap = Object.fromEntries(
                       )}
                     </g>
                   </svg>
+
+                  <!-- Dedicated Mobile Hero Geometry (340 units wide, fewer ticks, >= 11px rendered text) -->
+                  <svg
+                    viewBox={`0 0 ${heroMobileGeom.width} ${heroMobileGeom.height}`}
+                    class="hero-svg hero-svg-mobile"
+                    role="img"
+                    aria-label={`${dict.home.hero.chartTitlePrefix} ${dict.products[slug].full} (2019–2026)`}
+                  >
+                    <title>
+                      {dict.home.hero.chartTitlePrefix} {dict.products[slug].full} (
+                      {dict.units.xofPerKg})
+                    </title>
+                    <rect
+                      x={heroMobileGeom.asOfX}
+                      y={heroMobileGeom.margin.top}
+                      width={heroMobileGeom.forecastZoneWidth}
+                      height={
+                        heroMobileGeom.height -
+                        heroMobileGeom.margin.top -
+                        heroMobileGeom.margin.bottom
+                      }
+                      class="forecast-zone-bg"
+                    />
+                    {heroMobileGeom.yTicks.map((t) => (
+                      <g class="axis-tick">
+                        <line
+                          x1={heroMobileGeom.margin.left}
+                          x2={heroMobileGeom.forecastEndX}
+                          y1={t.y}
+                          y2={t.y}
+                          class="grid-line"
+                        />
+                        <text
+                          x={heroMobileGeom.margin.left - 6}
+                          y={t.y + 4}
+                          text-anchor="end"
+                          class="axis-text tabular-nums"
+                        >
+                          {formatInt(t.value, locale)}
+                        </text>
+                      </g>
+                    ))}
+                    {heroMobileGeom.xTicks.map((xt) => (
+                      <g class="axis-tick">
+                        <line
+                          x1={xt.x}
+                          x2={xt.x}
+                          y1={heroMobileGeom.height - heroMobileGeom.margin.bottom}
+                          y2={heroMobileGeom.height - heroMobileGeom.margin.bottom + 4}
+                          class="tick-mark"
+                        />
+                        <text
+                          x={xt.x}
+                          y={heroMobileGeom.height - 6}
+                          text-anchor="middle"
+                          class="axis-text tabular-nums"
+                        >
+                          {xt.year}
+                        </text>
+                      </g>
+                    ))}
+                    <line
+                      x1={heroMobileGeom.asOfX}
+                      x2={heroMobileGeom.asOfX}
+                      y1={heroMobileGeom.margin.top}
+                      y2={heroMobileGeom.height - heroMobileGeom.margin.bottom}
+                      class="asof-line"
+                    />
+                    <text
+                      x={heroMobileGeom.asOfX - 5}
+                      y={heroMobileGeom.margin.top - 7}
+                      text-anchor="end"
+                      class="asof-label tabular-nums"
+                    >
+                      {dict.home.hero.chartAsOfMarker}
+                    </text>
+                    <text
+                      x={heroMobileGeom.asOfX + heroMobileGeom.forecastZoneWidth / 2}
+                      y={heroMobileGeom.margin.top - 7}
+                      text-anchor="middle"
+                      class="forecast-zone-label tabular-nums"
+                    >
+                      {dict.home.hero.chartHorizonMarker}
+                    </text>
+                    <path d={heroMobileGeom.band90Path} class={`fan-band-90 band-${slug}`} />
+                    <path d={heroMobileGeom.band80Path} class={`fan-band-80 band-${slug}`} />
+                    {slug === 'maize_white' && (
+                      <path d={heroMobileGeom.forecastPath} class="line-forecast-casing" />
+                    )}
+                    <path d={heroMobileGeom.forecastPath} class={`line-forecast stroke-${slug}`} />
+                    {slug === 'maize_white' && (
+                      <path d={heroMobileGeom.historyPath} class="line-history-casing" />
+                    )}
+                    <path d={heroMobileGeom.historyPath} class={`line-history stroke-${slug}`} />
+                    {heroMobileGeom.peakPoint && (
+                      <circle
+                        cx={heroMobileGeom.peakPoint.x}
+                        cy={heroMobileGeom.peakPoint.y}
+                        r="4"
+                        class={`dot-peak fill-${slug}`}
+                      />
+                    )}
+                    {heroMobileGeom.lastObsPoint && (
+                      <circle
+                        cx={heroMobileGeom.lastObsPoint.x}
+                        cy={heroMobileGeom.lastObsPoint.y}
+                        r="4.5"
+                        class={`dot-anchor fill-${slug}`}
+                      />
+                    )}
+                    {heroMobileGeom.forecastPoints.map((fp) => (
+                      <circle
+                        cx={fp.x}
+                        cy={fp.y}
+                        r="3.5"
+                        class={`dot-forecast stroke-${slug}`}
+                      />
+                    ))}
+                  </svg>
+
+                  <ul class="hero-mobile-notes tabular-nums">
+                    {heroGeom.peakPoint && (
+                      <li>
+                        <strong>{dict.home.hero.peakLabelPrefix}</strong>{' '}
+                        {formatInt(heroGeom.peakPoint.price, locale)} {dict.units.xofPerKg} (
+                        {peakDateShort})
+                      </li>
+                    )}
+                    <li>
+                      <strong>{lastObsDateShort}{locale === 'fr' ? ' :' : ':'}</strong>{' '}
+                      {formatDecimal(prod.dantokpa.last_observed_price, locale, 1)}{' '}
+                      {dict.units.xofPerKg}
+                    </li>
+                    <li>
+                      <strong>{fc3DateShort}{locale === 'fr' ? ' :' : ':'}</strong>{' '}
+                      {formatDecimal(fcH3.point_forecast, locale, 1)} {dict.units.xofPerKg} (
+                      {dict.home.hero.bandDirectLabel} [{formatInt(fcH3.low_80, locale)}–
+                      {formatInt(fcH3.high_80, locale)}])
+                    </li>
+                  </ul>
                 </div>
 
                 <!-- Minimal Typographic 4-Column Key Indicators Row (Fraunces Display + Thin Rules) -->
@@ -804,7 +961,7 @@ const heroMorphMap = Object.fromEntries(
     </header>
 
     {
-      productViews.map(({ slug, prod, mapGeom }, idx) => {
+      productViews.map(({ slug, prod, mapGeom, mapMobileGeom, mobileCoordByMarket }, idx) => {
         const isDefault = idx === 0;
         const defaultMarket =
           mapGeom.nodes.find((n) => n.market_name === 'Dantokpa') ?? mapGeom.nodes[0];
@@ -844,6 +1001,18 @@ const heroMorphMap = Object.fromEntries(
                     class="dotmap-svg"
                     role="img"
                     aria-label={`${dict.home.mapSection.title} — ${dict.products[slug].full}`}
+                    data-vb-d={`0 0 ${mapGeom.width} ${mapGeom.height}`}
+                    data-vb-m={`0 0 ${mapMobileGeom.width} ${mapMobileGeom.height}`}
+                    data-bands-d={JSON.stringify({
+                      x1: mapGeom.mapLeft,
+                      x2: mapGeom.mapRight,
+                      bands: mapGeom.latBands,
+                    })}
+                    data-bands-m={JSON.stringify({
+                      x1: mapMobileGeom.mapLeft,
+                      x2: mapMobileGeom.mapRight,
+                      bands: mapMobileGeom.latBands,
+                    })}
                   >
                     <title>
                       {dict.home.mapSection.title} — {dict.products[slug].full}
@@ -851,7 +1020,7 @@ const heroMorphMap = Object.fromEntries(
 
                     <!-- Latitude reference lines (left gutter for localized latitude band labels) -->
                     {mapGeom.latBands.map((lb) => (
-                      <g>
+                      <g class="map-lat-band">
                         <line
                           x1={mapGeom.mapLeft}
                           x2={mapGeom.mapRight}
@@ -870,6 +1039,16 @@ const heroMorphMap = Object.fromEntries(
                       const isDantokpa = node.market_name === defaultMarket.market_name;
                       const zonePlain = formatZoneName(node.agro_zone, dict);
                       const coordsFormatted = `${formatDecimal(node.latitude, locale, 2)}°N, ${formatDecimal(node.longitude, locale, 2)}°E`;
+                      const mCoord = mobileCoordByMarket[node.market_name] ?? {
+                        cx: node.cx,
+                        cy: node.cy,
+                      };
+                      const baseR =
+                        node.isCheapest || node.isPriciest
+                          ? '7'
+                          : isDantokpa
+                            ? '6.5'
+                            : '5.5';
                       return (
                         <g
                           class="map-market-node"
@@ -883,6 +1062,10 @@ const heroMorphMap = Object.fromEntries(
                           data-coords={coordsFormatted}
                           data-cx={node.cx}
                           data-cy={node.cy}
+                          data-cx-d={node.cx}
+                          data-cy-d={node.cy}
+                          data-cx-m={mCoord.cx}
+                          data-cy-m={mCoord.cy}
                           data-price={formatDecimal(node.last_observed_price, locale, 1)}
                           data-diff={formatSignedPct(node.diff_vs_median_pct, locale, 1)}
                           data-h3={`${formatDecimal(node.h3_forecast, locale, 1)} [${formatInt(node.h3_low_80, locale)}, ${formatInt(node.h3_high_80, locale)}]`}
@@ -897,13 +1080,7 @@ const heroMorphMap = Object.fromEntries(
                           <circle
                             cx={node.cx}
                             cy={node.cy}
-                            r={
-                              node.isCheapest || node.isPriciest
-                                ? '7'
-                                : isDantokpa
-                                  ? '6.5'
-                                  : '5.5'
-                            }
+                            r={baseR}
                             fill={node.fillHex}
                             class="map-dot"
                           />
@@ -981,6 +1158,21 @@ const heroMorphMap = Object.fromEntries(
                     </div>
                   </div>
                 </div>
+
+                <ul class="map-mobile-extremums tabular-nums">
+                  <li>
+                    <strong>{dict.home.mapSection.cheapestCalloutPrefix}</strong>{' '}
+                    {mapGeom.cheapestCallout.node.market_name} (
+                    {formatInt(mapGeom.cheapestCallout.node.last_observed_price, locale)}{' '}
+                    {dict.units.xofPerKg})
+                  </li>
+                  <li>
+                    <strong>{dict.home.mapSection.priciestCalloutPrefix}</strong>{' '}
+                    {mapGeom.priciestCallout.node.market_name} (
+                    {formatInt(mapGeom.priciestCallout.node.last_observed_price, locale)}{' '}
+                    {dict.units.xofPerKg})
+                  </li>
+                </ul>
               </div>
 
               <!-- Spatial Summary & Interactive Market Inspector (Cols 6-12) Directly on Dark Ink -->
@@ -1426,23 +1618,30 @@ const heroMorphMap = Object.fromEntries(
     const fromGeom = morphMap[prevSlug];
     const toGeom = morphMap[nextSlug];
 
-    if (!nextPanel || !fromGeom || !toGeom || isReducedMotion()) {
+    if (
+      !nextPanel ||
+      !fromGeom ||
+      !toGeom ||
+      isReducedMotion() ||
+      window.matchMedia('(max-width: 639px)').matches
+    ) {
       return;
     }
 
-    const histPaths = nextPanel.querySelectorAll<SVGPathElement>(
+    const desktopSvg = nextPanel.querySelector<SVGSVGElement>('.hero-svg-desktop');
+    const histPaths = (desktopSvg ?? nextPanel).querySelectorAll<SVGPathElement>(
       '.line-history, .line-history-casing'
     );
-    const fcPaths = nextPanel.querySelectorAll<SVGPathElement>(
+    const fcPaths = (desktopSvg ?? nextPanel).querySelectorAll<SVGPathElement>(
       '.line-forecast, .line-forecast-casing'
     );
-    const band80El = nextPanel.querySelector<SVGPathElement>('.fan-band-80');
-    const band90El = nextPanel.querySelector<SVGPathElement>('.fan-band-90');
-    const fcGroup = nextPanel.querySelector<SVGGElement>('.hero-forecast-group');
-    const peakDot = nextPanel.querySelector<SVGCircleElement>('.dot-peak');
-    const anchorDot = nextPanel.querySelector<SVGCircleElement>('.dot-anchor');
-    const fcDots = nextPanel.querySelectorAll<SVGCircleElement>('.dot-forecast');
-    const annotations = nextPanel.querySelectorAll<SVGGElement>('.hero-annotation');
+    const band80El = (desktopSvg ?? nextPanel).querySelector<SVGPathElement>('.fan-band-80');
+    const band90El = (desktopSvg ?? nextPanel).querySelector<SVGPathElement>('.fan-band-90');
+    const fcGroup = (desktopSvg ?? nextPanel).querySelector<SVGGElement>('.hero-forecast-group');
+    const peakDot = (desktopSvg ?? nextPanel).querySelector<SVGCircleElement>('.dot-peak');
+    const anchorDot = (desktopSvg ?? nextPanel).querySelector<SVGCircleElement>('.dot-anchor');
+    const fcDots = (desktopSvg ?? nextPanel).querySelectorAll<SVGCircleElement>('.dot-forecast');
+    const annotations = (desktopSvg ?? nextPanel).querySelectorAll<SVGGElement>('.hero-annotation');
     const kpiCells = nextPanel.querySelectorAll<HTMLElement>('.kpi-cell, .honesty-strip');
 
     // Ensure stroke-dashoffset from initial draw is cleared on the target panel
@@ -1597,8 +1796,12 @@ const heroMorphMap = Object.fromEntries(
         const cx = parseFloat(node.dataset.cx || '215');
         const cy = parseFloat(node.dataset.cy || '260');
         const wrapRect = mapWrap.getBoundingClientRect();
-        const scaleX = wrapRect.width / 430;
-        const scaleY = wrapRect.height / 520;
+        const dotSvg = mapWrap.querySelector<SVGSVGElement>('.dotmap-svg');
+        const vb = dotSvg?.viewBox?.baseVal;
+        const vbW = vb && vb.width ? vb.width : 430;
+        const vbH = vb && vb.height ? vb.height : 520;
+        const scaleX = wrapRect.width / vbW;
+        const scaleY = wrapRect.height / vbH;
         const pxX = cx * scaleX;
         const pxY = cy * scaleY;
 
@@ -1646,6 +1849,63 @@ const heroMorphMap = Object.fromEntries(
     }
   });
 
+  // Switch Benin dot map geometry cleanly between desktop (430x520) and narrow mobile (340x410)
+  const mapMobileMq = window.matchMedia('(max-width: 639px)');
+  function syncResponsiveDotMap() {
+    const isMobile = mapMobileMq.matches;
+    document.querySelectorAll<SVGSVGElement>('.dotmap-svg').forEach((svg) => {
+      const vb = isMobile ? svg.dataset.vbM : svg.dataset.vbD;
+      if (vb) svg.setAttribute('viewBox', vb);
+      svg.classList.toggle('is-mobile-geom', isMobile);
+
+      const bandRaw = isMobile ? svg.dataset.bandsM : svg.dataset.bandsD;
+      if (bandRaw) {
+        try {
+          const parsed = JSON.parse(bandRaw) as {
+            x1: number;
+            x2: number;
+            bands: Array<{ y: number; label: string }>;
+          };
+          const bandGroups = svg.querySelectorAll<SVGGElement>('.map-lat-band');
+          bandGroups.forEach((bg, idx) => {
+            const info = parsed.bands[idx];
+            if (!info) return;
+            const ln = bg.querySelector('line');
+            const txt = bg.querySelector('text');
+            if (ln) {
+              ln.setAttribute('x1', String(parsed.x1));
+              ln.setAttribute('x2', String(parsed.x2));
+              ln.setAttribute('y1', String(info.y));
+              ln.setAttribute('y2', String(info.y));
+            }
+            if (txt) {
+              txt.setAttribute('x', isMobile ? '6' : '10');
+              txt.setAttribute('y', String(info.y + 4));
+              txt.textContent = info.label;
+            }
+          });
+        } catch {
+          // ignore malformed dataset
+        }
+      }
+
+      svg.querySelectorAll<SVGGElement>('.map-market-node').forEach((node) => {
+        const cx = isMobile ? node.dataset.cxM : node.dataset.cxD;
+        const cy = isMobile ? node.dataset.cyM : node.dataset.cyD;
+        if (cx && cy) {
+          node.dataset.cx = cx;
+          node.dataset.cy = cy;
+          node.querySelectorAll('circle').forEach((c) => {
+            c.setAttribute('cx', cx);
+            c.setAttribute('cy', cy);
+          });
+        }
+      });
+    });
+  }
+  syncResponsiveDotMap();
+  mapMobileMq.addEventListener('change', syncResponsiveDotMap);
+
   // =========================================================================
   // Signature Motion & ScrollTrigger Reveals (Strictly respects reduced motion)
   // =========================================================================
@@ -1683,15 +1943,26 @@ const heroMorphMap = Object.fromEntries(
       const defaultHeroPanel = document.querySelector<HTMLElement>(
         `[data-product-panel="${currentProduct}"]`
       );
-      if (defaultHeroPanel) {
-        const histPaths = defaultHeroPanel.querySelectorAll<SVGPathElement>(
+      if (defaultHeroPanel && window.matchMedia('(min-width: 640px)').matches) {
+        const heroDesktopSvg = defaultHeroPanel.querySelector<SVGSVGElement>('.hero-svg-desktop');
+        const histPaths = (heroDesktopSvg ?? defaultHeroPanel).querySelectorAll<SVGPathElement>(
           '.line-history, .line-history-casing'
         );
-        const fcGroup = defaultHeroPanel.querySelector<SVGGElement>('.hero-forecast-group');
-        const fcDots = defaultHeroPanel.querySelectorAll<SVGCircleElement>('.dot-forecast');
-        const peakAnnot = defaultHeroPanel.querySelector<SVGGElement>('.hero-peak-annotation');
-        const anchorAnnot = defaultHeroPanel.querySelector<SVGGElement>('.hero-anchor-annotation');
-        const fcAnnot = defaultHeroPanel.querySelector<SVGGElement>('.hero-forecast-annotations');
+        const fcGroup = (heroDesktopSvg ?? defaultHeroPanel).querySelector<SVGGElement>(
+          '.hero-forecast-group'
+        );
+        const fcDots = (heroDesktopSvg ?? defaultHeroPanel).querySelectorAll<SVGCircleElement>(
+          '.dot-forecast'
+        );
+        const peakAnnot = (heroDesktopSvg ?? defaultHeroPanel).querySelector<SVGGElement>(
+          '.hero-peak-annotation'
+        );
+        const anchorAnnot = (heroDesktopSvg ?? defaultHeroPanel).querySelector<SVGGElement>(
+          '.hero-anchor-annotation'
+        );
+        const fcAnnot = (heroDesktopSvg ?? defaultHeroPanel).querySelector<SVGGElement>(
+          '.hero-forecast-annotations'
+        );
 
         histPaths.forEach((p) => {
           const totalLen = Math.ceil(p.getTotalLength() * 1.06 + 24);
@@ -2922,5 +3193,72 @@ const heroMorphMap = Object.fromEntries(
   table.map-dark-table th {
     background-color: rgba(246, 240, 228, 0.08);
     color: var(--color-sand);
+  }
+
+  /* Responsive mobile chart geometry & note lists (< 640px) */
+  .hero-svg-mobile,
+  .hero-mobile-notes,
+  .map-mobile-extremums {
+    display: none;
+  }
+
+  .hero-mobile-notes,
+  .map-mobile-extremums {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-2) 0 0 0;
+    gap: 4px;
+    font-size: var(--text-xs);
+    line-height: 1.4;
+  }
+
+  .hero-mobile-notes li {
+    color: var(--color-muted);
+  }
+
+  .hero-mobile-notes strong {
+    color: var(--color-ink);
+  }
+
+  .map-mobile-extremums li {
+    color: var(--color-sand-2);
+  }
+
+  .map-mobile-extremums strong {
+    color: var(--color-sand);
+  }
+
+  @media (max-width: 639px) {
+    .hero-svg-desktop {
+      display: none;
+    }
+
+    .hero-svg-mobile {
+      display: block;
+    }
+
+    .hero-mobile-notes,
+    .map-mobile-extremums {
+      display: grid;
+    }
+
+    .hero-svg-mobile .axis-text,
+    .hero-svg-mobile .asof-label,
+    .hero-svg-mobile .forecast-zone-label {
+      font-size: 12px;
+    }
+
+    .dotmap-svg .map-extremum-callout,
+    .dotmap-svg .map-extremum-callout text {
+      display: none;
+    }
+
+    .dotmap-svg .map-axis-text {
+      font-size: 13.5px;
+    }
+
+    .dotmap-svg.is-mobile-geom .map-axis-text {
+      font-size: 12px;
+    }
   }
 </style>

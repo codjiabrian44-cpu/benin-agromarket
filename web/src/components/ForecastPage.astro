@@ -719,8 +719,34 @@ const clientConfig = {
         opt.setAttribute('aria-selected', opt.dataset.market === mkt.market ? 'true' : 'false');
       });
 
+      const isMobile = window.matchMedia('(max-width: 639px)').matches;
+      const tickFontSize = isMobile ? '12' : '11.5';
+
       const hist93 = ensureFull93MonthHistory(mkt.history_calendar_2019_2026 ?? mkt.history);
-      const geom = buildForecastChartGeometry(hist93, mkt.forecasts, 860, 340);
+      const geom = buildForecastChartGeometry(
+        hist93,
+        mkt.forecasts,
+        isMobile ? 330 : 860,
+        isMobile ? 230 : 340,
+        isMobile
+      );
+
+      const fcSvg = document.getElementById('fc-chart-svg');
+      fcSvg?.setAttribute('viewBox', `0 0 ${geom.width} ${geom.height}`);
+      const fcZoneBg = document.getElementById('fc-zone-bg');
+      if (fcZoneBg) {
+        fcZoneBg.setAttribute('x', String(geom.asOfX));
+        fcZoneBg.setAttribute('y', String(geom.margin.top));
+        fcZoneBg.setAttribute('width', String(geom.forecastEndX - geom.asOfX));
+        fcZoneBg.setAttribute('height', String(geom.height - geom.margin.top - geom.margin.bottom));
+      }
+      const fcAsofLine = document.getElementById('fc-asof-line');
+      if (fcAsofLine) {
+        fcAsofLine.setAttribute('x1', String(geom.asOfX));
+        fcAsofLine.setAttribute('x2', String(geom.asOfX));
+        fcAsofLine.setAttribute('y1', String(geom.margin.top));
+        fcAsofLine.setAttribute('y2', String(geom.height - geom.margin.bottom));
+      }
 
       document.getElementById('fc-chart-title')!.textContent =
         `${cfg.i18n.chartHeadingPrefix} ${mkt.market} (${mkt.admin1}) · ${cfg.products[state.product].full}`;
@@ -742,7 +768,7 @@ const clientConfig = {
         txt.setAttribute('y', String(t.y + 4));
         txt.setAttribute('text-anchor', 'end');
         txt.setAttribute('fill', '#6F665A');
-        txt.setAttribute('font-size', '11.5');
+        txt.setAttribute('font-size', tickFontSize);
         txt.setAttribute('class', 'tabular-nums');
         txt.textContent = formatInt(t.value, locale);
         g.appendChild(ln);
@@ -768,7 +794,7 @@ const clientConfig = {
         txt.setAttribute('text-anchor', t.isForecast ? 'end' : 'middle');
         txt.setAttribute('fill', t.isForecast ? '#1E1B16' : '#6F665A');
         txt.setAttribute('font-weight', t.isForecast ? '700' : '400');
-        txt.setAttribute('font-size', '11.5');
+        txt.setAttribute('font-size', tickFontSize);
         txt.setAttribute('class', 'tabular-nums');
         txt.textContent = formatYearMonth(t.date, dictLike);
         g.appendChild(ln);
@@ -918,6 +944,8 @@ const clientConfig = {
         closePicker();
       }
     });
+
+    window.matchMedia('(max-width: 639px)').addEventListener('change', () => renderAll());
 
     switchProduct(state.product);
   }

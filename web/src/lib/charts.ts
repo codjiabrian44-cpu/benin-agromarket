@@ -124,10 +124,13 @@ export function buildHeroChartGeometry(
   history: HistoryPoint[],
   forecasts: ForecastPoint[],
   width = 820,
-  height = 340
+  height = 340,
+  isMobile = false
 ): HeroChartGeometry {
-  const margin = { top: 34, right: 26, bottom: 32, left: 48 };
-  const forecastZoneWidth = 148; // Generous 148px right-hand zone for 3-month forecast + direct curve labels
+  const margin = isMobile
+    ? { top: 24, right: 14, bottom: 26, left: 42 }
+    : { top: 34, right: 26, bottom: 32, left: 48 };
+  const forecastZoneWidth = isMobile ? 84 : 148; // Generous 148px desktop / 84px mobile zone for 3-month forecast
   const parseDate = (dStr: string) => new Date(`${dStr}T00:00:00Z`);
 
   const histDates = history.map((d) => parseDate(d.date));
@@ -208,13 +211,15 @@ export function buildHeroChartGeometry(
     .y1((d) => yScale(d.high90))
     .curve(curveMonotoneX);
 
-  const yTickValues = yScale.ticks(5);
+  const yTickValues = yScale.ticks(isMobile ? 3 : 5);
   const yTicks = yTickValues.map((v) => ({
     value: v,
     y: Math.round(yScale(v) * 10) / 10,
   }));
 
-  const years = [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
+  const years = isMobile
+    ? [2019, 2022, 2025]
+    : [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
   const xTicks = years.map((yr) => ({
     year: yr,
     x: Math.round(xHistScale(new Date(`${yr}-01-15T00:00:00Z`)) * 10) / 10,
@@ -541,7 +546,8 @@ export function buildBeninDotMapGeometry(
   slug: ProductSlug,
   latBandLabels: { '6_5': string; '7_5': string; '9_5': string; '11_5': string },
   width = 440,
-  height = 530
+  height = 530,
+  isMobile = false
 ): {
   width: number;
   height: number;
@@ -555,10 +561,10 @@ export function buildBeninDotMapGeometry(
   latBands: Array<{ lat: number; y: number; label: string }>;
 } {
   // Benin geographic bounding box: Lat 6.15°N to 12.45°N, Lon 0.75°E to 3.88°E
-  const mapLeft = 128;
-  const mapRight = width - 18;
-  const topPlotY = 38;
-  const bottomPlotY = height - 68;
+  const mapLeft = isMobile ? 64 : 128;
+  const mapRight = isMobile ? width - 14 : width - 18;
+  const topPlotY = isMobile ? 24 : 38;
+  const bottomPlotY = isMobile ? height - 20 : height - 68;
   const xScale = scaleLinear().domain([0.72, 3.92]).range([mapLeft, mapRight]);
   const yScale = scaleLinear().domain([6.15, 12.45]).range([bottomPlotY, topPlotY]);
   const rampColors = PRODUCT_RAMP_5[slug];
@@ -590,7 +596,9 @@ export function buildBeninDotMapGeometry(
     };
   });
 
-  const nodes = relaxSouthernClusterCollisions(initialNodes, 11.6, 6.0, 45);
+  const nodes = isMobile
+    ? relaxSouthernClusterCollisions(initialNodes, 9.5, 5.0, 45)
+    : relaxSouthernClusterCollisions(initialNodes, 11.6, 6.0, 45);
   const maxOffsetPx = max(nodes.map((n) => n.offsetPx)) ?? 0;
 
   const cheapestNode = nodes.find((n) => n.isCheapest) ?? nodes[0];
@@ -626,11 +634,12 @@ export function buildBeninDotMapGeometry(
     cheapestCallout = makeSlotCallout(cheapestNode, mapRight, height - 14, 'end');
   }
 
+  const shortLatLabel = (raw: string) => (isMobile ? raw.split(' · ')[0] : raw);
   const latBands = [
-    { lat: 6.5, y: Math.round(yScale(6.5) * 10) / 10, label: latBandLabels['6_5'] },
-    { lat: 7.5, y: Math.round(yScale(7.5) * 10) / 10, label: latBandLabels['7_5'] },
-    { lat: 9.5, y: Math.round(yScale(9.5) * 10) / 10, label: latBandLabels['9_5'] },
-    { lat: 11.5, y: Math.round(yScale(11.5) * 10) / 10, label: latBandLabels['11_5'] },
+    { lat: 6.5, y: Math.round(yScale(6.5) * 10) / 10, label: shortLatLabel(latBandLabels['6_5']) },
+    { lat: 7.5, y: Math.round(yScale(7.5) * 10) / 10, label: shortLatLabel(latBandLabels['7_5']) },
+    { lat: 9.5, y: Math.round(yScale(9.5) * 10) / 10, label: shortLatLabel(latBandLabels['9_5']) },
+    { lat: 11.5, y: Math.round(yScale(11.5) * 10) / 10, label: shortLatLabel(latBandLabels['11_5']) },
   ];
 
   return {
@@ -711,9 +720,12 @@ export function buildExplorerChartGeometry(
   rangePreset: ExplorerRangePreset,
   includeMedian: boolean,
   width = 860,
-  height = 330
+  height = 330,
+  isMobile = false
 ): ExplorerChartGeometry {
-  const margin = { top: 24, right: 24, bottom: 34, left: 52 };
+  const margin = isMobile
+    ? { top: 18, right: 14, bottom: 28, left: 44 }
+    : { top: 24, right: 24, bottom: 34, left: 52 };
   const sliceCount = rangePreset === '1y' ? 12 : rangePreset === '3y' ? 36 : history93.length;
   const slicedHist = history93.slice(-sliceCount);
   const slicedMedian = median93.slice(-sliceCount);
@@ -759,7 +771,7 @@ export function buildExplorerChartGeometry(
       )
     : '';
 
-  const yTicks = yScale.ticks(5).map((value) => ({
+  const yTicks = yScale.ticks(isMobile ? 3 : 5).map((value) => ({
     value,
     y: Math.round(yScale(value) * 10) / 10,
   }));
@@ -770,6 +782,38 @@ export function buildExplorerChartGeometry(
     const [yrStr, moStr] = pt.year_month.split('-');
     const yr = parseInt(yrStr, 10);
     const mo = parseInt(moStr, 10);
+    if (isMobile) {
+      if (rangePreset === '1y') {
+        if (i === 0 || i === 4 || i === 8 || i === slicedHist.length - 1) {
+          xTicks.push({
+            date: pt.date,
+            year: yr,
+            monthNum: mo,
+            x: Math.round(xScale(parseDate(pt.date)) * 10) / 10,
+            isJan: mo === 1,
+          });
+        }
+      } else if (rangePreset === '3y') {
+        if (mo === 1) {
+          xTicks.push({
+            date: pt.date,
+            year: yr,
+            monthNum: mo,
+            x: Math.round(xScale(parseDate(pt.date)) * 10) / 10,
+            isJan: true,
+          });
+        }
+      } else if (mo === 1 && (yr === 2019 || yr === 2022 || yr === 2025)) {
+        xTicks.push({
+          date: pt.date,
+          year: yr,
+          monthNum: mo,
+          x: Math.round(xScale(parseDate(pt.date)) * 10) / 10,
+          isJan: true,
+        });
+      }
+      continue;
+    }
     if (rangePreset === '1y') {
       // Every 2 months on 1y view so labels never collide
       if (i === 0 || i === slicedHist.length - 1 || mo % 2 === 1) {
@@ -866,9 +910,12 @@ export interface SeasonalityChartGeometry {
 export function buildSeasonalityChartGeometry(
   monthlyIndices: Array<{ month_num: number; index: number }>,
   width = 560,
-  height = 220
+  height = 220,
+  isMobile = false
 ): SeasonalityChartGeometry {
-  const margin = { top: 20, right: 16, bottom: 30, left: 42 };
+  const margin = isMobile
+    ? { top: 16, right: 10, bottom: 26, left: 36 }
+    : { top: 20, right: 16, bottom: 30, left: 42 };
   const sorted = [...monthlyIndices].sort((a, b) => a.month_num - b.month_num);
   const vals = sorted.map((d) => d.index);
   const vMin = Math.min(85, Math.floor(((min(vals) ?? 80) - 6) / 10) * 10);
@@ -891,14 +938,14 @@ export function buildSeasonalityChartGeometry(
 
   const plotW = width - margin.left - margin.right;
   const stepW = plotW / 12;
-  const barWidth = Math.max(14, Math.round(stepW * 0.56));
+  const barWidth = Math.max(isMobile ? 12 : 14, Math.round(stepW * 0.56));
 
   const yScale = scaleLinear()
     .domain([vMin, vMax])
     .range([height - margin.bottom, margin.top]);
 
   const ref100Y = Math.round(yScale(100) * 10) / 10;
-  const yTicks = yScale.ticks(4).map((value) => ({
+  const yTicks = yScale.ticks(isMobile ? 3 : 4).map((value) => ({
     value,
     y: Math.round(yScale(value) * 10) / 10,
   }));
@@ -982,10 +1029,13 @@ export function buildForecastChartGeometry(
   history93: HistoryPoint[],
   forecasts: ForecastPoint[],
   width = 860,
-  height = 340
+  height = 340,
+  isMobile = false
 ): ForecastChartGeometry {
-  const margin = { top: 28, right: 26, bottom: 34, left: 52 };
-  const forecastZoneWidth = 176;
+  const margin = isMobile
+    ? { top: 22, right: 12, bottom: 28, left: 44 }
+    : { top: 28, right: 26, bottom: 34, left: 52 };
+  const forecastZoneWidth = isMobile ? 84 : 176;
   const recent24 = history93.slice(-24);
   const parseDate = (dStr: string) => new Date(`${dStr}T00:00:00Z`);
 
@@ -1059,14 +1109,17 @@ export function buildForecastChartGeometry(
     .y1((d) => yScale(d.high90))
     .curve(curveMonotoneX);
 
-  const yTicks = yScale.ticks(5).map((value) => ({
+  const yTicks = yScale.ticks(isMobile ? 3 : 5).map((value) => ({
     value,
     y: Math.round(yScale(value) * 10) / 10,
   }));
 
   const xTicks: Array<{ date: string; year_month: string; x: number; isForecast: boolean }> = [];
   for (let i = 0; i < recent24.length; i++) {
-    if (i === 0 || i === 6 || i === 12 || i === 18 || i === recent24.length - 1) {
+    const keepTick = isMobile
+      ? i === 0 || i === 12
+      : i === 0 || i === 6 || i === 12 || i === 18 || i === recent24.length - 1;
+    if (keepTick) {
       const pt = recent24[i];
       xTicks.push({
         date: pt.date,

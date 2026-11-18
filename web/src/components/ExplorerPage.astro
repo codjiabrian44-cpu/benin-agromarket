@@ -855,10 +855,31 @@ const clientConfig = {
         opt.setAttribute('aria-selected', opt.dataset.market === mkt.market ? 'true' : 'false');
       });
 
+      const mobileMq = window.matchMedia('(max-width: 639px)');
+      const isMobile = mobileMq.matches;
+      const tickFontSize = isMobile ? '12' : '11.5';
+      const seasonFontSize = isMobile ? '11.5' : '11';
+
       const hist93 = ensureFull93MonthHistory(mkt.history_calendar_2019_2026 ?? mkt.history);
       const med93 = alignMedianSeries93(currentPayload.national_median_series);
-      const geom = buildExplorerChartGeometry(hist93, med93, state.range, state.median, 860, 330);
+      const geom = buildExplorerChartGeometry(
+        hist93,
+        med93,
+        state.range,
+        state.median,
+        isMobile ? 330 : 860,
+        isMobile ? 220 : 330,
+        isMobile
+      );
       currentChartGeom = geom;
+
+      chartSvg.setAttribute('viewBox', `0 0 ${geom.width} ${geom.height}`);
+      crosshairLine.setAttribute('y1', String(geom.margin.top));
+      crosshairLine.setAttribute('y2', String(geom.height - geom.margin.bottom));
+      hoverOverlay.setAttribute('x', String(geom.margin.left));
+      hoverOverlay.setAttribute('y', String(geom.margin.top));
+      hoverOverlay.setAttribute('width', String(geom.width - geom.margin.left - geom.margin.right));
+      hoverOverlay.setAttribute('height', String(geom.height - geom.margin.top - geom.margin.bottom));
 
       document.getElementById('explorer-chart-title')!.textContent =
         `${mkt.market} (${mkt.admin1}) · ${cfg.products[state.product].full}`;
@@ -883,7 +904,7 @@ const clientConfig = {
         txt.setAttribute('y', String(t.y + 4));
         txt.setAttribute('text-anchor', 'end');
         txt.setAttribute('fill', '#6F665A');
-        txt.setAttribute('font-size', '11.5');
+        txt.setAttribute('font-size', tickFontSize);
         txt.setAttribute('class', 'tabular-nums');
         txt.textContent = formatInt(t.value, locale);
         g.appendChild(ln);
@@ -907,7 +928,7 @@ const clientConfig = {
         txt.setAttribute('y', String(geom.height - geom.margin.bottom + 19));
         txt.setAttribute('text-anchor', 'middle');
         txt.setAttribute('fill', '#6F665A');
-        txt.setAttribute('font-size', '11.5');
+        txt.setAttribute('font-size', tickFontSize);
         txt.setAttribute('class', 'tabular-nums');
         txt.textContent =
           state.range === '1y'
@@ -963,7 +984,14 @@ const clientConfig = {
         currentPayload.seasonality_by_zone,
         mkt.agro_zone
       );
-      const sGeom = buildSeasonalityChartGeometry(zoneItem.monthly_indices, 560, 220);
+      const sGeom = buildSeasonalityChartGeometry(
+        zoneItem.monthly_indices,
+        isMobile ? 330 : 560,
+        isMobile ? 205 : 220,
+        isMobile
+      );
+      const seasonSvg = document.getElementById('explorer-season-svg');
+      seasonSvg?.setAttribute('viewBox', `0 0 ${sGeom.width} ${sGeom.height}`);
       document.getElementById('exp-season-heading')!.textContent = cfg.i18n.seasonalityHeadingTemplate
         .replace('{product}', cfg.products[state.product].short)
         .replace('{n}', String(zoneItem.tier1_markets))
@@ -971,12 +999,11 @@ const clientConfig = {
       document.getElementById('exp-season-scope')!.textContent = cfg.i18n.seasonalityScopeTemplate
         .replace('{zone}', formatZoneName(zoneItem.zone, dictLike))
         .replace('{n}', String(zoneItem.tier1_markets));
-      document
-        .getElementById('exp-season-ref100')!
-        .setAttribute('y1', String(sGeom.ref100Y));
-      document
-        .getElementById('exp-season-ref100')!
-        .setAttribute('y2', String(sGeom.ref100Y));
+      const ref100El = document.getElementById('exp-season-ref100')!;
+      ref100El.setAttribute('x1', String(sGeom.margin.left));
+      ref100El.setAttribute('x2', String(sGeom.width - sGeom.margin.right));
+      ref100El.setAttribute('y1', String(sGeom.ref100Y));
+      ref100El.setAttribute('y2', String(sGeom.ref100Y));
 
       const sGrid = document.getElementById('exp-season-grid')!;
       sGrid.innerHTML = '';
@@ -994,7 +1021,7 @@ const clientConfig = {
         txt.setAttribute('y', String(t.y + 4));
         txt.setAttribute('text-anchor', 'end');
         txt.setAttribute('fill', '#6F665A');
-        txt.setAttribute('font-size', '11');
+        txt.setAttribute('font-size', seasonFontSize);
         txt.setAttribute('class', 'tabular-nums');
         txt.textContent = String(t.value);
         g.appendChild(ln);
@@ -1026,15 +1053,17 @@ const clientConfig = {
                 ? 'var(--active-product-color)'
                 : '#9A8F7E'
         );
-        const txt = document.createElementNS(SVG_NS, 'text');
-        txt.setAttribute('x', String(b.x));
-        txt.setAttribute('y', String(sGeom.height - sGeom.margin.bottom + 16));
-        txt.setAttribute('text-anchor', 'middle');
-        txt.setAttribute('fill', '#1E1B16');
-        txt.setAttribute('font-size', '11');
-        txt.textContent = cfg.monthsShort[String(b.monthNum)];
         g.appendChild(rect);
-        g.appendChild(txt);
+        if (!isMobile || b.monthNum % 2 === 1) {
+          const txt = document.createElementNS(SVG_NS, 'text');
+          txt.setAttribute('x', String(b.x));
+          txt.setAttribute('y', String(sGeom.height - sGeom.margin.bottom + 16));
+          txt.setAttribute('text-anchor', 'middle');
+          txt.setAttribute('fill', '#1E1B16');
+          txt.setAttribute('font-size', seasonFontSize);
+          txt.textContent = cfg.monthsShort[String(b.monthNum)];
+          g.appendChild(txt);
+        }
         sBars.appendChild(g);
       }
 
@@ -1167,6 +1196,9 @@ const clientConfig = {
     chartSvg.addEventListener('blur', () => {
       updateCrosshair(-1);
     });
+
+    // Re-render when crossing mobile (< 640px) vs desktop breakpoint
+    window.matchMedia('(max-width: 639px)').addEventListener('change', () => renderAll());
 
     // Hydrate initial state from URL + fetch product JSON
     switchProduct(state.product);
