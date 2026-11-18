@@ -6,7 +6,9 @@
   "scripts": {
     "prebuild": "node scripts/prepare-data.mjs",
     "dev": "node scripts/prepare-data.mjs && astro dev",
-    "build": "astro build && node scripts/write-web-budget.mjs && node scripts/test-url-params.mjs",
+    "build": "astro build",
+    "test": "node scripts/test-url-params.mjs",
+    "report:budget": "node scripts/write-web-budget.mjs",
     "preview": "astro preview"
   },
   "dependencies": {
