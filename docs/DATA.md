@@ -3,7 +3,7 @@
 **Last updated:** 2026-10-25  
 **Phase:** Phase 1(a) (Data Ingestion & Cleaning Pipeline Complete)
 
-All statistics, row counts, coverage metrics, and checksums in this document are produced deterministically by [`src/analysis/coverage.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/coverage.py) and [`src/clean/clean_prices.py`](file:///home/brian/projets-ds/benin-agromarket/src/clean/clean_prices.py) and saved in [`docs/tables/`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/).
+All statistics, row counts, coverage metrics, and checksums in this document are produced deterministically by [`src/analysis/coverage.py`](../src/analysis/coverage.py) and [`src/clean/clean_prices.py`](../src/clean/clean_prices.py) and saved in [`docs/tables/`](tables/).
 
 ---
 
@@ -14,7 +14,7 @@ All statistics, row counts, coverage metrics, and checksums in this document are
 - **HDX Package ID:** `66c7d54e-0c3b-45e5-9a46-07ea6f195093`
 - **Landing Page URL:** https://data.humdata.org/dataset/wfp-food-prices-for-benin
 - **CKAN Metadata API URL:** https://data.humdata.org/api/3/action/package_show?id=wfp-food-prices-for-benin
-- **Ingestion Script:** [`src/ingest/download_wfp.py`](file:///home/brian/projets-ds/benin-agromarket/src/ingest/download_wfp.py)
+- **Ingestion Script:** [`src/ingest/download_wfp.py`](../src/ingest/download_wfp.py)
 - **Download Date:** `2026-10-25`
 - **Publisher / Organization:** World Food Programme (WFP — VAM Economic & Market Analysis)
 - **Upstream Data Sources (per HDX `dataset_source` field):**  
@@ -22,7 +22,7 @@ All statistics, row counts, coverage metrics, and checksums in this document are
 - **License:** **CC BY-IGO 3.0** — Creative Commons Attribution for Intergovernmental Organisations (`http://creativecommons.org/licenses/by/3.0/igo/legalcode`).
 
 #### Verified Downloaded Resources in `data/raw/`
-*Source script: [`src/analysis/coverage.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/coverage.py) → [`docs/tables/raw_dataset_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/raw_dataset_summary.md)*
+*Source script: [`src/analysis/coverage.py`](../src/analysis/coverage.py) → [`docs/tables/raw_dataset_summary.md`](tables/raw_dataset_summary.md)*
 
 | Resource | Local Path | Direct Download URL | Size (Bytes) | Data Rows | SHA-256 Checksum | MD5 Checksum |
 | :--- | :--- | :--- | ---: | ---: | :--- | :--- |
@@ -30,7 +30,7 @@ All statistics, row counts, coverage metrics, and checksums in this document are
 | **Markets Metadata CSV** | `data/raw/wfp_markets_ben.csv` | `https://data.humdata.org/dataset/66c7d54e-0c3b-45e5-9a46-07ea6f195093/resource/030d5114-a642-4b5b-8915-019c6f1e8d4e/download/wfp_markets_ben.csv` | `3,119` | `69` | `68795328eec4b2e4f5c64ff0e040cf53e9d2d640a91e5a1bfe7d51351fcccf66` | `9cc2d01869dbf763405e40a0d6132b3a` |
 
 ### 1.2 Verified Schema & Empirical Distributions
-*Source script: [`src/analysis/coverage.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/coverage.py) → [`docs/tables/raw_dataset_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/raw_dataset_summary.md)*
+*Source script: [`src/analysis/coverage.py`](../src/analysis/coverage.py) → [`docs/tables/raw_dataset_summary.md`](tables/raw_dataset_summary.md)*
 
 | Column | Type | Empirical Summary in `wfp_food_prices_ben.csv` (`146,501` rows) |
 | :--- | :--- | :--- |
@@ -52,7 +52,7 @@ All statistics, row counts, coverage metrics, and checksums in this document are
 | `usdprice` | `float` | Nominal price converted to `USD` per `unit` |
 
 ### 1.3 Known Issues & Structural Regimes Identified in Audit
-*Source script: [`src/analysis/coverage.py`](file:///home/brian/projets-ds/benin-agromarket/src/analysis/coverage.py) → [`docs/tables/yearly_observation_density.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/yearly_observation_density.md) and [`docs/tables/raw_dataset_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/raw_dataset_summary.md)*
+*Source script: [`src/analysis/coverage.py`](../src/analysis/coverage.py) → [`docs/tables/yearly_observation_density.md`](tables/yearly_observation_density.md) and [`docs/tables/raw_dataset_summary.md`](tables/raw_dataset_summary.md)*
 
 1. **Two Distinct Temporal Regimes & the 2017–2018 Reporting Hiatus:**
    - **Pre-2019 Exploration Regime (`2002–2018`):**
@@ -73,10 +73,10 @@ All statistics, row counts, coverage metrics, and checksums in this document are
 ## 2. Exogenous Weather Dataset: NASA POWER Agroclimatology (`nasa_power_benin_markets.csv`)
 
 ### 2.1 Overview, Provenance & Checksums
-*Source scripts: [`src/ingest/download_nasa_power.py`](file:///home/brian/projets-ds/benin-agromarket/src/ingest/download_nasa_power.py) and [`src/clean/clean_prices.py`](file:///home/brian/projets-ds/benin-agromarket/src/clean/clean_prices.py) → [`docs/tables/nasa_power_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/nasa_power_summary.md)*
+*Source scripts: [`src/ingest/download_nasa_power.py`](../src/ingest/download_nasa_power.py) and [`src/clean/clean_prices.py`](../src/clean/clean_prices.py) → [`docs/tables/nasa_power_summary.md`](tables/nasa_power_summary.md)*
 
 - **Dataset Title:** NASA POWER (Prediction Of Worldwide Energy Resources) — Agroclimatology (`AG`) Monthly Point Data
-- **Exact API URL Template Used by [`src/ingest/download_nasa_power.py`](file:///home/brian/projets-ds/benin-agromarket/src/ingest/download_nasa_power.py):**  
+- **Exact API URL Template Used by [`src/ingest/download_nasa_power.py`](../src/ingest/download_nasa_power.py):**  
   `https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=PRECTOTCORR,T2M,T2M_MAX,T2M_MIN,RH2M&community=AG&longitude={grid_lon}&latitude={grid_lat}&start=2006&end=2026&format=JSON`
 - **Provider:** NASA Langley Research Center (LaRC)
 - **License:** **NASA Open Data Policy (Public Domain / Unrestricted Reuse)** with attribution to the *NASA Langley Research Center (LaRC) POWER Project*.
@@ -87,17 +87,17 @@ All statistics, row counts, coverage metrics, and checksums in this document are
 | **NASA POWER Monthly CSV** | `data/raw/nasa_power_benin_markets.csv` | `474,338` | `5,727` | `23` | `2006-01..2026-09` | `1a20724807476b3ca20948e6a595a4503bf80d0ede17943f96634785548714f3` | `807f94211c4d91a05f153ad949d792c9` |
 
 ### 2.2 Parameters & Completeness
-*Source script: [`src/clean/clean_prices.py`](file:///home/brian/projets-ds/benin-agromarket/src/clean/clean_prices.py) → [`docs/tables/nasa_power_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/nasa_power_summary.md)*
+*Source script: [`src/clean/clean_prices.py`](../src/clean/clean_prices.py) → [`docs/tables/nasa_power_summary.md`](tables/nasa_power_summary.md)*
 
 - The `51` active Benin markets map onto **`23` unique MERRA-2 `0.5° × 0.625°` grid cells** (`249` months each from `2006-01` to `2026-09`, yielding `23 × 249 = 5,727` grid-month rows).
 - **Completeness:** All `5` parameters (`PRECTOTCORR`, `T2M`, `T2M_MAX`, `T2M_MIN`, `RH2M`) have **`5,727 / 5,727` valid observations (`0` missing `-999` values)**.
-- **Leakage Prevention in [`src/clean/clean_prices.py`](file:///home/brian/projets-ds/benin-agromarket/src/clean/clean_prices.py):** Only strictly lagged features (`precip_lag1m`, `precip_lag2m`, `precip_lag3m`, `precip_roll3m_lag1`, `precip_anom_z_lag1m`, `t2m_lag1m`, `t2m_max_lag1m`, `t2m_min_lag1m`, `rh2m_lag1m`) are joined to price observations, and the climatological baseline ($\mu, \sigma$ per grid cell and calendar month) for `precip_anom_z_lag1m` is computed strictly over **`2006–2018`** (prior to the `2019–2026` modeling window).
+- **Leakage Prevention in [`src/clean/clean_prices.py`](../src/clean/clean_prices.py):** Only strictly lagged features (`precip_lag1m`, `precip_lag2m`, `precip_lag3m`, `precip_roll3m_lag1`, `precip_anom_z_lag1m`, `t2m_lag1m`, `t2m_max_lag1m`, `t2m_min_lag1m`, `rh2m_lag1m`) are joined to price observations, and the climatological baseline ($\mu, \sigma$ per grid cell and calendar month) for `precip_anom_z_lag1m` is computed strictly over **`2006–2018`** (prior to the `2019–2026` modeling window).
 
 ---
 
 ## 3. Cleaned & Processed Datasets in `data/processed/`
 
-*Source script: [`src/clean/clean_prices.py`](file:///home/brian/projets-ds/benin-agromarket/src/clean/clean_prices.py) → [`docs/tables/cleaning_audit_summary.md`](file:///home/brian/projets-ds/benin-agromarket/docs/tables/cleaning_audit_summary.md)*
+*Source script: [`src/clean/clean_prices.py`](../src/clean/clean_prices.py) → [`docs/tables/cleaning_audit_summary.md`](tables/cleaning_audit_summary.md)*
 
 | Processed File | Rows | Description |
 | :--- | ---: | :--- |
