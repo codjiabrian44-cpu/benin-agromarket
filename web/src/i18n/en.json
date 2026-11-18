@@ -153,6 +153,7 @@
       "statusObserved": "Observed",
       "statusUnobserved": "Unrecorded",
       "statusForecast": "Forecast",
+      "horizonAtMonth1": "at 1 month",
       "horizonAtMonths": "at {h} months"
     },
     "stories": {
@@ -293,7 +294,8 @@
     "reliabilityHeading": "Reliability and method for this horizon",
     "modelUsedLabel": "Selected method",
     "marketTestErrorLabel": "Average error measured in testing on this market",
-    "marketTestErrorScopeTemplate": "Over the 12 test months (Oct 2025 – Sep 2026) on this market, at {h} month(s).",
+    "marketTestErrorScopeTemplate1": "Over the 12 test months (Oct 2025 – Sep 2026) on this market, at 1 month.",
+    "marketTestErrorScopeTemplate": "Over the 12 test months (Oct 2025 – Sep 2026) on this market, at {h} months.",
     "productSkillLabel": "Gain vs simple method",
     "productSkillScopeTemplate": "Computed across all {n} well-tracked markets for this commodity.",
     "warningHeading": "Warning on statistical forecast limits",

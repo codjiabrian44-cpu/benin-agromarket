@@ -403,7 +403,7 @@ const clientConfig = {
             {formatSignedPct(spreadPct, locale, 1)}
           </strong>
           <span class="kpi-ledger-sub" id="exp-kpi-median-val">
-            {dict.explorer.medianSeriesLabel} : {formatDecimal(latestMedianVal, locale, 1)} {dict.units.xofPerKg}
+            {dict.explorer.medianSeriesLabel}{locale === 'fr' ? ' :' : ':'} {formatDecimal(latestMedianVal, locale, 1)} {dict.units.xofPerKg}
           </span>
         </div>
         <div class="kpi-ledger-cell">
@@ -809,13 +809,14 @@ const clientConfig = {
           ? `${formatDecimal(pt.price, locale, 1)} ${cfg.units.xofPerKg}`
           : cfg.i18n.statusUnobserved;
 
-      let html = `<div><strong>${dateLabel}</strong></div><div>${state.market} : ${priceStr}</div>`;
+      const colon = locale === 'fr' ? ' :' : ':';
+      let html = `<div><strong>${dateLabel}</strong></div><div>${state.market}${colon} ${priceStr}</div>`;
       if (state.median) {
         const medStr =
           pt.medianPrice !== null
             ? `${formatDecimal(pt.medianPrice, locale, 1)} ${cfg.units.xofPerKg}`
             : '—';
-        html += `<div>${cfg.i18n.medianSeriesLabel} : ${medStr}</div>`;
+        html += `<div>${cfg.i18n.medianSeriesLabel}${colon} ${medStr}</div>`;
       }
       tooltipEl.innerHTML = html;
       tooltipEl.hidden = false;
@@ -835,7 +836,7 @@ const clientConfig = {
           state.median && pt.medianPrice !== null
             ? `, ${cfg.i18n.medianSeriesLabel} ${formatDecimal(pt.medianPrice, locale, 1)} ${cfg.units.xofPerKg}`
             : '';
-        liveRegionEl.textContent = `${dateLabel} : ${priceStr}${medAnnounce}`;
+        liveRegionEl.textContent = `${dateLabel}${colon} ${priceStr}${medAnnounce}`;
       }
     }
 
@@ -943,7 +944,7 @@ const clientConfig = {
         `(${formatPct(mkt.completeness_2019_2026_pct, locale, 1)})`;
       document.getElementById('exp-kpi-spread')!.textContent = formatSignedPct(spread, locale, 1);
       document.getElementById('exp-kpi-median-val')!.textContent =
-        `${cfg.i18n.medianSeriesLabel} : ${formatDecimal(latestMed, locale, 1)} ${cfg.units.xofPerKg}`;
+        `${cfg.i18n.medianSeriesLabel}${locale === 'fr' ? ' :' : ':'} ${formatDecimal(latestMed, locale, 1)} ${cfg.units.xofPerKg}`;
       document.getElementById('exp-kpi-minmax')!.textContent =
         `${geom.minObserved !== null ? formatInt(geom.minObserved, locale) : '—'} – ${geom.maxObserved !== null ? formatInt(geom.maxObserved, locale) : '—'} ${cfg.units.xofPerKg}`;
 

@@ -2,6 +2,7 @@
 import {
   formatComputedStoryProse,
   formatDecimal,
+  formatHorizonAtMonths,
   formatInt,
   formatModelName,
   formatPct,
@@ -555,7 +556,7 @@ const heroMorphMap = Object.fromEntries(
                       type="button"
                       class="details-tooltip-trigger"
                       title={detailedTooltipH3}
-                      aria-label={`${dict.home.hero.detailsTriggerLabel} : ${detailedTooltipH3}`}
+                      aria-label={`${dict.home.hero.detailsTriggerLabel}${locale === 'fr' ? ' :' : ':'} ${detailedTooltipH3}`}
                     >
                       {dict.home.hero.detailsTriggerLabel}
                     </button>
@@ -595,10 +596,7 @@ const heroMorphMap = Object.fromEntries(
                           </tr>
                         ))}
                         {prod.dantokpa.forecasts.map((fc) => {
-                          const horizonLabel = dict.home.hero.horizonAtMonths.replace(
-                            '{h}',
-                            String(fc.horizon_months)
-                          );
+                          const horizonLabel = formatHorizonAtMonths(fc.horizon_months, dict);
                           const fcRelLabel =
                             dict.reliability[fc.reliability as keyof typeof dict.reliability] ??
                             fc.reliability;
@@ -877,7 +875,7 @@ const heroMorphMap = Object.fromEntries(
                           class="map-market-node"
                           tabindex="0"
                           role="button"
-                          aria-label={`${node.market_name} (${node.department}, ${zonePlain}, ${coordsFormatted}) : ${formatDecimal(node.last_observed_price, locale, 1)} ${dict.units.xofPerKg} (${formatSignedPct(node.diff_vs_median_pct, locale, 1)})`}
+                          aria-label={`${node.market_name} (${node.department}, ${zonePlain}, ${coordsFormatted})${locale === 'fr' ? ' :' : ':'} ${formatDecimal(node.last_observed_price, locale, 1)} ${dict.units.xofPerKg} (${formatSignedPct(node.diff_vs_median_pct, locale, 1)})`}
                           data-market-node={slug}
                           data-market-name={node.market_name}
                           data-department={node.department}
@@ -961,7 +959,7 @@ const heroMorphMap = Object.fromEntries(
                     </p>
                     <div class="tooltip-metrics">
                       <div>
-                        <span class="tooltip-label">{dict.home.mapSection.latestPriceLabel} :</span>{' '}
+                        <span class="tooltip-label">{dict.home.mapSection.latestPriceLabel}{locale === 'fr' ? ' :' : ':'}</span>{' '}
                         <strong data-tt-field="price">
                           {formatDecimal(defaultMarket.last_observed_price, locale, 1)}
                         </strong>{' '}
@@ -971,7 +969,7 @@ const heroMorphMap = Object.fromEntries(
                       </div>
                       <div>
                         <span class="tooltip-label">
-                          {dict.home.mapSection.forecastH3MapLabel} :
+                          {dict.home.mapSection.forecastH3MapLabel}{locale === 'fr' ? ' :' : ':'}
                         </span>{' '}
                         <strong data-tt-field="h3">
                           {formatDecimal(defaultMarket.h3_forecast, locale, 1)} [

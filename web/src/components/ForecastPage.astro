@@ -204,7 +204,7 @@ const clientConfig = {
             <p class="chart-unit-note">{dict.forecastPage.chartSubtitle}</p>
           </div>
           <p class="chart-unit-note">
-            {dict.home.hero.asOfLabel} : {dict.home.hero.asOfDateFormatted}
+            {dict.home.hero.asOfLabel}{locale === 'fr' ? ' :' : ':'} {dict.home.hero.asOfDateFormatted}
           </p>
         </div>
 
@@ -405,11 +405,11 @@ const clientConfig = {
                   {formatDecimal(fc.point_forecast, locale, 1)} {dict.units.xofPerKg}
                 </span>
                 <span class="horizon-card-meta" data-hc-change={h}>
-                  {dict.forecastPage.vsLastObservedLabel} :{' '}
+                  {dict.forecastPage.vsLastObservedLabel}{locale === 'fr' ? ' :' : ':'}{' '}
                   {formatSignedPct(fc.change_vs_last_pct, locale, 1)}
                 </span>
                 <span class="horizon-card-meta" data-hc-band80={h}>
-                  {dict.forecastPage.interval80Label} : [{formatInt(fc.low_80, locale)} –{' '}
+                  {dict.forecastPage.interval80Label}{locale === 'fr' ? ' :' : ':'} [{formatInt(fc.low_80, locale)} –{' '}
                   {formatInt(fc.high_80, locale)}] {dict.units.xofPerKg}
                 </span>
               </button>
@@ -453,7 +453,9 @@ const clientConfig = {
               {formatPct(defaultMarketErr.mape, locale, 1)})
             </strong>
             <span class="kpi-ledger-sub" id="fc-rel-market-err-scope">
-              {dict.forecastPage.marketTestErrorScopeTemplate.replace('{h}', String(defaultHorizon))}
+              {defaultHorizon === 1
+                ? dict.forecastPage.marketTestErrorScopeTemplate1
+                : dict.forecastPage.marketTestErrorScopeTemplate.replace('{h}', String(defaultHorizon))}
             </span>
           </div>
           <div>
@@ -797,6 +799,7 @@ const clientConfig = {
       }
 
       // Horizon Cards
+      const colon = locale === 'fr' ? ' :' : ':';
       for (const fc of mkt.forecasts) {
         const h = fc.horizon_months as 1 | 2 | 3;
         const pEl = root?.querySelector(`[data-hc-price="${h}"]`);
@@ -804,10 +807,10 @@ const clientConfig = {
         const bEl = root?.querySelector(`[data-hc-band80="${h}"]`);
         if (pEl) pEl.textContent = `${formatDecimal(fc.point_forecast, locale, 1)} ${cfg.units.xofPerKg}`;
         if (cEl) {
-          cEl.textContent = `${cfg.i18n.vsLastObservedLabel} : ${formatSignedPct(fc.change_vs_last_pct, locale, 1)}`;
+          cEl.textContent = `${cfg.i18n.vsLastObservedLabel}${colon} ${formatSignedPct(fc.change_vs_last_pct, locale, 1)}`;
         }
         if (bEl) {
-          bEl.textContent = `${cfg.i18n.interval80Label} : [${formatInt(fc.low_80, locale)} – ${formatInt(fc.high_80, locale)}] ${cfg.units.xofPerKg}`;
+          bEl.textContent = `${cfg.i18n.interval80Label}${colon} [${formatInt(fc.low_80, locale)} – ${formatInt(fc.high_80, locale)}] ${cfg.units.xofPerKg}`;
         }
       }
 
@@ -832,7 +835,9 @@ const clientConfig = {
       document.getElementById('fc-rel-market-err')!.textContent =
         `${formatDecimal(errSel.mae, locale, 1)} ${cfg.units.xofPerKg} (${formatPct(errSel.mape, locale, 1)})`;
       document.getElementById('fc-rel-market-err-scope')!.textContent =
-        cfg.i18n.marketTestErrorScopeTemplate.replace('{h}', String(state.horizon));
+        state.horizon === 1
+          ? cfg.i18n.marketTestErrorScopeTemplate1
+          : cfg.i18n.marketTestErrorScopeTemplate.replace('{h}', String(state.horizon));
       document.getElementById('fc-rel-skill')!.textContent = formatSignedPct(
         relSel.skill_vs_best_baseline_test_pct,
         locale,

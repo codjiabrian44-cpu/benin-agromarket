@@ -1,8 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
+import { SITE_BASE_PATH } from '../astro.config.mjs';
 
 const distDir = path.resolve(import.meta.dirname, '..', 'dist');
+const cleanBase = SITE_BASE_PATH === '/' ? '' : SITE_BASE_PATH.replace(/\/$/, '');
 
 const htmlFiles = [
   'index.html',
@@ -47,10 +49,10 @@ for (const homeRel of ['index.html', 'en/index.html']) {
 
 // Verify Explorer <-> Forecast cross-links preserve product & market identically
 for (const [rel, expectedTarget] of [
-  ['explorer/index.html', '/previsions?product=maize_white&amp;market=Dantokpa'],
-  ['en/explorer/index.html', '/en/forecast?product=maize_white&amp;market=Dantokpa'],
-  ['previsions/index.html', '/explorer?product=maize_white&amp;market=Dantokpa'],
-  ['en/forecast/index.html', '/en/explorer?product=maize_white&amp;market=Dantokpa'],
+  ['explorer/index.html', `${cleanBase}/previsions?product=maize_white&amp;market=Dantokpa`],
+  ['en/explorer/index.html', `${cleanBase}/en/forecast?product=maize_white&amp;market=Dantokpa`],
+  ['previsions/index.html', `${cleanBase}/explorer?product=maize_white&amp;market=Dantokpa`],
+  ['en/forecast/index.html', `${cleanBase}/en/explorer?product=maize_white&amp;market=Dantokpa`],
 ]) {
   const html = fs.readFileSync(path.join(distDir, rel), 'utf8');
   const unescaped = html.replace(/&amp;/g, '&');

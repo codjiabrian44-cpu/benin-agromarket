@@ -19,9 +19,16 @@ const frRoutes = getLocalizedRoutes('fr', baseUrl);
 const enRoutes = getLocalizedRoutes('en', baseUrl);
 const targetSwitchHref = switchLangHref ?? routes.switchLang;
 
-const siteOrigin = Astro.site ?? new URL('https://benin-agromarket.example.org');
+const siteOrigin = Astro.site ?? new URL('https://codjiabrian44-cpu.github.io');
 const routeKey = currentNav === '404' ? 'home' : currentNav;
-const currentPath = locale === 'fr' ? frRoutes[routeKey] : enRoutes[routeKey];
+const currentPath =
+  currentNav === '404'
+    ? locale === 'fr'
+      ? `${cleanBase}/404`
+      : `${cleanBase}/en/404`
+    : locale === 'fr'
+      ? frRoutes[routeKey]
+      : enRoutes[routeKey];
 const canonicalUrl = new URL(currentPath, siteOrigin).toString();
 const frAltUrl = new URL(frRoutes[routeKey], siteOrigin).toString();
 const enAltUrl = new URL(enRoutes[routeKey], siteOrigin).toString();

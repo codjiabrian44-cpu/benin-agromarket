@@ -116,11 +116,12 @@ const resultsRows = champRows.map((row) => {
 // Compute sentence_gain_summary
 const betterRows = resultsRows.filter((r) => !r.isBaseline && r.skillNum > 0);
 const restRows = resultsRows.filter((r) => r.isBaseline || r.skillNum <= 0);
+const colon = locale === 'fr' ? ' :' : ':';
 const formatRowList = (rows: typeof resultsRows, withGain: boolean) =>
   rows
     .map((r) =>
       withGain
-        ? `${r.productName} (${r.horizonLabel} : ${r.skillFormatted})`
+        ? `${r.productName} (${r.horizonLabel}${colon} ${r.skillFormatted})`
         : `${r.productName} (${r.horizonLabel})`
     )
     .join(', ');

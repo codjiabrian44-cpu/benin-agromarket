@@ -1,8 +1,8 @@
 # Project Status — Bénin AgroMarket (`docs/STATUS.md`)
 
-**Date:** 2026-11-04  
-**Current Phase:** **Phase 3 — Step 3.1b Correction Pass Completed** (`fix: step 3.1b plain language, empirical claims, history line breaks, and layout alignment` — Full Jargon Removal, Plain-Language Model & Reliability Dictionary, Empirical Product Prose, History Plateau & Unobserved-Month Break Audit, First-Screen Hero Layout, 5-Step Single-Hue Dot Map Ramp, and Subgrid Card Alignment)  
-**Status:** **STOPPED at End of Step 3.1b** — awaiting owner validation before starting Step 3.2 (Home page complete: signature GSAP motion, dot map interactions, product cards).
+**Date:** 2026-11-18  
+**Current Phase:** **Phase 4 — Step 4.2a Pre-Release Blocker Fixes Completed** (`step-4.2a` — Node-only Build Without `.venv`, Bilingual `README.md`, Repo Hygiene Check, Home Inspector 3-Month Scope, Method Stat Cards, Unified Number Formatting, MIT `LICENSE`, GitHub Pages Site/Base Config & English Polish)  
+**Status:** **STOPPED at End of Step 4.2a** — awaiting owner validation.
 
 Every statistic and table in this report is produced deterministically by [`src/evaluate/verify_history_plateaus.py`](../src/evaluate/verify_history_plateaus.py), [`src/evaluate/contrast_check.py`](../src/evaluate/contrast_check.py), [`src/evaluate/web_budget.py`](../src/evaluate/web_budget.py), [`src/evaluate/validate_export.py`](../src/evaluate/validate_export.py), [`web/scripts/prepare-data.mjs`](../web/scripts/prepare-data.mjs), and [`web/scripts/write-web-budget.mjs`](../web/scripts/write-web-budget.mjs) and saved in [`docs/tables/`](tables/).
 
@@ -247,3 +247,29 @@ Per [`docs/PHASE3_BRIEF.md`](PHASE3_BRIEF.md) and your instructions, we stop her
 - **Validation & Contrast:** `.venv/bin/python -m src.evaluate.validate_export` passed all 7 contract checks ([`docs/tables/phase2_export_validation.md`](tables/phase2_export_validation.md)); `.venv/bin/python -m src.evaluate.contrast_check` regenerated [`docs/tables/contrast_check.md`](tables/contrast_check.md).
 - **Playwright Screenshots (`1440×900` & `390×844`):** Saved and visually inspected in [`docs/screenshots/step-3.4/`](screenshots/step-3.4/) (`desktop-explorer-fr.png`, `mobile-explorer-fr.png`, `desktop-forecast-tomato-fr.png`, `desktop-method-fr.png`, `desktop-method-en.png`, `mobile-method-fr.png`, `desktop-404.png`, `mobile-404.png`). Verified no stray crosshair on Explorer before interaction, updated `"Région (bande de latitude)"` seasonality label & heading, searchable market picker, computed tomato warning on Forecast, full bilingual Method & 404 pages, and clean mobile layout.
 - **Status:** **STOPPED at End of Step 3.4** — ready for owner review and validation.
+
+---
+
+## 8. Phase 4 — Step 4.2a Pre-Release Blocker Fixes (`step-4.2a`, 2026-11-18)
+
+1. **C1 — Clean-Clone Build Without `.venv` ([`web/package.json`](../web/package.json), [`web/scripts/write-web-budget.mjs`](../web/scripts/write-web-budget.mjs)):**
+   - `npm run build` in `web/` now runs only `prebuild` (`prepare-data.mjs`) and `astro build`; the Python budget report moved to `npm run report:budget` and skips cleanly when `.venv` is absent.
+   - Verified by cloning the repo into an isolated temporary directory without `.venv` and running `npm ci`, `npm run build`, and `npm run report:budget`.
+2. **C2 — Complete Bilingual `README.md` ([`README.md`](../README.md), [`docs/readme/`](readme/)):**
+   - Replaced the stale 16-line placeholder with a complete English README + French summary at the top, qualitative findings pointing to [`docs/MODEL_CARD.md`](MODEL_CARD.md) and [`docs/tables/`](tables/), exact Decision 5 attributions, non-endorsement notice, reproduction steps, AI-assisted transparency section, planned GitHub Pages URL (`https://codjiabrian44-cpu.github.io/benin-agromarket/` marked as coming soon), and three compressed screenshots in [`docs/readme/`](readme/) (`home-hero.png` 60 KB, `explorer.png` 153 KB, `forecast.png` 231 KB, all under 300 KB).
+3. **H1 — Relative Paths & Repo Hygiene Gate ([`scripts/check_repo_hygiene.py`](../scripts/check_repo_hygiene.py)):**
+   - Replaced all local machine paths in tracked documentation, generated tables, and Python evaluation generators (`src/evaluate/*.py`) with relative paths/links, and added [`scripts/check_repo_hygiene.py`](../scripts/check_repo_hygiene.py) to fail on tracked local-home paths, file-URI schemes, `.env`, or token-like strings.
+4. **H3 — Home Market Inspector 3-Month Error & Scope ([`web/src/components/HomePage.astro`](../web/src/components/HomePage.astro), [`web/scripts/prepare-data.mjs`](../web/scripts/prepare-data.mjs)):**
+   - Switched the map inspector's error metric from pooled `test_overall.mape` to each market's `h3_test_mape` (`21,5 %` for Dantokpa white maize), matching the 3-month forecast displayed beside it, labeled `"Erreur moyenne en test à 3 mois, sur ce marché"` / `"Average 3-month test error, on this market"`, with a tooltip explaining how it differs from the all-markets average.
+5. **H4 — Method Stat Cards ([`web/src/components/MethodPage.astro`](../web/src/components/MethodPage.astro), [`web/scripts/prepare-data.mjs`](../web/scripts/prepare-data.mjs)):**
+   - Updated Card 1 to `"Séries suivies (produit × marché)"` (`"Tracked series (commodity × market)"`) for `111`, and Card 2 to `"Période suivie :"` / `"93 mois"` (`"Tracked period:"` / `"93 months"`) with the data-computed range note (`80` to `90` observed months per series).
+6. **M1 & M2 — Unified Number Formatting ([`web/src/lib/format.mjs`](../web/src/lib/format.mjs), [`web/scripts/test-number-formatting.mjs`](../web/scripts/test-number-formatting.mjs)):**
+   - Created one shared locale-aware rounding/formatting helper (`roundHalfAway`, `formatInt`, `formatDecimal`, `formatPct`, `formatSignedPct`) imported by both [`web/scripts/prepare-data.mjs`](../web/scripts/prepare-data.mjs) and [`web/src/i18n/index.ts`](../web/src/i18n/index.ts), fixing the raw `+24.1%` values on French Home and the `19,4 %` vs `19,5 %` discrepancy on 3-month white yam, enforced at test time by [`web/scripts/test-number-formatting.mjs`](../web/scripts/test-number-formatting.mjs).
+7. **M6, L1, L2 — License, GitHub Pages Config, Docs & English Polish ([`LICENSE`](../LICENSE), [`web/astro.config.mjs`](../web/astro.config.mjs)):**
+   - Added root MIT [`LICENSE`](../LICENSE) with data/font license note; set default `site` to `https://codjiabrian44-cpu.github.io` and `base` to `/benin-agromarket` (both env-overridable via `PUBLIC_SITE_URL` / `PUBLIC_BASE_PATH`); fixed [`src/evaluate/web_budget.py`](../src/evaluate/web_budget.py) asset path resolution for non-root `base`; fixed `404` `og:url` in [`BaseLayout.astro`](../web/src/layouts/BaseLayout.astro); removed `"Tomate fraîche"` from [`docs/MODEL_CARD.md`](MODEL_CARD.md); fixed English singular/plural month templates and colon/percent spacing; updated this status header.
+
+### Verification & Regenerated Tables (`step-4.2a`)
+- **Web Build & Tests:** `npm --prefix web run build` and `npm --prefix web test` (`test-url-params.mjs` + `test-number-formatting.mjs`) passed.
+- **Budgets ([`docs/tables/web_budget.md`](tables/web_budget.md)):** Home JS `45.10 KiB` gzip (all site JS `69.56 KiB` <= `120.00 KiB`), Home CSS `7.82 KiB` gzip (<= `30.00 KiB`), Fonts `65.15 KiB` (<= `70.00 KiB`), Raster images `1` (`5.17 KiB` <= `100 KB`).
+- **Contrast & Export & Hygiene:** `.venv/bin/python -m src.evaluate.contrast_check` ([`docs/tables/contrast_check.md`](tables/contrast_check.md)), `.venv/bin/python -m src.evaluate.validate_export` (`7/7` checks in [`docs/tables/phase2_export_validation.md`](tables/phase2_export_validation.md)), and `.venv/bin/python scripts/check_repo_hygiene.py` (`225` tracked files) all passed.
+- **Status:** **STOPPED at End of Step 4.2a** — awaiting owner validation.

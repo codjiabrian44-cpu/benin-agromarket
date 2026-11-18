@@ -36,12 +36,16 @@ def extract_home_referenced_assets(index_html_path: Path) -> Tuple[Set[str], Set
     js_refs: Set[str] = set()
     css_refs: Set[str] = set()
 
+    def normalize_asset_rel(raw_ref: str) -> str:
+        rel = raw_ref.lstrip("/")
+        if not (DIST_DIR / rel).exists() and "_astro/" in rel:
+            rel = rel[rel.index("_astro/") :]
+        return rel
+
     for m in re.finditer(r'(?:src|href)=["\']([^"\']+\.(?:js|mjs))["\']', html):
-        rel = m.group(1).lstrip("/")
-        js_refs.add(rel)
+        js_refs.add(normalize_asset_rel(m.group(1)))
     for m in re.finditer(r'href=["\']([^"\']+\.css)["\']', html):
-        rel = m.group(1).lstrip("/")
-        css_refs.add(rel)
+        css_refs.add(normalize_asset_rel(m.group(1)))
 
     return js_refs, css_refs
 

@@ -66,6 +66,17 @@ for (const rel of enPages) {
     null,
     `Found French space-before-percent "${spacedPctMatch?.[0]}" in English page ${rel}`
   );
+  const spacedColonMatch = visible.match(/[A-Za-z0-9)\]]\s+:/);
+  assert.equal(
+    spacedColonMatch,
+    null,
+    `Found space-before-colon "${spacedColonMatch?.[0]}" in English page ${rel}`
+  );
+  assert.equal(
+    /\b1 months\b|\bmonth\(s\)/i.test(visible),
+    false,
+    `Found unpluralized month string in English page ${rel}`
+  );
 }
 
 // 3. Verify every product x horizon test metric rounds identically in home-summary, method-tables, and built HTML

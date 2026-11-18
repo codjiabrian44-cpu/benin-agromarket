@@ -153,6 +153,7 @@
       "statusObserved": "Observé",
       "statusUnobserved": "Non relevé",
       "statusForecast": "Prévision",
+      "horizonAtMonth1": "à 1 mois",
       "horizonAtMonths": "à {h} mois"
     },
     "stories": {
@@ -293,6 +294,7 @@
     "reliabilityHeading": "Fiabilité et méthode pour cet horizon",
     "modelUsedLabel": "Méthode retenue",
     "marketTestErrorLabel": "Erreur moyenne mesurée en test sur ce marché",
+    "marketTestErrorScopeTemplate1": "Sur les 12 mois de test (oct. 2025 – sept. 2026) sur ce marché, à 1 mois.",
     "marketTestErrorScopeTemplate": "Sur les 12 mois de test (oct. 2025 – sept. 2026) sur ce marché, à {h} mois.",
     "productSkillLabel": "Gain face à la méthode simple",
     "productSkillScopeTemplate": "Calculé sur l'ensemble des {n} marchés suivis pour ce produit.",

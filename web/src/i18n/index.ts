@@ -70,6 +70,11 @@ export function formatZoneName(zoneRaw: string, dict: Dictionary): string {
   return dict.zones[key] ?? zoneRaw;
 }
 
+export function formatHorizonAtMonths(h: number, dict: Dictionary): string {
+  if (h === 1) return dict.home.hero.horizonAtMonth1;
+  return dict.home.hero.horizonAtMonths.replace('{h}', String(h));
+}
+
 export function formatComputedStoryProse(
   count: number,
   troughMonth: string,
