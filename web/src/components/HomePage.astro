@@ -881,8 +881,8 @@ const heroMorphMap = Object.fromEntries(
                           data-diff={formatSignedPct(node.diff_vs_median_pct, locale, 1)}
                           data-h3={`${formatDecimal(node.h3_forecast, locale, 1)} [${formatInt(node.h3_low_80, locale)}, ${formatInt(node.h3_high_80, locale)}]`}
                           data-mape={
-                            node.holdout_mape !== null
-                              ? `${formatDecimal(node.holdout_mape, locale, 1)} %`
+                            node.h3_test_mape !== null
+                              ? `${formatDecimal(node.h3_test_mape, locale, 1)}${locale === 'fr' ? ' %' : '%'}`
                               : '—'
                           }
                           data-active={isDantokpa ? 'true' : 'false'}
@@ -1085,13 +1085,17 @@ const heroMorphMap = Object.fromEntries(
                     </div>
                     <div class="story-stat-item story-stat-wide-mobile">
                       <dt>
-                        <span class="tooltip-term" title={dict.units.testErrorTooltip}>
+                        <span
+                          class="tooltip-term"
+                          title={dict.home.mapSection.holdoutMapeTooltip}
+                          tabindex="0"
+                        >
                           {dict.home.mapSection.holdoutMapeLabel}
                         </span>
                       </dt>
                       <dd data-field="mape">
-                        {defaultMarket.holdout_mape !== null
-                          ? `${formatDecimal(defaultMarket.holdout_mape, locale, 1)} %`
+                        {defaultMarket.h3_test_mape !== null
+                          ? `${formatDecimal(defaultMarket.h3_test_mape, locale, 1)}${locale === 'fr' ? ' %' : '%'}`
                           : '—'}
                       </dd>
                     </div>

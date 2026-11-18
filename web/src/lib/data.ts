@@ -67,6 +67,8 @@ export interface Tier1MarketMapItem {
   h3_change_pct: number;
   holdout_mae: number | null;
   holdout_mape: number | null;
+  h3_test_mae: number | null;
+  h3_test_mape: number | null;
 }
 
 export interface HomeProductData {

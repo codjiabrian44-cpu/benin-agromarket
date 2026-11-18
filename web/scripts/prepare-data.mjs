@@ -595,6 +595,8 @@ function buildSplitDataFiles() {
         h3_change_pct: f3.change_vs_last_pct,
         holdout_mae: s.backtest_accuracy?.test_overall?.mae ?? null,
         holdout_mape: s.backtest_accuracy?.test_overall?.mape ?? null,
+        h3_test_mae: s.backtest_accuracy?.by_horizon_test?.h3?.mae ?? null,
+        h3_test_mape: s.backtest_accuracy?.by_horizon_test?.h3?.mape ?? null,
       };
     });
 
