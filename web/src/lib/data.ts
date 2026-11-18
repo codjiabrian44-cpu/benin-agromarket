@@ -125,6 +125,7 @@ export interface HomeProductData {
     peak_to_trough_ratio?: number;
     spread_pts: number;
     spread_pct: string;
+    spread_pct_num?: number;
     monthly_indices: Array<{ month_num: number; index: number }>;
   };
   latest_national_stats: {

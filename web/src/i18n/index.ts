@@ -1,5 +1,14 @@
 import fr from './fr.json';
 import en from './en.json';
+import {
+  formatDecimal,
+  formatInt,
+  formatPct,
+  formatSignedPct,
+  roundHalfAway,
+} from '../lib/format.mjs';
+
+export { formatDecimal, formatInt, formatPct, formatSignedPct, roundHalfAway };
 
 export type Locale = 'fr' | 'en';
 export type Dictionary = typeof fr;
@@ -35,25 +44,6 @@ export function getLocalizedRoutes(locale: Locale, baseUrl: string = import.meta
     method: `${cleanBase}/methode`,
     switchLang: `${cleanBase}/en/`,
   };
-}
-
-export function formatInt(value: number, locale: Locale): string {
-  return new Intl.NumberFormat(locale === 'fr' ? 'fr-FR' : 'en-GB', {
-    maximumFractionDigits: 0,
-  }).format(Math.round(value));
-}
-
-export function formatDecimal(value: number, locale: Locale, digits = 1): string {
-  return new Intl.NumberFormat(locale === 'fr' ? 'fr-FR' : 'en-GB', {
-    minimumFractionDigits: digits,
-    maximumFractionDigits: digits,
-  }).format(value);
-}
-
-export function formatSignedPct(value: number, locale: Locale, digits = 1): string {
-  const formatted = formatDecimal(Math.abs(value), locale, digits);
-  const sign = value > 0 ? '+' : value < 0 ? '−' : '±';
-  return locale === 'fr' ? `${sign}${formatted} %` : `${sign}${formatted}%`;
 }
 
 export function formatYearMonth(dateStr: string, dict: Dictionary): string {

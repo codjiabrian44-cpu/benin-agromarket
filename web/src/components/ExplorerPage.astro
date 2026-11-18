@@ -2,6 +2,7 @@
 import {
   formatDecimal,
   formatInt,
+  formatPct,
   formatSignedPct,
   formatYearMonth,
   formatZoneName,
@@ -393,7 +394,7 @@ const clientConfig = {
             {defaultMarket.obs_months_2019_2026} {dict.explorer.coverageOutOf}
           </strong>
           <span class="kpi-ledger-sub" id="exp-kpi-coverage-pct">
-            ({formatDecimal(defaultMarket.completeness_2019_2026_pct, locale, 1)} %)
+            ({formatPct(defaultMarket.completeness_2019_2026_pct, locale, 1)})
           </span>
         </div>
         <div class="kpi-ledger-cell">
@@ -600,6 +601,7 @@ const clientConfig = {
   import {
     formatDecimal,
     formatInt,
+    formatPct,
     formatSignedPct,
     formatYearMonth,
     formatZoneName,
@@ -938,7 +940,7 @@ const clientConfig = {
       document.getElementById('exp-kpi-coverage')!.textContent =
         `${mkt.obs_months_2019_2026} ${cfg.i18n.coverageOutOf}`;
       document.getElementById('exp-kpi-coverage-pct')!.textContent =
-        `(${formatDecimal(mkt.completeness_2019_2026_pct, locale, 1)} %)`;
+        `(${formatPct(mkt.completeness_2019_2026_pct, locale, 1)})`;
       document.getElementById('exp-kpi-spread')!.textContent = formatSignedPct(spread, locale, 1);
       document.getElementById('exp-kpi-median-val')!.textContent =
         `${cfg.i18n.medianSeriesLabel} : ${formatDecimal(latestMed, locale, 1)} ${cfg.units.xofPerKg}`;

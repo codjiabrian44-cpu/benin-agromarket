@@ -3,6 +3,7 @@ import {
   formatDecimal,
   formatInt,
   formatModelName,
+  formatPct,
   formatSignedPct,
   formatYearMonth,
   getDictionary,
@@ -449,7 +450,7 @@ const clientConfig = {
             <span class="kpi-ledger-label">{dict.forecastPage.marketTestErrorLabel}</span>
             <strong class="kpi-ledger-value" id="fc-rel-market-err">
               {formatDecimal(defaultMarketErr.mae, locale, 1)} {dict.units.xofPerKg} (
-              {formatDecimal(defaultMarketErr.mape, locale, 1)} %)
+              {formatPct(defaultMarketErr.mape, locale, 1)})
             </strong>
             <span class="kpi-ledger-sub" id="fc-rel-market-err-scope">
               {dict.forecastPage.marketTestErrorScopeTemplate.replace('{h}', String(defaultHorizon))}
@@ -561,6 +562,7 @@ const clientConfig = {
     formatDecimal,
     formatInt,
     formatModelName,
+    formatPct,
     formatSignedPct,
     formatYearMonth,
     type ProductSlug,
@@ -828,7 +830,7 @@ const clientConfig = {
         dictLike
       );
       document.getElementById('fc-rel-market-err')!.textContent =
-        `${formatDecimal(errSel.mae, locale, 1)} ${cfg.units.xofPerKg} (${formatDecimal(errSel.mape, locale, 1)} %)`;
+        `${formatDecimal(errSel.mae, locale, 1)} ${cfg.units.xofPerKg} (${formatPct(errSel.mape, locale, 1)})`;
       document.getElementById('fc-rel-market-err-scope')!.textContent =
         cfg.i18n.marketTestErrorScopeTemplate.replace('{h}', String(state.horizon));
       document.getElementById('fc-rel-skill')!.textContent = formatSignedPct(

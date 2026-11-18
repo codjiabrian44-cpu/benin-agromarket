@@ -4,6 +4,7 @@ import {
   formatDecimal,
   formatInt,
   formatModelName,
+  formatPct,
   formatSignedPct,
   formatYearMonth,
   formatZoneName,
@@ -742,9 +743,16 @@ const heroMorphMap = Object.fromEntries(
                 <div class="story-stat-item story-stat-wide">
                   <dt>{dict.home.stories.seasonalSpreadLabel}</dt>
                   <dd>
-                    <strong>{prod.seasonality.spread_pct}</strong> (
-                    {formatDecimal(prod.seasonality.spread_pts, locale, 1)} {dict.units.indexPoints},{' '}
-                    {dict.home.stories.indexTooltip})
+                    <strong>
+                      {formatSignedPct(
+                        prod.seasonality.spread_pct_num ??
+                          parseFloat(String(prod.seasonality.spread_pct).replace('%', '')),
+                        locale,
+                        1
+                      )}
+                    </strong>{' '}
+                    ({formatDecimal(prod.seasonality.spread_pts, locale, 1)}{' '}
+                    {dict.units.indexPoints}, {dict.home.stories.indexTooltip})
                   </dd>
                 </div>
               </dl>
@@ -882,7 +890,7 @@ const heroMorphMap = Object.fromEntries(
                           data-h3={`${formatDecimal(node.h3_forecast, locale, 1)} [${formatInt(node.h3_low_80, locale)}, ${formatInt(node.h3_high_80, locale)}]`}
                           data-mape={
                             node.h3_test_mape !== null
-                              ? `${formatDecimal(node.h3_test_mape, locale, 1)}${locale === 'fr' ? ' %' : '%'}`
+                              ? formatPct(node.h3_test_mape, locale, 1)
                               : '—'
                           }
                           data-active={isDantokpa ? 'true' : 'false'}
@@ -1095,7 +1103,7 @@ const heroMorphMap = Object.fromEntries(
                       </dt>
                       <dd data-field="mape">
                         {defaultMarket.h3_test_mape !== null
-                          ? `${formatDecimal(defaultMarket.h3_test_mape, locale, 1)}${locale === 'fr' ? ' %' : '%'}`
+                          ? formatPct(defaultMarket.h3_test_mape, locale, 1)
                           : '—'}
                       </dd>
                     </div>
