@@ -1469,3 +1469,42 @@ svg [hidden] {
   color: var(--color-muted);
   margin: 0 0 var(--space-4) 0;
 }
+
+/* Scroll-reveal class is only applied via JS to non-focusable elements below the fold;
+   reduced-motion and print always keep every element visible. */
+.is-scroll-pending {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-scroll-pending {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+@media print {
+  main,
+  .is-scroll-pending,
+  [data-reveal='fade-up'],
+  .spark-area,
+  .dot-anchor,
+  .map-market-node,
+  .map-extremum-callout,
+  .hero-forecast-group,
+  .hero-annotation,
+  .dot-forecast {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .spark-line,
+  .spark-line-casing,
+  .line-history,
+  .line-history-casing {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+}

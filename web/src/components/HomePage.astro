@@ -1526,13 +1526,13 @@ const heroMorphMap = Object.fromEntries(
       { opacity: 1, y: 0, duration: 0.38, stagger: 0.04, ease: 'power2.out', overwrite: true }
     );
 
-    // Also stagger South-to-North dots on the newly revealed map panel if visible
+    // Also gently pulse South-to-North dots on the newly revealed map panel without hiding focusable dots
     const activeMapPanel = document.querySelector<HTMLElement>(`[data-map-panel="${nextSlug}"]`);
     if (activeMapPanel) {
       const mapDots = activeMapPanel.querySelectorAll<SVGGElement>('.map-market-node');
       gsap.fromTo(
         mapDots,
-        { opacity: 0, scale: 0.4, transformOrigin: '50% 50%' },
+        { scale: 0.72, transformOrigin: '50% 50%' },
         {
           opacity: 1,
           scale: 1,
@@ -1664,6 +1664,9 @@ const heroMorphMap = Object.fromEntries(
 
       if (reduceMotion) {
         // Immediately show final state with zero animation when prefers-reduced-motion: reduce
+        document.querySelectorAll('.is-scroll-pending').forEach((el) => {
+          el.classList.remove('is-scroll-pending');
+        });
         gsap.set(
           '.line-history, .line-history-casing, .spark-line, .spark-line-casing',
           { clearProps: 'strokeDasharray,strokeDashoffset' }
@@ -1774,7 +1777,7 @@ const heroMorphMap = Object.fromEntries(
           );
       }
 
-      // 2. SECTION 2 SPARKLINE REVEALS (once on scroll)
+      // 2. SECTION 2 SPARKLINE REVEALS (keep visible in DOM & full-page captures; animate cleanly when entering viewport)
       const storyCards = document.querySelectorAll<HTMLElement>('.stories-section .story-card');
       storyCards.forEach((card, idx) => {
         const sparkLines = card.querySelectorAll<SVGPathElement>(
@@ -1783,55 +1786,51 @@ const heroMorphMap = Object.fromEntries(
         const sparkArea = card.querySelector<SVGPathElement>('.spark-area');
         const sparkDot = card.querySelector<SVGCircleElement>('.dot-anchor');
 
-        sparkLines.forEach((sl) => {
-          const len = Math.ceil(sl.getTotalLength() * 1.05 + 12);
-          sl.style.strokeDasharray = `${len}`;
-          sl.style.strokeDashoffset = `${len}`;
-        });
-        if (sparkArea) gsap.set(sparkArea, { opacity: 0 });
-        if (sparkDot) gsap.set(sparkDot, { opacity: 0, scale: 0, transformOrigin: '50% 50%' });
-
-        const stTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 85%',
-            once: true,
+        ScrollTrigger.create({
+          trigger: card,
+          start: 'top 85%',
+          once: true,
+          onEnter: () => {
+            const stTl = gsap.timeline();
+            sparkLines.forEach((sl) => {
+              const len = Math.ceil(sl.getTotalLength() * 1.05 + 12);
+              stTl.fromTo(
+                sl,
+                { strokeDasharray: `${len}`, strokeDashoffset: len },
+                {
+                  strokeDashoffset: 0,
+                  duration: 0.75,
+                  delay: idx * 0.06,
+                  ease: 'power2.out',
+                  onComplete: () => {
+                    sl.style.strokeDasharray = 'none';
+                    sl.style.strokeDashoffset = '0';
+                  },
+                },
+                0
+              );
+            });
+            if (sparkArea) {
+              stTl.fromTo(
+                sparkArea,
+                { opacity: 0.25 },
+                { opacity: 1, duration: 0.45, ease: 'power2.out' },
+                0.2 + idx * 0.06
+              );
+            }
+            if (sparkDot) {
+              stTl.fromTo(
+                sparkDot,
+                { scale: 0.65, transformOrigin: '50% 50%' },
+                { scale: 1, opacity: 1, duration: 0.28, ease: 'back.out(1.7)' },
+                0.55 + idx * 0.06
+              );
+            }
           },
         });
-
-        stTl
-          .to(
-            sparkLines,
-            {
-              strokeDashoffset: 0,
-              duration: 0.9,
-               delay: idx * 0.08,
-              ease: 'power2.out',
-            },
-            0
-          )
-          .to(
-            sparkArea,
-            {
-              opacity: 1,
-              duration: 0.5,
-              ease: 'power2.out',
-            },
-            0.35 + idx * 0.08
-          )
-          .to(
-            sparkDot,
-            {
-              opacity: 1,
-              scale: 1,
-              duration: 0.3,
-              ease: 'back.out(1.7)',
-            },
-            0.75 + idx * 0.08
-          );
       });
 
-      // 3. SECTION 3 PROGRESSIVE SOUTH-TO-NORTH MAP DOT REVEAL (once on scroll)
+      // 3. SECTION 3 PROGRESSIVE SOUTH-TO-NORTH MAP DOT MOTION (never hide focusable dots before scroll)
       const mapSection = document.getElementById('map-section-root');
       if (mapSection) {
         const activeMapPanel = mapSection.querySelector<HTMLElement>(
@@ -1840,59 +1839,91 @@ const heroMorphMap = Object.fromEntries(
         if (activeMapPanel) {
           const dots = activeMapPanel.querySelectorAll<SVGGElement>('.map-market-node');
           const callouts = activeMapPanel.querySelectorAll<SVGGElement>('.map-extremum-callout');
-          gsap.set(dots, { opacity: 0, scale: 0, transformOrigin: '50% 50%' });
-          gsap.set(callouts, { opacity: 0, y: 6 });
 
-          const mapTl = gsap.timeline({
-            scrollTrigger: {
-              trigger: mapSection,
-              start: 'top 78%',
-              once: true,
+          ScrollTrigger.create({
+            trigger: mapSection,
+            start: 'top 78%',
+            once: true,
+            onEnter: () => {
+              const mapTl = gsap.timeline();
+              mapTl
+                .fromTo(
+                  dots,
+                  { scale: 0.72, transformOrigin: '50% 50%' },
+                  {
+                    opacity: 1,
+                    scale: 1,
+                    duration: 0.35,
+                    stagger: { amount: 0.65, from: 'start' },
+                    ease: 'back.out(1.5)',
+                    overwrite: true,
+                  }
+                )
+                .fromTo(
+                  callouts,
+                  { y: 6 },
+                  {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.32,
+                    stagger: 0.08,
+                    ease: 'power2.out',
+                    overwrite: true,
+                  },
+                  '-=0.2'
+                );
             },
           });
-
-          mapTl
-            .to(dots, {
-              opacity: 1,
-              scale: 1,
-              duration: 0.38,
-              stagger: { amount: 0.75, from: 'start' },
-              ease: 'back.out(1.5)',
-            })
-            .to(
-              callouts,
-              {
-                opacity: 1,
-                y: 0,
-                duration: 0.35,
-                stagger: 0.1,
-                ease: 'power2.out',
-              },
-              '-=0.2'
-            );
         }
       }
 
-      // 4. SUBTLE FADE-UP REVEALS (24px, ~400ms, once)
+      // 4. SUBTLE FADE-UP SCROLL MOTION (24px, ~400ms, once; keep all content & focusables visible by default)
       const fadeElements = gsap.utils.toArray<HTMLElement>('[data-reveal="fade-up"]');
       ScrollTrigger.batch(fadeElements, {
         start: 'top 88%',
         once: true,
         onEnter: (batch) => {
+          batch.forEach((el) => el.classList.remove('is-scroll-pending'));
           gsap.fromTo(
             batch,
-            { opacity: 0, y: 24 },
+            { y: 16 },
             {
               opacity: 1,
               y: 0,
-              duration: 0.4,
-              stagger: 0.07,
+              duration: 0.38,
+              stagger: 0.06,
               ease: 'power2.out',
               overwrite: true,
             }
           );
         },
       });
+
+      const revealAllImmediately = () => {
+        document.querySelectorAll('.is-scroll-pending').forEach((el) => {
+          el.classList.remove('is-scroll-pending');
+        });
+        gsap.set(
+          '.line-history, .line-history-casing, .spark-line, .spark-line-casing',
+          { clearProps: 'strokeDasharray,strokeDashoffset' }
+        );
+        gsap.set(
+          '.hero-forecast-group, .hero-annotation, .dot-forecast, .spark-area, .dot-anchor, .map-market-node, .map-extremum-callout, [data-reveal="fade-up"]',
+          { opacity: 1, clearProps: 'transform' }
+        );
+      };
+
+      document.addEventListener('focusin', (e) => {
+        const target = e.target as HTMLElement | null;
+        if (!target) return;
+        const pendingAncestor = target.closest('.is-scroll-pending, [data-reveal="fade-up"]');
+        if (pendingAncestor) {
+          pendingAncestor.classList.remove('is-scroll-pending');
+          gsap.to(pendingAncestor, { opacity: 1, y: 0, duration: 0.15, overwrite: true });
+        }
+      });
+
+      window.addEventListener('beforeprint', revealAllImmediately);
     }
   );
 </script>

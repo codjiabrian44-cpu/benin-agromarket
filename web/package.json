@@ -7,7 +7,7 @@
     "prebuild": "node scripts/prepare-data.mjs",
     "dev": "node scripts/prepare-data.mjs && astro dev",
     "build": "astro build",
-    "test": "node scripts/test-url-params.mjs && node scripts/test-number-formatting.mjs && node scripts/test-base-path-crawl.mjs",
+    "test": "node scripts/test-url-params.mjs && node scripts/test-number-formatting.mjs && node scripts/test-base-path-crawl.mjs && node scripts/test-no-hidden-content.mjs",
     "report:budget": "node scripts/write-web-budget.mjs",
     "preview": "astro preview"
   },
