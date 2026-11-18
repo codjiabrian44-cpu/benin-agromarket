@@ -7,6 +7,7 @@ import {
   formatSignedPct,
   roundHalfAway,
 } from '../lib/format.mjs';
+import { withBase } from '../lib/paths';
 
 export { formatDecimal, formatInt, formatPct, formatSignedPct, roundHalfAway };
 
@@ -27,22 +28,23 @@ export function getDictionary(locale: Locale): Dictionary {
  * Resolve localized route paths while respecting Astro's single `BASE_URL` configuration variable.
  */
 export function getLocalizedRoutes(locale: Locale, baseUrl: string = import.meta.env.BASE_URL) {
-  const cleanBase = baseUrl === '/' ? '' : baseUrl.replace(/\/$/, '');
   if (locale === 'en') {
     return {
-      home: `${cleanBase}/en/`,
-      explorer: `${cleanBase}/en/explorer`,
-      forecast: `${cleanBase}/en/forecast`,
-      method: `${cleanBase}/en/method`,
-      switchLang: `${cleanBase}/`,
+      home: withBase('/en/', baseUrl),
+      explorer: withBase('/en/explorer', baseUrl),
+      forecast: withBase('/en/forecast', baseUrl),
+      method: withBase('/en/method', baseUrl),
+      notFound: withBase('/en/404/', baseUrl),
+      switchLang: withBase('/', baseUrl),
     };
   }
   return {
-    home: `${cleanBase}/`,
-    explorer: `${cleanBase}/explorer`,
-    forecast: `${cleanBase}/previsions`,
-    method: `${cleanBase}/methode`,
-    switchLang: `${cleanBase}/en/`,
+    home: withBase('/', baseUrl),
+    explorer: withBase('/explorer', baseUrl),
+    forecast: withBase('/previsions', baseUrl),
+    method: withBase('/methode', baseUrl),
+    notFound: withBase('/404.html', baseUrl),
+    switchLang: withBase('/en/', baseUrl),
   };
 }
 

@@ -1,6 +1,7 @@
 import type { Locale, ProductSlug } from '../i18n';
 import type { MarketSeries, ProductPayload, SeasonalityByZoneItem } from './data';
 import type { ExplorerRangePreset } from './charts';
+import { withBase } from './paths';
 
 const productCache = new Map<ProductSlug, ProductPayload>();
 
@@ -97,8 +98,7 @@ export function canonicalizeForecastUrl(
 export async function loadProductPayload(baseUrl: string, slug: ProductSlug): Promise<ProductPayload> {
   const cached = productCache.get(slug);
   if (cached) return cached;
-  const cleanBase = baseUrl === '/' ? '' : baseUrl.replace(/\/$/, '');
-  const res = await fetch(`${cleanBase}/data/product-${slug}.json`);
+  const res = await fetch(withBase(`/data/product-${slug}.json`, baseUrl));
   if (!res.ok) {
     throw new Error(`Failed to load product data (${slug}): ${res.status}`);
   }

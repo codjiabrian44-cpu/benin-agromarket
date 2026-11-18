@@ -25,6 +25,7 @@ import {
   groupMarketsByDepartment,
   resolveMarketSeries,
 } from '../lib/marketClient';
+import { normalizeBasePath } from '../lib/paths';
 
 export interface Props {
   locale: Locale;
@@ -33,7 +34,7 @@ export interface Props {
 const { locale } = Astro.props;
 const dict = getDictionary(locale);
 const baseUrl = import.meta.env.BASE_URL;
-const cleanBase = baseUrl === '/' ? '' : baseUrl.replace(/\/$/, '');
+const cleanBase = normalizeBasePath(baseUrl);
 const routes = getLocalizedRoutes(locale, baseUrl);
 const productOrder: ProductSlug[] = ['maize_white', 'tomatoes', 'yam_white'];
 

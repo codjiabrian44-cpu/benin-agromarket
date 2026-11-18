@@ -1,5 +1,6 @@
 ---
 import { getDictionary, getLocalizedRoutes, type Locale } from '../i18n';
+import { withBase } from '../lib/paths';
 import '../styles/global.css';
 
 export interface Props {
@@ -13,29 +14,22 @@ export interface Props {
 const { locale, title, description, currentNav, switchLangHref } = Astro.props;
 const dict = getDictionary(locale);
 const baseUrl = import.meta.env.BASE_URL;
-const cleanBase = baseUrl === '/' ? '' : baseUrl.replace(/\/$/, '');
 const routes = getLocalizedRoutes(locale, baseUrl);
 const frRoutes = getLocalizedRoutes('fr', baseUrl);
 const enRoutes = getLocalizedRoutes('en', baseUrl);
 const targetSwitchHref = switchLangHref ?? routes.switchLang;
 
 const siteOrigin = Astro.site ?? new URL('https://codjiabrian44-cpu.github.io');
-const routeKey = currentNav === '404' ? 'home' : currentNav;
-const currentPath =
-  currentNav === '404'
-    ? locale === 'fr'
-      ? `${cleanBase}/404`
-      : `${cleanBase}/en/404`
-    : locale === 'fr'
-      ? frRoutes[routeKey]
-      : enRoutes[routeKey];
+const routeKey = currentNav === '404' ? 'notFound' : currentNav;
+const currentPath = locale === 'fr' ? frRoutes[routeKey] : enRoutes[routeKey];
 const canonicalUrl = new URL(currentPath, siteOrigin).toString();
 const frAltUrl = new URL(frRoutes[routeKey], siteOrigin).toString();
 const enAltUrl = new URL(enRoutes[routeKey], siteOrigin).toString();
-const ogImageUrl = new URL(`${cleanBase}/og-image.png`, siteOrigin).toString();
+const ogImageUrl = new URL(withBase('/og-image.png', baseUrl), siteOrigin).toString();
 
-const frauncesUrl = `${cleanBase}/fonts/fraunces-latin-wght-normal.woff2`;
-const instrumentUrl = `${cleanBase}/fonts/instrument-sans-latin-wght-normal.woff2`;
+const frauncesUrl = withBase('/fonts/fraunces-latin-wght-normal.woff2', baseUrl);
+const instrumentUrl = withBase('/fonts/instrument-sans-latin-wght-normal.woff2', baseUrl);
+const faviconUrl = withBase('/favicon.svg', baseUrl);
 
 const fontFaceCss = `
 @font-face {
@@ -87,7 +81,7 @@ const fontFaceCss = `
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
-    <link rel="icon" type="image/svg+xml" href={`${cleanBase}/favicon.svg`} />
+    <link rel="icon" type="image/svg+xml" href={faviconUrl} />
     <link rel="preload" href={frauncesUrl} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={instrumentUrl} as="font" type="font/woff2" crossorigin />
     <style set:html={fontFaceCss}></style>
