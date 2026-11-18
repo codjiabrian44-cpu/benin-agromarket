@@ -22,24 +22,10 @@ const dict = getDictionary(locale);
 const homeSummary = getValidatedHomeData();
 const methodTables = methodTablesRaw as any;
 
-const rawSum = methodTables.raw_summary ?? {
-  n_observations: 146501,
-  first_date: '2002-01-15',
-  last_date: '2026-09-15',
-  n_active_markets: 51,
-  n_departments: 12,
-  yam_variety_gap_xof: 151.3,
-  tier1_min_months: 80,
-  n_model_months: 93,
-  model_window_start: '2019-01-15',
-  model_window_end: '2026-09-15',
-  validation_start: '2022-01-15',
-  validation_end: '2025-09-15',
-  test_start: '2025-10-15',
-  test_end: '2026-09-15',
-  first_forecast_month: '2026-10-15',
-  last_forecast_month: '2026-12-15',
-};
+const rawSum = methodTables.raw_summary;
+if (!rawSum) {
+  throw new Error('[MethodPage] Missing raw_summary in method-tables.json; run prepare-data.');
+}
 
 const COMMODITY_TO_SLUG: Record<string, ProductSlug> = {
   'Maize (white)': 'maize_white',
@@ -181,6 +167,10 @@ const s9Body = dict.methodPage.s9BodyTemplate
   .replace('{as_of_date}', dict.home.hero.asOfDateFormatted)
   .replace('{first_forecast_month}', formatYearMonthLong(rawSum.first_forecast_month, dict))
   .replace('{last_forecast_month}', formatYearMonthLong(rawSum.last_forecast_month, dict));
+
+const periodNote = dict.methodPage.kpiPeriodNoteTemplate
+  .replace('{min}', formatInt(rawSum.series_min_obs_months, locale))
+  .replace('{max}', formatInt(rawSum.series_max_obs_months, locale));
 ---
 
 <section class="subpage-hero">
@@ -195,12 +185,13 @@ const s9Body = dict.methodPage.s9BodyTemplate
   <div class="container method-editorial">
     <div class="method-figures-strip" aria-label={dict.methodPage.kicker}>
       <div class="kpi-ledger-cell">
-        <span class="kpi-ledger-label">{dict.methodPage.tableColProduct} / {dict.units.marketsCount}</span>
+        <span class="kpi-ledger-label">{dict.methodPage.kpiSeriesLabel}</span>
         <strong class="kpi-ledger-value tabular-nums">{formatInt(homeSummary.metadata.total_tier1_series, locale)}</strong>
       </div>
       <div class="kpi-ledger-cell">
-        <span class="kpi-ledger-label">{dict.explorer.coverageLabel}</span>
+        <span class="kpi-ledger-label">{dict.methodPage.kpiPeriodLabel}</span>
         <strong class="kpi-ledger-value tabular-nums">{formatInt(rawSum.n_model_months, locale)} {dict.forecastPage.monthUnit}</strong>
+        <span class="kpi-ledger-sub">{periodNote}</span>
       </div>
       <div class="kpi-ledger-cell">
         <span class="kpi-ledger-label">{dict.home.hero.asOfLabel}</span>

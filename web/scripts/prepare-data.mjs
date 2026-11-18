@@ -472,6 +472,10 @@ function buildSplitDataFiles() {
   const yamVarietyGapXof =
     yamGapOverlapTotal > 0 ? round(yamGapWeightedSum / yamGapOverlapTotal, 1) : 0;
 
+  const obsCounts = payload.series.map((s) => s.obs_months_2019_2026).filter(Number.isFinite);
+  const seriesMinObsMonths = obsCounts.length > 0 ? Math.min(...obsCounts) : 0;
+  const seriesMaxObsMonths = obsCounts.length > 0 ? Math.max(...obsCounts) : 0;
+
   const rawSummary = {
     n_observations: parseInt(rawSummaryMap['wfp_food_prices_ben.csv_data_rows'] || '0', 10),
     first_date: rawSummaryMap['global_min_date'] || '2002-01-15',
@@ -481,6 +485,8 @@ function buildSplitDataFiles() {
     yam_variety_gap_xof: yamVarietyGapXof,
     tier1_min_months: 80,
     n_model_months: 93,
+    series_min_obs_months: seriesMinObsMonths,
+    series_max_obs_months: seriesMaxObsMonths,
     model_window_start: '2019-01-15',
     model_window_end: '2026-09-15',
     validation_start: '2022-01-15',
