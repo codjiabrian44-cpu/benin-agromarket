@@ -206,7 +206,10 @@
       "colCoords": "Coordinates (Lat, Lon)",
       "colLatestPrice": "Sep 2026 price (XOF/kg)",
       "colDiffMedian": "Spread vs median",
-      "colForecastH3": "Dec 2026 forecast (80% interval)"
+      "colForecastH3": "Dec 2026 forecast (80% interval)",
+      "southZoomTitle": "South zoom (< 7.5°N)",
+      "southZoomSubtitle": "{n} well-tracked markets enlarged about 3× so southern cluster dots never overlap",
+      "southZoomTableToggle": "Show data table of the {n} southern markets (< 7.5°N)"
     },
     "forecastTeaser": {
       "title": "What the 3-month forecasts say",

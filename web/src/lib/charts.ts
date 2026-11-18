@@ -656,6 +656,80 @@ export function buildBeninDotMapGeometry(
   };
 }
 
+/**
+ * Inset (~3x scale) of the dense southern Benin cluster (< 7.5°N) so coastal
+ * and Abomey-plateau markets separate cleanly without hiding behind each other.
+ */
+export function buildSouthZoomMapGeometry(
+  markets: Tier1MarketMapItem[],
+  slug: ProductSlug,
+  latBandLabels: { '6_5': string; '7_0': string },
+  width = 340,
+  height = 260
+): {
+  width: number;
+  height: number;
+  mapLeft: number;
+  mapRight: number;
+  maxOffsetPx: number;
+  rampColors: [string, string, string, string, string];
+  nodes: DotMapNode[];
+  latBands: Array<{ lat: number; y: number; label: string }>;
+} {
+  const mapLeft = 48;
+  const mapRight = width - 14;
+  const topPlotY = 18;
+  const bottomPlotY = height - 18;
+  const xScale = scaleLinear().domain([1.62, 2.74]).range([mapLeft, mapRight]);
+  const yScale = scaleLinear().domain([6.28, 7.45]).range([bottomPlotY, topPlotY]);
+  const rampColors = PRODUCT_RAMP_5[slug];
+
+  const sortedByPrice = [...markets].sort((a, b) => a.last_observed_price - b.last_observed_price);
+  const cheapestName = sortedByPrice[0]?.market_name ?? '';
+  const priciestName = sortedByPrice[sortedByPrice.length - 1]?.market_name ?? '';
+
+  const southSorted = markets
+    .filter((m) => m.latitude < 7.5)
+    .sort((a, b) => a.latitude - b.latitude || a.longitude - b.longitude);
+
+  const initialNodes: DotMapNode[] = southSorted.map((m) => {
+    const stepIndex = classifyMedianBracketStep(m.diff_vs_median_pct);
+    const trueCx = Math.round(xScale(m.longitude) * 10) / 10;
+    const trueCy = Math.round(yScale(m.latitude) * 10) / 10;
+    return {
+      ...m,
+      cx: trueCx,
+      cy: trueCy,
+      trueCx,
+      trueCy,
+      offsetPx: 0,
+      stepIndex,
+      fillHex: rampColors[stepIndex - 1],
+      isCheapest: m.market_name === cheapestName,
+      isPriciest: m.market_name === priciestName,
+    };
+  });
+
+  const nodes = relaxSouthernClusterCollisions(initialNodes, 12.5, 11.0, 50);
+  const maxOffsetPx = max(nodes.map((n) => n.offsetPx)) ?? 0;
+
+  const latBands = [
+    { lat: 6.5, y: Math.round(yScale(6.5) * 10) / 10, label: latBandLabels['6_5'] },
+    { lat: 7.0, y: Math.round(yScale(7.0) * 10) / 10, label: latBandLabels['7_0'] },
+  ];
+
+  return {
+    width,
+    height,
+    mapLeft,
+    mapRight,
+    maxOffsetPx,
+    rampColors,
+    nodes,
+    latBands,
+  };
+}
+
 /* ==========================================================================
    Shared Helpers for Explorer & Forecast Charts (Step 3.3)
    ========================================================================== */

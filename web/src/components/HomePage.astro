@@ -17,6 +17,7 @@ import {
 import {
   buildBeninDotMapGeometry,
   buildHeroChartGeometry,
+  buildSouthZoomMapGeometry,
   buildSparklineGeometry,
 } from '../lib/charts';
 import { getValidatedHomeData, type HistoryPoint, type HomeProductData } from '../lib/data';
@@ -137,6 +138,13 @@ const productViews = productOrder.map((slug) => {
   const mobileCoordByMarket = Object.fromEntries(
     mapMobileGeom.nodes.map((n) => [n.market_name, { cx: n.cx, cy: n.cy }])
   );
+  const southZoomGeom = buildSouthZoomMapGeometry(
+    prod.tier1_markets_map,
+    slug,
+    locale === 'fr' ? { '6_5': '6,5°N', '7_0': '7,0°N' } : { '6_5': '6.5°N', '7_0': '7.0°N' },
+    340,
+    260
+  );
   const fcH1 = prod.dantokpa.forecasts.find((f) => f.horizon_months === 1)!;
   const fcH2 = prod.dantokpa.forecasts.find((f) => f.horizon_months === 2)!;
   const fcH3 = prod.dantokpa.forecasts.find((f) => f.horizon_months === 3)!;
@@ -175,6 +183,7 @@ const productViews = productOrder.map((slug) => {
     mapGeom,
     mapMobileGeom,
     mobileCoordByMarket,
+    southZoomGeom,
     fcH1,
     fcH2,
     fcH3,
@@ -961,7 +970,8 @@ const heroMorphMap = Object.fromEntries(
     </header>
 
     {
-      productViews.map(({ slug, prod, mapGeom, mapMobileGeom, mobileCoordByMarket }, idx) => {
+      productViews.map(
+        ({ slug, prod, mapGeom, mapMobileGeom, mobileCoordByMarket, southZoomGeom }, idx) => {
         const isDefault = idx === 0;
         const defaultMarket =
           mapGeom.nodes.find((n) => n.market_name === 'Dantokpa') ?? mapGeom.nodes[0];
@@ -1173,6 +1183,181 @@ const heroMorphMap = Object.fromEntries(
                     {dict.units.xofPerKg})
                   </li>
                 </ul>
+
+                <!-- Zoom sur le Sud (< 7.5°N) Inset (~3x scale) -->
+                <div class="south-zoom-block">
+                  <h3 class="south-zoom-title">{dict.home.mapSection.southZoomTitle}</h3>
+                  <p class="south-zoom-sub">
+                    {dict.home.mapSection.southZoomSubtitle.replace(
+                      '{n}',
+                      String(southZoomGeom.nodes.length)
+                    )}
+                  </p>
+                  <div class="south-zoom-svg-wrap" data-south-wrap={slug}>
+                    <svg
+                      viewBox={`0 0 ${southZoomGeom.width} ${southZoomGeom.height}`}
+                      class="south-zoom-svg"
+                      role="img"
+                      aria-label={`${dict.home.mapSection.southZoomTitle} — ${dict.products[slug].full}`}
+                    >
+                      <title>
+                        {dict.home.mapSection.southZoomTitle} — {dict.products[slug].full}
+                      </title>
+
+                      {southZoomGeom.latBands.map((lb) => (
+                        <g class="map-lat-band">
+                          <line
+                            x1={southZoomGeom.mapLeft}
+                            x2={southZoomGeom.mapRight}
+                            y1={lb.y}
+                            y2={lb.y}
+                            class="map-grid-line"
+                          />
+                          <text x="6" y={lb.y + 4} class="map-axis-text south-zoom-axis-text tabular-nums">
+                            {lb.label}
+                          </text>
+                        </g>
+                      ))}
+
+                      {southZoomGeom.nodes.map((node) => {
+                        const isDantokpa = node.market_name === defaultMarket.market_name;
+                        const zonePlain = formatZoneName(node.agro_zone, dict);
+                        const coordsFormatted = `${formatDecimal(node.latitude, locale, 2)}°N, ${formatDecimal(node.longitude, locale, 2)}°E`;
+                        const baseR =
+                          node.isCheapest || node.isPriciest
+                            ? '6.5'
+                            : isDantokpa
+                              ? '6'
+                              : '5';
+                        return (
+                          <g
+                            class="map-market-node south-zoom-node"
+                            tabindex="0"
+                            role="button"
+                            aria-label={`${node.market_name} (${node.department}, ${zonePlain}, ${coordsFormatted})${locale === 'fr' ? ' :' : ':'} ${formatDecimal(node.last_observed_price, locale, 1)} ${dict.units.xofPerKg} (${formatSignedPct(node.diff_vs_median_pct, locale, 1)})`}
+                            data-market-node={slug}
+                            data-tooltip-scope="south"
+                            data-market-name={node.market_name}
+                            data-department={node.department}
+                            data-zone={zonePlain}
+                            data-coords={coordsFormatted}
+                            data-cx={node.cx}
+                            data-cy={node.cy}
+                            data-price={formatDecimal(node.last_observed_price, locale, 1)}
+                            data-diff={formatSignedPct(node.diff_vs_median_pct, locale, 1)}
+                            data-h3={`${formatDecimal(node.h3_forecast, locale, 1)} [${formatInt(node.h3_low_80, locale)}, ${formatInt(node.h3_high_80, locale)}]`}
+                            data-mape={
+                              node.h3_test_mape !== null
+                                ? formatPct(node.h3_test_mape, locale, 1)
+                                : '—'
+                            }
+                            data-active={isDantokpa ? 'true' : 'false'}
+                          >
+                            <circle cx={node.cx} cy={node.cy} r="12" class="map-hit-target" />
+                            <circle
+                              cx={node.cx}
+                              cy={node.cy}
+                              r={baseR}
+                              fill={node.fillHex}
+                              class="map-dot"
+                            />
+                          </g>
+                        );
+                      })}
+                    </svg>
+
+                    <div
+                      class="map-floating-tooltip tabular-nums"
+                      data-south-tooltip={slug}
+                      role="status"
+                      aria-live="polite"
+                      hidden
+                    >
+                      <div class="tooltip-top-row">
+                        <strong class="tooltip-market-name" data-tt-field="name">
+                          {defaultMarket.market_name}
+                        </strong>
+                        <span class="tooltip-coords" data-tt-field="coords">
+                          {defaultCoords}
+                        </span>
+                      </div>
+                      <p class="tooltip-region" data-tt-field="meta">
+                        {defaultMarket.department} · {formatZoneName(defaultMarket.agro_zone, dict)}
+                      </p>
+                      <div class="tooltip-metrics">
+                        <div>
+                          <span class="tooltip-label">
+                            {dict.home.mapSection.latestPriceLabel}{locale === 'fr' ? ' :' : ':'}
+                          </span>{' '}
+                          <strong data-tt-field="price">
+                            {formatDecimal(defaultMarket.last_observed_price, locale, 1)}
+                          </strong>{' '}
+                          {dict.units.xofPerKg} (<span data-tt-field="diff">
+                            {formatSignedPct(defaultMarket.diff_vs_median_pct, locale, 1)}
+                          </span>)
+                        </div>
+                        <div>
+                          <span class="tooltip-label">
+                            {dict.home.mapSection.forecastH3MapLabel}{locale === 'fr' ? ' :' : ':'}
+                          </span>{' '}
+                          <strong data-tt-field="h3">
+                            {formatDecimal(defaultMarket.h3_forecast, locale, 1)} [
+                            {formatInt(defaultMarket.h3_low_80, locale)},{' '}
+                            {formatInt(defaultMarket.h3_high_80, locale)}]
+                          </strong>{' '}
+                          {dict.units.xofPerKg}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <details class="data-drawer map-dark-drawer south-zoom-drawer">
+                    <summary>
+                      {dict.home.mapSection.southZoomTableToggle.replace(
+                        '{n}',
+                        String(southZoomGeom.nodes.length)
+                      )}
+                    </summary>
+                    <div class="table-scroll">
+                      <table class="ledger-table map-dark-table">
+                        <thead>
+                          <tr>
+                            <th>{dict.home.mapSection.colMarket}</th>
+                            <th>{dict.home.mapSection.colDepartment}</th>
+                            <th class="num">{dict.home.mapSection.colCoords}</th>
+                            <th class="num">{dict.home.mapSection.colLatestPrice}</th>
+                            <th class="num">{dict.home.mapSection.colDiffMedian}</th>
+                            <th class="num">{dict.home.mapSection.colForecastH3}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {southZoomGeom.nodes.map((m) => (
+                            <tr>
+                              <td>
+                                <strong>{m.market_name}</strong>
+                              </td>
+                              <td>{m.department}</td>
+                              <td class="num nowrap">
+                                {formatDecimal(m.latitude, locale, 2)}°N,{' '}
+                                {formatDecimal(m.longitude, locale, 2)}°E
+                              </td>
+                              <td class="num nowrap">
+                                {formatDecimal(m.last_observed_price, locale, 1)}
+                              </td>
+                              <td class="num nowrap">
+                                {formatSignedPct(m.diff_vs_median_pct, locale, 1)}
+                              </td>
+                              <td class="num nowrap">
+                                {formatDecimal(m.h3_forecast, locale, 1)} [
+                                {formatInt(m.h3_low_80, locale)}, {formatInt(m.h3_high_80, locale)}]
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </details>
+                </div>
               </div>
 
               <!-- Spatial Summary & Interactive Market Inspector (Cols 6-12) Directly on Dark Ink -->
@@ -1757,13 +1942,26 @@ const heroMorphMap = Object.fromEntries(
     const activateNode = (showFloatingTooltip: boolean) => {
       const slug = node.dataset.marketNode;
       if (!slug) return;
+      const isSouthScope = node.dataset.tooltipScope === 'south';
       const inspector = document.querySelector<HTMLElement>(`[data-market-inspector="${slug}"]`);
-      const mapWrap = document.querySelector<HTMLElement>(`[data-map-wrap="${slug}"]`);
-      const tooltip = document.querySelector<HTMLElement>(`[data-map-tooltip="${slug}"]`);
+      const mapWrap = document.querySelector<HTMLElement>(
+        isSouthScope ? `[data-south-wrap="${slug}"]` : `[data-map-wrap="${slug}"]`
+      );
+      const tooltip = document.querySelector<HTMLElement>(
+        isSouthScope ? `[data-south-tooltip="${slug}"]` : `[data-map-tooltip="${slug}"]`
+      );
+      const otherTooltip = document.querySelector<HTMLElement>(
+        isSouthScope ? `[data-map-tooltip="${slug}"]` : `[data-south-tooltip="${slug}"]`
+      );
+      if (otherTooltip) otherTooltip.hidden = true;
 
       const siblingNodes = document.querySelectorAll<SVGGElement>(`[data-market-node="${slug}"]`);
-      siblingNodes.forEach((sib) => sib.setAttribute('data-active', 'false'));
-      node.setAttribute('data-active', 'true');
+      siblingNodes.forEach((sib) =>
+        sib.setAttribute(
+          'data-active',
+          sib.dataset.marketName === node.dataset.marketName ? 'true' : 'false'
+        )
+      );
 
       if (inspector) {
         const setField = (field: string, value: string | undefined) => {
@@ -1796,10 +1994,10 @@ const heroMorphMap = Object.fromEntries(
         const cx = parseFloat(node.dataset.cx || '215');
         const cy = parseFloat(node.dataset.cy || '260');
         const wrapRect = mapWrap.getBoundingClientRect();
-        const dotSvg = mapWrap.querySelector<SVGSVGElement>('.dotmap-svg');
+        const dotSvg = mapWrap.querySelector<SVGSVGElement>('svg');
         const vb = dotSvg?.viewBox?.baseVal;
-        const vbW = vb && vb.width ? vb.width : 430;
-        const vbH = vb && vb.height ? vb.height : 520;
+        const vbW = vb && vb.width ? vb.width : isSouthScope ? 340 : 430;
+        const vbH = vb && vb.height ? vb.height : isSouthScope ? 260 : 520;
         const scaleX = wrapRect.width / vbW;
         const scaleY = wrapRect.height / vbH;
         const pxX = cx * scaleX;
@@ -1818,8 +2016,9 @@ const heroMorphMap = Object.fromEntries(
     const hideTooltip = () => {
       const slug = node.dataset.marketNode;
       if (!slug) return;
-      const tooltip = document.querySelector<HTMLElement>(`[data-map-tooltip="${slug}"]`);
-      if (tooltip) tooltip.hidden = true;
+      document
+        .querySelectorAll<HTMLElement>(`[data-map-tooltip="${slug}"], [data-south-tooltip="${slug}"]`)
+        .forEach((tt) => (tt.hidden = true));
     };
 
     node.addEventListener('mouseenter', () => activateNode(true));
@@ -1844,7 +2043,7 @@ const heroMorphMap = Object.fromEntries(
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       document
-        .querySelectorAll<HTMLElement>('[data-map-tooltip]')
+        .querySelectorAll<HTMLElement>('[data-map-tooltip], [data-south-tooltip]')
         .forEach((tt) => (tt.hidden = true));
     }
   });
@@ -3260,5 +3459,47 @@ const heroMorphMap = Object.fromEntries(
     .dotmap-svg.is-mobile-geom .map-axis-text {
       font-size: 12px;
     }
+  }
+
+  /* South Zoom (< 7.5°N) Inset */
+  .south-zoom-block {
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid rgba(246, 240, 228, 0.16);
+  }
+
+  .south-zoom-title {
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    font-weight: 650;
+    color: var(--color-sand);
+    margin: 0 0 2px 0;
+  }
+
+  .south-zoom-sub {
+    font-size: var(--text-xs);
+    color: var(--color-sand-2);
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .south-zoom-svg-wrap {
+    position: relative;
+    background-color: rgba(246, 240, 228, 0.04);
+    border: 1px solid rgba(246, 240, 228, 0.16);
+    border-radius: var(--radius-sm);
+  }
+
+  .south-zoom-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .south-zoom-axis-text {
+    font-size: 12px;
+  }
+
+  .south-zoom-drawer {
+    margin-top: var(--space-2);
   }
 </style>

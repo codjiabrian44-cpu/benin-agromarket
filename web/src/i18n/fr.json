@@ -206,7 +206,10 @@
       "colCoords": "Coordonnées (Lat, Lon)",
       "colLatestPrice": "Prix sept. 2026 (XOF/kg)",
       "colDiffMedian": "Écart à la médiane",
-      "colForecastH3": "Prévision déc. 2026 (Fourchette 80 %)"
+      "colForecastH3": "Prévision déc. 2026 (Fourchette 80 %)",
+      "southZoomTitle": "Zoom sur le Sud (< 7,5°N)",
+      "southZoomSubtitle": "{n} marchés bien suivis agrandis environ 3 fois (bande côtière et plateau d'Abomey)",
+      "southZoomTableToggle": "Afficher le tableau des {n} marchés du Sud (< 7,5°N)"
     },
     "forecastTeaser": {
       "title": "Ce que disent les prévisions",
