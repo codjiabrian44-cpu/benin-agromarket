@@ -38,11 +38,11 @@ L'application web statique (français par défaut, avec version anglaise) permet
 
 The static web application (built in French at `/` and English at `/en/`) provides five views:
 
-1. **Overview (`/` and `/en/`):** Reference price history and 3-month forecast for Dantokpa (Cotonou), seasonality cards across all three commodities, an interactive latitude/longitude dot map of well-tracked markets with an accessible data table, and a forecast reliability summary.
-2. **Price Explorer (`/explorer` and `/en/explorer`):** Product chips, searchable market selector grouped by department, full monthly price history with explicit visual breaks wherever observations are missing, optional comparison against the tracked-market median, regional seasonality bar charts by latitude band, keyboard-navigable crosshair, and shareable URL query parameters.
-3. **Forecasts (`/previsions` and `/en/forecast`):** Recent observed trajectory followed by 1-, 2-, and 3-month forecasts with 80% and 90% empirical uncertainty bands, plain-language method and reliability labels, market-level and product-wide test errors, and prominent volatility warnings (especially for tomatoes and sudden external shocks).
+1. **Overview (`/` and `/en/`):** Reference price history and 3-month forecast for Dantokpa (Cotonou), seasonality cards with 36-month sparklines and underlying data tables across all three commodities, an interactive latitude/longitude dot map of well-tracked markets plus a 3× southern cluster inset (`< 7.5°N`) with accessible tables, and a forecast reliability summary.
+2. **Price Explorer (`/explorer` and `/en/explorer`):** Product chips, searchable market selector grouped by department (matching market or department names), full monthly price history with explicit visual breaks wherever observations are missing, optional comparison against the tracked-market median, regional seasonality bar charts by latitude band with 12-month tables, keyboard-navigable crosshair, and shareable URL query parameters.
+3. **Forecasts (`/previsions` and `/en/forecast`):** Product chips and searchable market selector grouped by department, recent 24-month observed trajectory followed by 1-, 2-, and 3-month forecasts with 80% and 90% empirical uncertainty bands, plain-language method and reliability labels, market-level and product-wide test errors, and prominent volatility warnings (especially for tomatoes and sudden external shocks).
 4. **Method & Limits (`/methode` and `/en/method`):** Plain-language explanation of data provenance, the national reporting hiatus, well-tracked market selection criteria, yam variety separation, backtesting without look-ahead bias, weather-feature ablation results, model performance summary tables, interactive keyboard-accessible glossary definitions, and full open-data attributions.
-5. **Bilingual 404 (`/404` and `/en/404`):** Editorial recovery links to all French and English pages.
+5. **Bilingual 404 (`/404.html` and `/en/404/`):** Editorial recovery links to all French and English pages.
 
 ---
 
@@ -75,8 +75,8 @@ Full dataset URLs, download dates, SHA-256 checksums, and known caveats are docu
 
 - **Strict temporal splitting (zero look-ahead):** Models are trained on a rolling-origin expanding window over the post-hiatus period (`2019–2026`), skipping the sparse pre-2019 years and the two-year national reporting hiatus (`2017–2018`) without silent imputation.
 - **Baselines before complexity:** Every statistical or machine-learning model (regularized seasonal regression, gradient-boosted decision trees with and without weather, exponential smoothing, seasonal autoregressive models) is benchmarked against three transparent baselines (last known price, same month last year, and causal seasonal ratio).
-- **Pre-registered selection & untouched final test:** Model selection is frozen strictly on the validation window (`2022–2025`), requiring a minimum improvement over the best baseline before adopting a complex model; the final test window (`2025–2026`) is evaluated once after freezing selection, and every case where another candidate scored higher on the test split is reported openly.
-- **Empirical prediction intervals:** 80% and 90% uncertainty bands are derived causally from out-of-sample past forecast errors using empirical Bayes shrinkage between market-specific and product-wide error distributions.
+- **Pre-registered selection & untouched final test:** Model selection is frozen strictly on the validation window (`2022–2025`), requiring at least a `0.5%` reduction in validation MAE over the best baseline before adopting a complex model (`src/evaluate/backtest.py`); the final test window (`2025–2026`) is evaluated once after freezing selection, and every case where another candidate scored higher on the test split is reported openly.
+- **Empirical prediction intervals:** 80% and 90% uncertainty bands are derived causally from completed out-of-sample absolute log-error quantiles (`|log(y) - log(ŷ)|`), shrinking each market's empirical quantiles toward the product-wide distribution by available market residual count (`w_m = min(1, n_m / 20)` once at least `5` completed residuals exist, with a causal product prior when fewer residuals have accumulated).
 - **Cryptographic provenance & export contract:** Cached models and predictions verify SHA-256 hashes of source code and input data before reuse, and exported JSON artifacts are checked by `src/evaluate/validate_export.py`.
 
 ---
@@ -132,14 +132,14 @@ python -m src.evaluate.figures
 
 ### 2. Web Application (Static Build — Works Without `.venv`)
 
-Requires Node.js (v20+ recommended). Tracked exports in `web/public/data/forecasts.json` and `docs/tables/*.csv` allow building the web app directly from a clean clone without Python:
+Requires Node.js 22.12+ (recommended LTS version `24` specified in `web/.nvmrc` and enforced via `"engines"` in `web/package.json`). Tracked exports in `web/public/data/forecasts.json` and `docs/tables/*.csv` allow building the web app directly from a clean clone without Python:
 
 ```bash
 cd web
 npm ci
 npm run dev      # Start local Astro dev server
 npm run build    # Run prepare-data + static Astro build into web/dist/
-npm test         # Verify canonical URL parameter contract
+npm test         # Run URL contract, formatting, base-path crawl, visibility, mobile SVG & a11y tests
 ```
 
 When `.venv` is also present, regenerate the bundle size audit in `docs/tables/web_budget.md` with:
