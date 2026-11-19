@@ -134,7 +134,7 @@ python -m src.evaluate.figures
 
 ### 2. Web Application (Static Build — Works Without `.venv`)
 
-Requires Node.js 22.12+ (recommended LTS version `24` specified in `web/.nvmrc` and enforced via `"engines"` in `web/package.json`). Tracked exports in `web/public/data/forecasts.json` and `docs/tables/*.csv` allow building the web app directly from a clean clone without Python:
+Requires Node.js 22.22+ (recommended LTS version `24` specified in `web/.nvmrc` and enforced via `"engines"` in `web/package.json`). Tracked exports in `web/public/data/forecasts.json` and `docs/tables/*.csv` allow building the web app directly from a clean clone without Python:
 
 ```bash
 cd web
@@ -192,7 +192,7 @@ benin-agromarket/
 │   ├── readme/             # Compressed screenshots for README
 │   └── screenshots/        # Desktop & mobile Playwright QA screenshots by step
 └── web/
-    ├── .nvmrc              # Pinned Node.js LTS major version (24; Astro 7 requires >=22.12.0)
+    ├── .nvmrc              # Pinned Node.js LTS major version (24; Astro 7 requires >=22.22.0)
     ├── astro.config.mjs    # Static output config + single site/base configuration
     ├── package.json        # Astro, D3 modules, GSAP, self-hosted variable fonts, engines
     ├── scripts/            # prepare-data.mjs, Playwright QA & audit scripts, write-web-budget.mjs
