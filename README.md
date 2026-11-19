@@ -148,6 +148,12 @@ When `.venv` is also present, regenerate the bundle size audit in `docs/tables/w
 npm run report:budget
 ```
 
+After deployment (or against a local static server mounted at the configured base path), verify every HTML route, internal link, data JSON fetch, `canonical`, `hreflang`, and `sitemap.xml` / `robots.txt` entry with zero `404`s or mismatched origins:
+
+```bash
+node scripts/check_live_site.mjs https://codjiabrian44-cpu.github.io/benin-agromarket/
+```
+
 ---
 
 ## Repository Structure
