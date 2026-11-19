@@ -1,9 +1,9 @@
 Budget Category,Scope / Files Included,File Count,Raw Size (Bytes),Raw Size (KiB),Gzip Size (Bytes),Gzip Size (KiB),Phase 3 Budget Limit,Status
-Home Page JavaScript (JS),Scripts referenced by / (dist/index.html),1,121232,118.39 KiB,46179,45.10 KiB,<= 120.00 KiB gzip,PASS
-All Site JavaScript (dist/_astro/*.js),All bundled JS across all routes,5,196090,191.49 KiB,71226,69.56 KiB,<= 120.00 KiB gzip,PASS
-Home Page Stylesheets (CSS),Stylesheets referenced by / (dist/index.html),2,42845,41.84 KiB,8011,7.82 KiB,<= 30.00 KiB gzip,PASS
+Home Page JavaScript (JS),Scripts referenced by / (dist/index.html),1,123723,120.82 KiB,46794,45.70 KiB,<= 120.00 KiB gzip,PASS
+All Site JavaScript (dist/_astro/*.js),All bundled JS across all routes,5,201405,196.68 KiB,72556,70.86 KiB,<= 120.00 KiB gzip,PASS
+Home Page Stylesheets (CSS),Stylesheets referenced by / (dist/index.html),2,46234,45.15 KiB,8530,8.33 KiB,<= 30.00 KiB gzip,PASS
 Self-Hosted Variable Fonts (.woff2),fraunces-latin-wght-normal.woff2 + instrument-sans-latin-wght-normal.woff2,2,66712,65.15 KiB,66773,65.21 KiB,<= 70.00 KiB total,PASS
-Home Page HTML (/ FR),dist/index.html (pre-rendered static HTML + SVG),1,288407,281.65 KiB,42187,41.20 KiB,Informational (Static SSR),PASS
-Home Page HTML (/en/ EN),dist/en/index.html (pre-rendered static HTML + SVG),1,286264,279.55 KiB,41487,40.51 KiB,Informational (Static SSR),PASS
+Home Page HTML (/ FR),dist/index.html (pre-rendered static HTML + SVG),1,421669,411.79 KiB,58292,56.93 KiB,Informational (Static SSR),PASS
+Home Page HTML (/en/ EN),dist/en/index.html (pre-rendered static HTML + SVG),1,419051,409.23 KiB,57483,56.14 KiB,Informational (Static SSR),PASS
 Home Summary Data (home-summary.json),"dist/data/home-summary.json (split summary, not all 111 series)",1,154619,151.00 KiB,22033,21.52 KiB,Never ship all 111 series to Home,PASS
 Raster Images (.png/.jpg/.webp),All raster images in dist/ (max 1 Open Graph image allowed),1,5298,5.17 KiB,4189,4.09 KiB,<= 1 Open Graph image,PASS

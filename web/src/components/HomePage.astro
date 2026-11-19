@@ -2872,7 +2872,14 @@ const heroMorphMap = Object.fromEntries(
     .teaser-subgrid {
       grid-auto-rows: auto;
     }
-    .stories-subgrid > .story-card,
+    .stories-subgrid > .story-card {
+      grid-column: span 4;
+      display: grid;
+      grid-row: span 5;
+      grid-template-rows: subgrid;
+      gap: var(--space-4);
+      align-items: start;
+    }
     .teaser-subgrid > .story-card {
       grid-column: span 4;
       display: grid;
