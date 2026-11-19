@@ -1,8 +1,10 @@
 # Bénin AgroMarket
 
+[![Deploy to GitHub Pages](https://github.com/codjiabrian44-cpu/benin-agromarket/actions/workflows/deploy.yml/badge.svg)](https://github.com/codjiabrian44-cpu/benin-agromarket/actions/workflows/deploy.yml)
+
 **Open, reproducible retail food-price analysis and 1- to 3-month forecasting for staple markets in Benin (white maize, tomato, and white yam), shipped as a bilingual French/English static web application.**
 
-> **Planned live site (coming soon):** `https://codjiabrian44-cpu.github.io/benin-agromarket/`
+> **Live web application (coming soon):** **[https://codjiabrian44-cpu.github.io/benin-agromarket/](https://codjiabrian44-cpu.github.io/benin-agromarket/)** *(French default at `/`, English at `/en/` — built and deployed via GitHub Actions on push to `master`)*
 
 ---
 
@@ -18,7 +20,7 @@ L'application web statique (français par défaut, avec version anglaise) permet
 
 - **Current stage:** Phase 4 — Pre-release audit, documentation, and deployment preparation.
 - **Completed:** Phase 0 (data audit & coverage analysis), Phase 1 (cleaning & exploratory analysis), Phase 2 (rolling-origin modeling, weather ablation & export validation), and Phase 3 (bilingual Astro + D3 + GSAP static web app).
-- **Deployment:** Static build verified; live GitHub Pages deployment at `https://codjiabrian44-cpu.github.io/benin-agromarket/` is **coming soon**.
+- **Deployment:** Static build and GitHub Pages workflow (`.github/workflows/deploy.yml`) verified; live site at **[https://codjiabrian44-cpu.github.io/benin-agromarket/](https://codjiabrian44-cpu.github.io/benin-agromarket/)** is **coming soon** (ready upon enabling GitHub Actions as the Pages source and pushing to `master`).
 
 ---
 
@@ -160,11 +162,16 @@ node scripts/check_live_site.mjs https://codjiabrian44-cpu.github.io/benin-agrom
 
 ```text
 benin-agromarket/
+├── .github/workflows/
+│   └── deploy.yml          # Official GitHub Pages build & deployment workflow (Node from web/.nvmrc)
 ├── AGENTS.md               # Strict project rules (data integrity, anti-leakage, UI honesty)
 ├── BRIEF.md                # Product vision, audience, and design direction
 ├── LICENSE                 # MIT license for code (data retain their own open licenses)
-├── README.md               # Project overview and reproduction guide
+├── README.md               # Project overview, live site badge, and reproduction guide
 ├── requirements.txt        # Pinned Python dependencies
+├── scripts/
+│   ├── check_live_site.mjs # Post-deploy crawler checking 404s, fetches, hreflang, canonical & sitemap
+│   └── check_repo_hygiene.py # Tracked-file check against leaked paths, .env, or tokens
 ├── src/
 │   ├── config.py           # Central paths, product configs, thresholds, split dates
 │   ├── ingest/             # Official WFP (HDX) and NASA POWER downloaders with checksums
@@ -185,9 +192,10 @@ benin-agromarket/
 │   ├── readme/             # Compressed screenshots for README
 │   └── screenshots/        # Desktop & mobile Playwright QA screenshots by step
 └── web/
+    ├── .nvmrc              # Pinned Node.js LTS major version (24; Astro 7 requires >=22.12.0)
     ├── astro.config.mjs    # Static output config + single site/base configuration
-    ├── package.json        # Astro, D3 modules, GSAP, self-hosted variable fonts
-    ├── scripts/            # prepare-data.mjs, test-url-params.mjs, write-web-budget.mjs
+    ├── package.json        # Astro, D3 modules, GSAP, self-hosted variable fonts, engines
+    ├── scripts/            # prepare-data.mjs, Playwright QA & audit scripts, write-web-budget.mjs
     ├── public/             # Static forecasts.json, split JSONs, self-hosted fonts, OG image
     └── src/                # Bilingual Astro pages, components, D3 SVG helpers, i18n JSONs
 ```
